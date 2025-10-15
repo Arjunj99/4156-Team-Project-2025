@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="9.3">
-<file name="/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/CalorieService.java">
-</file>
-<file name="/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/models/User.java">
-</file>
-<file name="/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/models/Food.java">
-</file>
-<file name="/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/models/Recipe.java">
-</file>
-<file name="/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/controller/RouteController.java">
-</file>
-<file name="/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/service/MockApiService.java">
-</file>
 <file name="/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/test/java/dev/coms4156/project/calorieservice/FoodUnitTests.java">
 <error line="12" severity="warning" message="First sentence of Javadoc is missing an ending period." source="com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck"/>
 <error line="15" column="5" severity="warning" message="&apos;method def modifier&apos; has incorrect indentation level 4, expected level should be 2." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
@@ -42,7 +30,5 @@
 <error line="4" column="1" severity="warning" message="&apos;org.springframework.boot.test.context.SpringBootTest&apos; should be separated from previous import group by one line." source="com.puppycrawl.tools.checkstyle.checks.imports.CustomImportOrderCheck"/>
 <error line="6" column="1" severity="warning" message="Extra separation in import group before &apos;org.junit.jupiter.api.Test&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.CustomImportOrderCheck"/>
 <error line="6" column="1" severity="warning" message="Wrong lexicographical order for &apos;org.junit.jupiter.api.Test&apos; import. Should be before &apos;org.springframework.boot.test.context.SpringBootTest&apos;." source="com.puppycrawl.tools.checkstyle.checks.imports.CustomImportOrderCheck"/>
-</file>
-<file name="/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/resources/application.properties">
 </file>
 </checkstyle>
