@@ -42,7 +42,7 @@ In order to build and use our service you must install the following (This guide
 ### Variables
 - username (string)
 - userId (int)
-- likedRecipes (list<Recipes>)
+- likedRecipes (list<int>)
 ### Functions
 
 ## Model.java
