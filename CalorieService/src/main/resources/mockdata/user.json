@@ -1,0 +1,12 @@
+[
+  { "username": "alice",      "userId": 501, "likedRecipes": [1001, 1005, 1010] },
+  { "username": "bob",        "userId": 502, "likedRecipes": [1002, 1007] },
+  { "username": "charlie",    "userId": 503, "likedRecipes": [1003, 1009] },
+  { "username": "diana",      "userId": 504, "likedRecipes": [1004, 1006, 1008] },
+  { "username": "eric",       "userId": 505, "likedRecipes": [1001, 1002, 1004] },
+  { "username": "fatima",     "userId": 506, "likedRecipes": [1005] },
+  { "username": "george",     "userId": 507, "likedRecipes": [1007, 1008, 1010] },
+  { "username": "hannah",     "userId": 508, "likedRecipes": [1006, 1009] },
+  { "username": "ivan",       "userId": 509, "likedRecipes": [] },
+  { "username": "julia",      "userId": 510, "likedRecipes": [1003, 1005, 1009] }
+]

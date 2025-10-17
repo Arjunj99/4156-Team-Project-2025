@@ -1,0 +1,126 @@
+[
+  {
+    "recipeName": "Grilled Chicken & Brown Rice Bowl",
+    "recipeId": 1001,
+    "category": "Dinner",
+    "ingredients": [
+      { "foodName": "Chicken Breast", "foodId": 13, "calories": 165, "category": "Protein" },
+      { "foodName": "Brown Rice (1 cup)", "foodId": 10, "calories": 216, "category": "Grain" },
+      { "foodName": "Broccoli", "foodId": 5, "calories": 55, "category": "Vegetable" },
+      { "foodName": "Carrots", "foodId": 6, "calories": 52, "category": "Vegetable" }
+    ],
+    "views": 1240,
+    "likes": 310
+  },
+  {
+    "recipeName": "Baked Salmon with Sweet Potato",
+    "recipeId": 1002,
+    "category": "Dinner",
+    "ingredients": [
+      { "foodName": "Salmon", "foodId": 14, "calories": 208, "category": "Protein" },
+      { "foodName": "Sweet Potato", "foodId": 8, "calories": 112, "category": "Vegetable" },
+      { "foodName": "Spinach", "foodId": 7, "calories": 23, "category": "Vegetable" }
+    ],
+    "views": 980,
+    "likes": 245
+  },
+  {
+    "recipeName": "Tofu Stir-Fry over White Rice",
+    "recipeId": 1003,
+    "category": "Lunch",
+    "ingredients": [
+      { "foodName": "Tofu (firm)", "foodId": 15, "calories": 144, "category": "Protein" },
+      { "foodName": "White Rice (1 cup)", "foodId": 9, "calories": 205, "category": "Grain" },
+      { "foodName": "Broccoli", "foodId": 5, "calories": 55, "category": "Vegetable" },
+      { "foodName": "Carrots", "foodId": 6, "calories": 52, "category": "Vegetable" }
+    ],
+    "views": 760,
+    "likes": 168
+  },
+  {
+    "recipeName": "Veggie Omelette",
+    "recipeId": 1004,
+    "category": "Breakfast",
+    "ingredients": [
+      { "foodName": "Egg (large)", "foodId": 16, "calories": 72, "category": "Protein" },
+      { "foodName": "Spinach", "foodId": 7, "calories": 23, "category": "Vegetable" },
+      { "foodName": "Cheddar Cheese", "foodId": 19, "calories": 113, "category": "Dairy" }
+    ],
+    "views": 1430,
+    "likes": 402
+  },
+  {
+    "recipeName": "Overnight Banana Oats",
+    "recipeId": 1005,
+    "category": "Breakfast",
+    "ingredients": [
+      { "foodName": "Oatmeal (1 cup)", "foodId": 12, "calories": 158, "category": "Grain" },
+      { "foodName": "Milk (1 cup)", "foodId": 17, "calories": 122, "category": "Dairy" },
+      { "foodName": "Banana", "foodId": 2, "calories": 105, "category": "Fruit" }
+    ],
+    "views": 1675,
+    "likes": 511
+  },
+  {
+    "recipeName": "Greek Yogurt Parfait",
+    "recipeId": 1006,
+    "category": "Snack",
+    "ingredients": [
+      { "foodName": "Greek Yogurt", "foodId": 18, "calories": 130, "category": "Dairy" },
+      { "foodName": "Strawberries", "foodId": 4, "calories": 49, "category": "Fruit" },
+      { "foodName": "Almonds (1 oz)", "foodId": 21, "calories": 164, "category": "Snack" }
+    ],
+    "views": 890,
+    "likes": 220
+  },
+  {
+    "recipeName": "Chicken & Spinach Salad",
+    "recipeId": 1007,
+    "category": "Lunch",
+    "ingredients": [
+      { "foodName": "Chicken Breast", "foodId": 13, "calories": 165, "category": "Protein" },
+      { "foodName": "Spinach", "foodId": 7, "calories": 23, "category": "Vegetable" },
+      { "foodName": "Orange", "foodId": 3, "calories": 62, "category": "Fruit" },
+      { "foodName": "Almonds (1 oz)", "foodId": 21, "calories": 164, "category": "Snack" }
+    ],
+    "views": 620,
+    "likes": 150
+  },
+  {
+    "recipeName": "Cottage Cheese Power Bowl",
+    "recipeId": 1008,
+    "category": "Snack",
+    "ingredients": [
+      { "foodName": "Cottage Cheese", "foodId": 20, "calories": 98, "category": "Dairy" },
+      { "foodName": "Apple", "foodId": 1, "calories": 95, "category": "Fruit" },
+      { "foodName": "Dark Chocolate", "foodId": 23, "calories": 170, "category": "Snack" }
+    ],
+    "views": 455,
+    "likes": 97
+  },
+  {
+    "recipeName": "Brown Rice & Veggie Plate",
+    "recipeId": 1009,
+    "category": "Dinner",
+    "ingredients": [
+      { "foodName": "Brown Rice (1 cup)", "foodId": 10, "calories": 216, "category": "Grain" },
+      { "foodName": "Broccoli", "foodId": 5, "calories": 55, "category": "Vegetable" },
+      { "foodName": "Sweet Potato", "foodId": 8, "calories": 112, "category": "Vegetable" },
+      { "foodName": "Greek Yogurt", "foodId": 18, "calories": 130, "category": "Dairy" }
+    ],
+    "views": 510,
+    "likes": 132
+  },
+  {
+    "recipeName": "Fruit & Yogurt Dessert Bowl",
+    "recipeId": 1010,
+    "category": "Dessert",
+    "ingredients": [
+      { "foodName": "Strawberries", "foodId": 4, "calories": 49, "category": "Fruit" },
+      { "foodName": "Banana", "foodId": 2, "calories": 105, "category": "Fruit" },
+      { "foodName": "Greek Yogurt", "foodId": 18, "calories": 130, "category": "Dairy" }
+    ],
+    "views": 730,
+    "likes": 188
+  }
+]

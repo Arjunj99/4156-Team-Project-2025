@@ -1,0 +1,36 @@
+name: Java Make Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Java Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Checkstyle
+        working-directory: CalorieService
+        run: mvn checkstyle:check
+
+      - name: Report Checkstyle
+        working-directory: CalorieService
+        run: mvn checkstyle:checkstyle
+
+      - name: Run Unit Tests
+        working-directory: CalorieService
+        run: mvn clean test
+
+      - name: Generate Jacoco Report
+        working-directory: CalorieService
+        run: mvn jacoco:report
+
+      - name: Run Static Analysis
+        working-directory: CalorieService
+        run: mvn pmd:check
+
