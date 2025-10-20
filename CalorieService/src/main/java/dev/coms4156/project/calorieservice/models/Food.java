@@ -1,6 +1,9 @@
 
-package dev.coms4156.project.calorieservice.model;
+package dev.coms4156.project.calorieservice.models;
 
+/**
+ * Represents a food item in the calorie service system.
+ */
 public class Food implements Comparable<Food> {
   private String foodName;
   private int foodId;
@@ -81,6 +84,11 @@ public class Food implements Comparable<Food> {
 
     Food cmpFood = (Food) obj;
     return cmpFood.foodId == this.foodId;
+  }
+
+  @Override
+  public int hashCode() {
+    return Integer.hashCode(foodId);
   }
 
   @Override

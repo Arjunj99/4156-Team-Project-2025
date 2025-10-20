@@ -1,11 +1,16 @@
-#Wed Oct 15 12:53:41 EDT 2025
-/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/CalorieService.java=1760509923750
-/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/controller/RouteController.java=1760491192536
-/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/models/Food.java=1760491192536
-/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/models/Recipe.java=1760491192536
-/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/models/User.java=1760491192536
-/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/service/MockApiService.java=1760491192536
-/Users/Autolycus/Desktop/4156-Team-Project-2025/CalorieService/src/main/resources/application.properties=1758848846384
-configuration*?=AAB04DDFE7CA380F6A673FE6213E0E309FEBCF89
-module-resource*?\:checkstyle-suppressions.xml=8E7F2D707DCCE8896D347DD4EB5B990550ADC475
-module-resource*?\:checkstyle-xpath-suppressions.xml=F80CBBD057BAF5680761338211C635C7FD10824C
+#Mon Oct 20 01:36:47 EDT 2025
+configuration*?=8D6BE1DE83676D9C653BC05C55C430F2C4E66E31
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/test/java/dev/coms4156/project/calorieservice/RouteControllerTests.java=1760938239326
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/test/java/dev/coms4156/project/calorieservice/MockApiServiceTests.java=1760938151573
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/test/java/dev/coms4156/project/calorieservice/RecipeUnitTests.java=1760938590604
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/test/java/dev/coms4156/project/calorieservice/FoodUnitTests.java=1760938013669
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/service/MockApiService.java=1760938129627
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/CalorieService.java=1760937782614
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/models/Food.java=1760938403991
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/controller/RouteController.java=1760938097709
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/test/java/dev/coms4156/project/calorieservice/UserUnitTests.java=1760938013669
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/main/resources/application.properties=1760937782615
+module-resource*?\:checkstyle-xpath-suppressions.xml=FCE3AF71D2F3852B231F6559730AD16010DCF0D8
+module-resource*?\:checkstyle-suppressions.xml=DAB360F5EC9E2CADDE073AA5BB80659EFDFB76A6
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/models/User.java=1760938403992
+/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/src/main/java/dev/coms4156/project/calorieservice/models/Recipe.java=1760938403991

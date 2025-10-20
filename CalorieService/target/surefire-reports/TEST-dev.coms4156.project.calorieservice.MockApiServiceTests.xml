@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="dev.coms4156.project.calorieservice.UserUnitTests" time="0.035" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="dev.coms4156.project.calorieservice.MockApiServiceTests" time="0.147" tests="5" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -7,8 +7,10 @@
     <property name="java.vm.vendor" value="Homebrew"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.vendor.url" value="https://github.com/Homebrew/homebrew-core/issues"/>
+    <property name="user.timezone" value="America/New_York"/>
     <property name="os.name" value="Mac OS X"/>
     <property name="java.vm.specification.version" value="17"/>
+    <property name="APPLICATION_NAME" value="IndividualProject"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/opt/homebrew/Cellar/openjdk@17/17.0.16/libexec/openjdk.jdk/Contents/Home/lib"/>
@@ -28,6 +30,8 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="FILE_LOG_CHARSET" value="UTF-8"/>
+    <property name="java.awt.headless" value="true"/>
     <property name="surefire.real.class.path" value="/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService/target/surefire/surefirebooter-20251020013635584_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
@@ -46,6 +50,8 @@
     <property name="user.dir" value="/Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService"/>
     <property name="os.arch" value="aarch64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="PID" value="27800"/>
+    <property name="CONSOLE_LOG_CHARSET" value="UTF-8"/>
     <property name="native.encoding" value="UTF-8"/>
     <property name="java.library.path" value="/Users/rosebeck/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
@@ -55,6 +61,28 @@
     <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="61.0"/>
+    <property name="LOGGED_APPLICATION_NAME" value="[IndividualProject] "/>
   </properties>
-  <testcase name="shouldAnswerWithTrue" classname="dev.coms4156.project.calorieservice.UserUnitTests" time="0.02"/>
+  <testcase name="alternativesRespectCategoryAndCalories" classname="dev.coms4156.project.calorieservice.MockApiServiceTests" time="0.003">
+    <system-out><![CDATA[2025-10-20T01:36:38.945-04:00  INFO 27800 --- [IndividualProject] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [dev.coms4156.project.calorieservice.MockApiServiceTests]: MockApiServiceTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-10-20T01:36:38.946-04:00  INFO 27800 --- [IndividualProject] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration dev.coms4156.project.calorieservice.CalorieService for test class dev.coms4156.project.calorieservice.MockApiServiceTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.4)
+
+2025-10-20T01:36:38.961-04:00  INFO 27800 --- [IndividualProject] [           main] d.c.p.c.MockApiServiceTests              : Starting MockApiServiceTests using Java 17.0.16 with PID 27800 (started by rosebeck in /Users/rosebeck/Desktop/adv_prog_push/4156-Team-Project-2025/CalorieService)
+2025-10-20T01:36:38.961-04:00  INFO 27800 --- [IndividualProject] [           main] d.c.p.c.MockApiServiceTests              : No active profile set, falling back to 1 default profile: "default"
+2025-10-20T01:36:39.081-04:00  INFO 27800 --- [IndividualProject] [           main] d.c.p.c.MockApiServiceTests              : Started MockApiServiceTests in 0.133 seconds (process running for 3.458)
+]]></system-out>
+  </testcase>
+  <testcase name="addRecipePersistsNewEntry" classname="dev.coms4156.project.calorieservice.MockApiServiceTests" time="0.001"/>
+  <testcase name="totalCaloriesMatchesMockData" classname="dev.coms4156.project.calorieservice.MockApiServiceTests" time="0.001"/>
+  <testcase name="incrementViewAndLikeUpdateCounters" classname="dev.coms4156.project.calorieservice.MockApiServiceTests" time="0.001"/>
+  <testcase name="calorieBreakdownReturnsIngredientCalories" classname="dev.coms4156.project.calorieservice.MockApiServiceTests" time="0.001"/>
 </testsuite>

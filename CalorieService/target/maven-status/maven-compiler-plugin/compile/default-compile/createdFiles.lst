@@ -1,1 +1,6 @@
 dev/coms4156/project/calorieservice/CalorieService.class
+dev/coms4156/project/calorieservice/service/MockApiService.class
+dev/coms4156/project/calorieservice/models/User.class
+dev/coms4156/project/calorieservice/models/Food.class
+dev/coms4156/project/calorieservice/models/Recipe.class
+dev/coms4156/project/calorieservice/controller/RouteController.class
