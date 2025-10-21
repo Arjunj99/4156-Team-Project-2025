@@ -1,8 +1,11 @@
 
-package dev.coms4156.project.calorieservice.model;
+package dev.coms4156.project.calorieservice.models;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a user in the calorie service system.
+ */
 public class User implements Comparable<User> {
   private String username;
   private int userId;

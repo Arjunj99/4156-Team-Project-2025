@@ -1,6 +1,9 @@
 
-package dev.coms4156.project.calorieservice.model;
+package dev.coms4156.project.calorieservice.models;
 
+/**
+ * Represents a food item in the calorie service system.
+ */
 public class Food implements Comparable<Food> {
   private String foodName;
   private int foodId;

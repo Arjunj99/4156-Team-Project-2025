@@ -1,8 +1,11 @@
 
-package dev.coms4156.project.calorieservice.model;
+package dev.coms4156.project.calorieservice.models;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a recipe in the calorie service system.
+ */
 public class Recipe implements Comparable<Recipe> {
   private String recipeName;
   private int recipeId;
