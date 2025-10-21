@@ -32,7 +32,7 @@ public class MockApiService {
   public MockApiService() {
     ObjectMapper mapper = new ObjectMapper();
     
-    // Load foods
+    // Loading data basically taken from miniproject
     try (InputStream is = Thread.currentThread().getContextClassLoader()
         .getResourceAsStream("mockdata/food.json")) {
       if (is == null) {
@@ -47,7 +47,6 @@ public class MockApiService {
       foods = new ArrayList<>(0);
     }
     
-    // Load recipes
     try (InputStream is = Thread.currentThread().getContextClassLoader()
         .getResourceAsStream("mockdata/recipe.json")) {
       if (is == null) {
@@ -62,7 +61,6 @@ public class MockApiService {
       recipes = new ArrayList<>(0);
     }
     
-    // Load users
     try (InputStream is = Thread.currentThread().getContextClassLoader()
         .getResourceAsStream("mockdata/user.json")) {
       if (is == null) {
@@ -84,7 +82,6 @@ public class MockApiService {
    */
   private ArrayList<User> loadUsersWithRecipeIds(ObjectMapper mapper, InputStream is) 
       throws Exception {
-    // First, read the raw JSON structure
     @SuppressWarnings("unchecked")
     List<Object> rawUsers = mapper.readValue(is, List.class);
     
@@ -99,10 +96,8 @@ public class MockApiService {
       @SuppressWarnings("unchecked")
       List<Integer> likedRecipeIds = (List<Integer>) userMap.get("likedRecipes");
       
-      // Create user with empty liked recipes list
       User user = new User(username, userId);
       
-      // Convert recipe IDs to Recipe objects
       ArrayList<Recipe> likedRecipes = new ArrayList<>();
       if (likedRecipeIds != null) {
         for (Integer recipeId : likedRecipeIds) {
@@ -123,10 +118,40 @@ public class MockApiService {
   /**
    * Helper method to find a recipe by its ID.
    */
-  private Recipe findRecipeById(int recipeId) {
+  public Recipe findRecipeById(int recipeId) {
     for (Recipe recipe : recipes) {
       if (recipe.getRecipeId() == recipeId) {
         return recipe;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Helper method to find a user by their ID.
+   *
+   * @param userId The ID of the user to find
+   * @return The user with the specified ID, or null if not found
+   */
+  public User findUserById(int userId) {
+    for (User user : users) {
+      if (user.getUserId() == userId) {
+        return user;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Helper method to find a food by its ID.
+   *
+   * @param foodId The ID of the food to find
+   * @return The food with the specified ID, or null if not found
+   */
+  public Food findFoodById(int foodId) {
+    for (Food food : foods) {
+      if (food.getFoodId() == foodId) {
+        return food;
       }
     }
     return null;
@@ -152,35 +177,25 @@ public class MockApiService {
    *         or null if food not found
    */
   public List<Food> getFoodAlternatives(int foodId) {
-    // Find the food with the given ID
-    Food targetFood = null;
-    for (Food food : foods) {
-      if (food.getFoodId() == foodId) {
-        targetFood = food;
-        break;
-      }
-    }
+
+    Food targetFood = findFoodById(foodId);
     
     if (targetFood == null) {
       return null;
     }
     
-    // Create final reference for lambda
     final Food finalTargetFood = targetFood;
     
-    // Filter foods by same category and lower calories
     List<Food> alternatives = foods.stream()
         .filter(food -> food.getCategory().equals(finalTargetFood.getCategory()))
         .filter(food -> food.getCalories() < finalTargetFood.getCalories())
         .collect(Collectors.toList());
     
-    // If we have fewer than 5 alternatives, return all available
     if (alternatives.size() <= 5) {
       Collections.shuffle(alternatives);
       return alternatives;
     }
     
-    // Randomly select 5 alternatives
     Collections.shuffle(alternatives);
     return alternatives.subList(0, 5);
   }
@@ -196,11 +211,9 @@ public class MockApiService {
       return false;
     }
     
-    // Check if food with same ID already exists
-    for (Food existingFood : foods) {
-      if (existingFood.getFoodId() == food.getFoodId()) {
-        return false; // Food with this ID already exists
-      }
+    Food existingFood = findFoodById(food.getFoodId());
+    if (existingFood != null) {
+      return false;
     }
     
     foods.add(food);
@@ -215,33 +228,19 @@ public class MockApiService {
    * @return true if the recipe was added successfully, false otherwise
    */
   public boolean likeRecipe(int userId, int recipeId) {
-    // Find the user
-    User user = null;
-    for (User u : users) {
-      if (u.getUserId() == userId) {
-        user = u;
-        break;
-      }
-    }
+
+    User user = findUserById(userId);
     
     if (user == null) {
-      return false; // User not found
+      return false;
     }
-    
-    // Find the recipe
-    Recipe recipe = null;
-    for (Recipe r : recipes) {
-      if (r.getRecipeId() == recipeId) {
-        recipe = r;
-        break;
-      }
-    }
+
+    Recipe recipe = findRecipeById(recipeId);
     
     if (recipe == null) {
-      return false; // Recipe not found
+      return false;
     }
     
-    // Add recipe to user's liked recipes
     return user.likeRecipe(recipe);
   }
 
@@ -253,41 +252,30 @@ public class MockApiService {
    * @return A list of up to 10 recommended recipes, or null if user not found
    */
   public List<Recipe> recommendHealthy(int userId, int calorieMax) {
-    // Find the user
-    User user = null;
-    for (User u : users) {
-      if (u.getUserId() == userId) {
-        user = u;
-        break;
-      }
-    }
+
+    User user = findUserById(userId);
     
     if (user == null) {
-      return null; // User not found
+      return null; 
     }
     
-    // Create final reference for lambda
     final User finalUser = user;
     
-    // Get user's liked recipe categories
     List<String> likedCategories = finalUser.getLikedRecipes().stream()
         .map(Recipe::getCategory)
         .distinct()
         .collect(Collectors.toList());
     
-    // If user has no liked recipes, return empty list
     if (likedCategories.isEmpty()) {
       return new ArrayList<>();
     }
     
-    // Filter recipes by liked categories and calorie limit
     List<Recipe> recommendations = recipes.stream()
         .filter(recipe -> likedCategories.contains(recipe.getCategory()))
         .filter(recipe -> recipe.getTotalCalories() <= calorieMax)
-        .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe)) // Exclude already liked
+        .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe)) 
         .collect(Collectors.toList());
     
-    // If we don't have enough recommendations, add other healthy recipes
     if (recommendations.size() < 10) {
       List<Recipe> additionalRecipes = recipes.stream()
           .filter(recipe -> recipe.getTotalCalories() <= calorieMax)
@@ -309,40 +297,29 @@ public class MockApiService {
    * @return A list of up to 10 recommended recipes, or null if user not found or no liked recipes
    */
   public List<Recipe> recommend(int userId) {
-    // Find the user
-    User user = null;
-    for (User u : users) {
-      if (u.getUserId() == userId) {
-        user = u;
-        break;
-      }
-    }
+
+    User user = findUserById(userId);
     
     if (user == null) {
       return null; 
     }
     
-    // Create final reference for lambda
     final User finalUser = user;
     
-    // Get user's liked recipe categories
     List<String> likedCategories = finalUser.getLikedRecipes().stream()
         .map(Recipe::getCategory)
         .distinct()
         .collect(Collectors.toList());
     
-    // If user has no liked recipes, return empty list
     if (likedCategories.isEmpty()) {
       return null;
     }
     
-    // Filter recipes by liked categories
     List<Recipe> recommendations = recipes.stream()
         .filter(recipe -> likedCategories.contains(recipe.getCategory()))
-        .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe)) // Exclude already liked
+        .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe)) 
         .collect(Collectors.toList());
     
-    // If we don't have enough recommendations, add other recipes
     if (recommendations.size() < 10) {
       List<Recipe> additionalRecipes = recipes.stream()
           .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
