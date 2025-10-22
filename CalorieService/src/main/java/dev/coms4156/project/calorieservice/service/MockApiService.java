@@ -8,7 +8,11 @@ import dev.coms4156.project.calorieservice.models.User;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -79,6 +83,11 @@ public class MockApiService {
   
   /**
    * Loads users from JSON, handling the conversion of recipe IDs to Recipe objects.
+   *
+   * @param mapper The {@code ObjectMapper} used for JSON deserialization
+   * @param is The {@code InputStream} containing the user JSON data
+   * @return {@code ArrayList} of {@code User} objects with liked recipes populated
+   * @throws Exception if JSON parsing fails
    */
   private ArrayList<User> loadUsersWithRecipeIds(ObjectMapper mapper, InputStream is) 
       throws Exception {
@@ -117,6 +126,9 @@ public class MockApiService {
   
   /**
    * Helper method to find a recipe by its ID.
+   *
+   * @param recipeId The ID of the recipe to find
+   * @return The {@code Recipe} with the specified ID, or {@code null} if not found
    */
   public Recipe findRecipeById(int recipeId) {
     for (Recipe recipe : recipes) {
@@ -128,10 +140,21 @@ public class MockApiService {
   }
 
   /**
+   * Retrieve a recipe by its identifier.
+   *
+   * @param recipeId identifier of the recipe to fetch.
+   * @return {@code Optional} containing the {@code Recipe} if present, 
+   *         or empty if not found
+   */
+  public Optional<Recipe> getRecipeById(int recipeId) {
+    return Optional.ofNullable(findRecipeById(recipeId));
+  }
+
+  /**
    * Helper method to find a user by their ID.
    *
    * @param userId The ID of the user to find
-   * @return The user with the specified ID, or null if not found
+   * @return The {@code User} with the specified ID, or {@code null} if not found
    */
   public User findUserById(int userId) {
     for (User user : users) {
@@ -146,7 +169,7 @@ public class MockApiService {
    * Helper method to find a food by its ID.
    *
    * @param foodId The ID of the food to find
-   * @return The food with the specified ID, or null if not found
+   * @return The {@code Food} with the specified ID, or {@code null} if not found
    */
   public Food findFoodById(int foodId) {
     for (Food food : foods) {
@@ -157,24 +180,40 @@ public class MockApiService {
     return null;
   }
 
+  /**
+   * Gets the list of all foods.
+   *
+   * @return {@code ArrayList} of all {@code Food} objects
+   */
   public ArrayList<Food> getFoods() {
     return foods;
   }
 
+  /**
+   * Gets the list of all recipes.
+   *
+   * @return {@code ArrayList} of all {@code Recipe} objects
+   */
   public ArrayList<Recipe> getRecipes() {
     return recipes;
   }
 
+  /**
+   * Gets the list of all users.
+   *
+   * @return {@code ArrayList} of all {@code User} objects
+   */
   public ArrayList<User> getUsers() {
     return users;
   }
 
   /**
-   * Returns 5 random foods of the same category with lower calorie count than the specified food.
+   * Returns up to 5 random foods of the same category with lower calorie 
+   * count than the specified food.
    *
    * @param foodId The ID of the food to find alternatives for
-   * @return A list of 5 random foods from the same category with lower calories, 
-   *         or null if food not found
+   * @return A {@code List} of up to 5 random {@code Food} objects from the 
+   *         same category with lower calories, or null if food not found
    */
   public List<Food> getFoodAlternatives(int foodId) {
 
@@ -203,8 +242,8 @@ public class MockApiService {
   /**
    * Adds a new food to the service.
    *
-   * @param food The food to add
-   * @return true if the food was added successfully, false otherwise
+   * @param food The {@code Food} object to add
+   * @return true if the food was added successfully, false if food is null or already exists
    */
   public boolean addFood(Food food) {
     if (food == null) {
@@ -225,7 +264,7 @@ public class MockApiService {
    *
    * @param userId The ID of the user
    * @param recipeId The ID of the recipe to like
-   * @return true if the recipe was added successfully, false otherwise
+   * @return true if the recipe was added successfully, false if user or recipe not found
    */
   public boolean likeRecipe(int userId, int recipeId) {
 
@@ -245,11 +284,13 @@ public class MockApiService {
   }
 
   /**
-   * Returns a list of recommended recipes based on user's liked recipes under calorieMax.
+   * Returns a list of recommended recipes based on user's liked recipes 
+   * under calorieMax.
    *
    * @param userId The ID of the user
    * @param calorieMax Maximum calorie count for recommendations
-   * @return A list of up to 10 recommended recipes, or null if user not found
+   * @return A {@code List} of up to 10 recommended {@code Recipe} objects, 
+   *         or null if user not found
    */
   public List<Recipe> recommendHealthy(int userId, int calorieMax) {
 
@@ -294,7 +335,8 @@ public class MockApiService {
    * Returns a list of recommended recipes based on user's liked recipes.
    *
    * @param userId The ID of the user
-   * @return A list of up to 10 recommended recipes, or null if user not found or no liked recipes
+   * @return A {@code List} of up to 10 recommended {@code Recipe} objects, 
+   *         or null if user not found or no liked recipes
    */
   public List<Recipe> recommend(int userId) {
 
@@ -331,5 +373,152 @@ public class MockApiService {
     
     Collections.shuffle(recommendations);
     return recommendations.size() <= 10 ? recommendations : recommendations.subList(0, 10);
+  }
+
+  /**
+   * Find alternate recipes in the same category with lower total calories.
+   *
+   * @param recipeId identifier of the recipe to compare against.
+   * @return {@code Optional} containing a {@code Map} with two lists: topAlternatives 
+   *         (up to 3 top-viewed recipes) and randomAlternatives (up to 3 random recipes), 
+   *         or empty if recipe not found
+   */
+  public Optional<Map<String, List<Recipe>>> getRecipeAlternatives(int recipeId) {
+    Recipe baseRecipe = findRecipeById(recipeId);
+    if (baseRecipe == null) {
+      return Optional.empty();
+    }
+
+    int baseCalories = baseRecipe.getTotalCalories();
+    String baseCategory = baseRecipe.getCategory();
+
+    List<Recipe> candidates = recipes.stream()
+        .filter(recipe -> recipe.getRecipeId() != recipeId)
+        .filter(recipe -> sameCategory(baseCategory, recipe.getCategory()))
+        .filter(recipe -> recipe.getTotalCalories() < baseCalories)
+        .collect(Collectors.toList());
+
+    List<Recipe> topAlternatives = candidates.stream()
+        .sorted((first, second) -> Integer.compare(second.getViews(), first.getViews()))
+        .limit(3)
+        .collect(Collectors.toList());
+
+    List<Recipe> randomPool = new ArrayList<>(candidates);
+    randomPool.removeAll(topAlternatives);
+    Collections.shuffle(randomPool);
+
+    List<Recipe> randomAlternatives = randomPool.stream()
+        .limit(3)
+        .collect(Collectors.toList());
+
+    Map<String, List<Recipe>> response = new HashMap<>();
+    response.put("topAlternatives", topAlternatives);
+    response.put("randomAlternatives", randomAlternatives);
+    return Optional.of(response);
+  }
+
+  /**
+   * Helper method to check if two categories are the same (case-insensitive).
+   *
+   * @param first first category {@code String}
+   * @param second second category {@code String}
+   * @return {@code true} if categories are the same, {@code false} otherwise
+   */
+  private boolean sameCategory(String first, String second) {
+    if (first == null && second == null) {
+      return true;
+    }
+    if (first == null || second == null) {
+      return false;
+    }
+    return first.equalsIgnoreCase(second);
+  }
+
+  /**
+   * Calculate the total calorie count for a recipe.
+   *
+   * @param recipeId identifier of the recipe.
+   * @return {@code Optional} containing the total calorie count as an {@code Integer}, 
+   *         or empty if recipe not found
+   */
+  public Optional<Integer> getTotalCalories(int recipeId) {
+    Recipe recipe = findRecipeById(recipeId);
+    if (recipe == null) {
+      return Optional.empty();
+    }
+    return Optional.of(recipe.getTotalCalories());
+  }
+
+  /**
+   * Produce a calorie breakdown for each ingredient within a recipe.
+   *
+   * @param recipeId identifier of the recipe.
+   * @return {@code Optional} containing an ordered {@code Map} of ingredient 
+   *         names to calorie counts, or empty if recipe not found
+   */
+  public Optional<Map<String, Integer>> getCalorieBreakdown(int recipeId) {
+    Recipe recipe = findRecipeById(recipeId);
+    if (recipe == null) {
+      return Optional.empty();
+    }
+    Map<String, Integer> breakdown = new LinkedHashMap<>();
+    for (Food ingredient : recipe.getIngredients()) {
+      breakdown.put(ingredient.getFoodName(), ingredient.getCalories());
+    }
+    return Optional.of(breakdown);
+  }
+
+  /**
+   * Store a new recipe if the identifier has not been used.
+   *
+   * @param recipe {@code Recipe} object to persist.
+   * @return true when the recipe is added; false if recipe is null or the ID already exists
+   */
+  public boolean addRecipe(Recipe recipe) {
+    if (recipe == null) {
+      return false;
+    }
+    
+    Recipe existingRecipe = findRecipeById(recipe.getRecipeId());
+    if (existingRecipe != null) {
+      return false;
+    }
+    
+    if (recipe.getIngredients() == null) {
+      recipe.setIngredients(new ArrayList<>());
+    }
+    
+    recipes.add(recipe);
+    return true;
+  }
+
+  /**
+   * Increment the recorded view count for a recipe.
+   *
+   * @param recipeId identifier of the recipe.
+   * @return true when the recipe exists and the view is recorded.
+   */
+  public boolean incrementViews(int recipeId) {
+    Recipe recipe = findRecipeById(recipeId);
+    if (recipe == null) {
+      return false;
+    }
+    recipe.incrementViews();
+    return true;
+  }
+
+  /**
+   * Increment the recorded like count for a recipe.
+   *
+   * @param recipeId identifier of the recipe.
+   * @return true when the recipe exists and the like is recorded.
+   */
+  public boolean incrementLikes(int recipeId) {
+    Recipe recipe = findRecipeById(recipeId);
+    if (recipe == null) {
+      return false;
+    }
+    recipe.incrementLikes();
+    return true;
   }
 }
