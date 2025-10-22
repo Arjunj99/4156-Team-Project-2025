@@ -98,7 +98,7 @@ public class MockApiService {
     
     for (Object rawUser : rawUsers) {
       @SuppressWarnings("unchecked")
-      java.util.Map<String, Object> userMap = (java.util.Map<String, Object>) rawUser;
+      Map<String, Object> userMap = (Map<String, Object>) rawUser;
       
       String username = (String) userMap.get("username");
       Integer userId = (Integer) userMap.get("userId");
