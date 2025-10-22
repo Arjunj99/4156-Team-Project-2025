@@ -141,6 +141,11 @@ public class Recipe implements Comparable<Recipe> {
   }
 
   @Override
+  public int hashCode() {
+    return Integer.hashCode(recipeId);
+  }
+
+  @Override
   public String toString() {
     return String.format("(%d)\t%s - %d views, %d likes",
         this.recipeId, this.recipeName, this.views, this.likes);
