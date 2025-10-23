@@ -150,6 +150,22 @@ public class MockApiService {
     }
   }
 
+  /**
+   * Removes test data and saves the cleaned data to files.
+   * This method is intended for test cleanup purposes.
+   * 
+   * @param testId the ID threshold for test data (removes items with ID >= testId)
+   */
+  public void cleanupTestData(int testId) {
+    foods.removeIf(food -> food.getFoodId() >= testId);
+    recipes.removeIf(recipe -> recipe.getRecipeId() >= testId);
+    users.removeIf(user -> user.getUserId() >= testId);
+    
+    saveData("data/mockdata/food.json", foods);
+    saveData("data/mockdata/recipe.json", recipes);
+    saveUsers("data/mockdata/user.json", users);
+  }
+
   public void setTestMode(boolean testMode) {
     this.testMode = testMode;
   }
@@ -209,6 +225,29 @@ public class MockApiService {
       }
     }
     return null;
+  }
+
+  /**
+   * Adds a new user to the service.
+   *
+   * @param user the user to add
+   * @return true if the user was added successfully, false if user is null or already exists
+   */
+  public boolean addUser(User user) {
+    if (user == null) {
+      return false;
+    }
+    
+    // Check if user already exists
+    User existingUser = findUserById(user.getUserId());
+    if (existingUser != null) {
+      return false;
+    }
+    
+    // Add user to the list
+    users.add(user);
+    saveUsers("data/mockdata/user.json", users);
+    return true;
   }
 
   /**
