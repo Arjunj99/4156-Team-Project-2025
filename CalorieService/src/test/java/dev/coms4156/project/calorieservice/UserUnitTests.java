@@ -8,9 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.coms4156.project.calorieservice.models.Recipe;
 import dev.coms4156.project.calorieservice.models.User;
 import java.util.ArrayList;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
 
 /**
  * This class contains the unit tests for the User class.
@@ -226,5 +228,19 @@ public class UserUnitTests {
   public void compareToWithDifferentIdTest() {
     assertTrue(user3.compareTo(user) > 0);
     assertTrue(user.compareTo(user3) < 0);
+  }
+
+  /**
+   * Clean up all test variables after all tests.
+   */
+  @AfterAll
+  public static void tearDownUserAfterTesting() {
+    user = null;
+    user1 = null;
+    user2 = null;
+    user3 = null;
+    recipe = null;
+    recipe1 = null;
+    recipe2 = null;
   }
 }
