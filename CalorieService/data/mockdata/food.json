@@ -1,0 +1,131 @@
+[ {
+  "foodName" : "Apple",
+  "foodId" : 1,
+  "calories" : 95,
+  "category" : "Fruit"
+}, {
+  "foodName" : "Banana",
+  "foodId" : 2,
+  "calories" : 105,
+  "category" : "Fruit"
+}, {
+  "foodName" : "Orange",
+  "foodId" : 3,
+  "calories" : 62,
+  "category" : "Fruit"
+}, {
+  "foodName" : "Strawberries",
+  "foodId" : 4,
+  "calories" : 49,
+  "category" : "Fruit"
+}, {
+  "foodName" : "Broccoli",
+  "foodId" : 5,
+  "calories" : 55,
+  "category" : "Vegetable"
+}, {
+  "foodName" : "Carrots",
+  "foodId" : 6,
+  "calories" : 52,
+  "category" : "Vegetable"
+}, {
+  "foodName" : "Spinach",
+  "foodId" : 7,
+  "calories" : 23,
+  "category" : "Vegetable"
+}, {
+  "foodName" : "Sweet Potato",
+  "foodId" : 8,
+  "calories" : 112,
+  "category" : "Vegetable"
+}, {
+  "foodName" : "White Rice (1 cup)",
+  "foodId" : 9,
+  "calories" : 205,
+  "category" : "Grain"
+}, {
+  "foodName" : "Brown Rice (1 cup)",
+  "foodId" : 10,
+  "calories" : 216,
+  "category" : "Grain"
+}, {
+  "foodName" : "Whole Wheat Bread",
+  "foodId" : 11,
+  "calories" : 110,
+  "category" : "Grain"
+}, {
+  "foodName" : "Oatmeal (1 cup)",
+  "foodId" : 12,
+  "calories" : 158,
+  "category" : "Grain"
+}, {
+  "foodName" : "Chicken Breast",
+  "foodId" : 13,
+  "calories" : 165,
+  "category" : "Protein"
+}, {
+  "foodName" : "Salmon",
+  "foodId" : 14,
+  "calories" : 208,
+  "category" : "Protein"
+}, {
+  "foodName" : "Tofu (firm)",
+  "foodId" : 15,
+  "calories" : 144,
+  "category" : "Protein"
+}, {
+  "foodName" : "Egg (large)",
+  "foodId" : 16,
+  "calories" : 72,
+  "category" : "Protein"
+}, {
+  "foodName" : "Milk (1 cup)",
+  "foodId" : 17,
+  "calories" : 122,
+  "category" : "Dairy"
+}, {
+  "foodName" : "Greek Yogurt",
+  "foodId" : 18,
+  "calories" : 130,
+  "category" : "Dairy"
+}, {
+  "foodName" : "Cheddar Cheese",
+  "foodId" : 19,
+  "calories" : 113,
+  "category" : "Dairy"
+}, {
+  "foodName" : "Cottage Cheese",
+  "foodId" : 20,
+  "calories" : 98,
+  "category" : "Dairy"
+}, {
+  "foodName" : "Almonds (1 oz)",
+  "foodId" : 21,
+  "calories" : 164,
+  "category" : "Snack"
+}, {
+  "foodName" : "Potato Chips (1 oz)",
+  "foodId" : 22,
+  "calories" : 152,
+  "category" : "Snack"
+}, {
+  "foodName" : "Dark Chocolate",
+  "foodId" : 23,
+  "calories" : 170,
+  "category" : "Snack"
+}, {
+  "foodName" : "Protein Bar",
+  "foodId" : 24,
+  "calories" : 200,
+  "category" : "Snack"
+}, {
+  "foodName" : "test food",
+  "foodId" : 105,
+  "calories" : 165,
+  "category" : "Protein"
+}, {
+  "foodName" : "test food1",
+  "foodId" : 106,
+  "calories" : 165,
+  "category" : "Protein"
+} ]
