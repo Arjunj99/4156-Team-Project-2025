@@ -29,11 +29,11 @@
 }, {
   "username" : "hannah",
   "userId" : 508,
-  "likedRecipes" : [ 1006, 1009 ]
+  "likedRecipes" : [ 1006, 1009, 6034, 6058, 6082, 6106, 6130, 6154, 6178, 6202 ]
 }, {
   "username" : "ivan",
   "userId" : 509,
-  "likedRecipes" : [ ]
+  "likedRecipes" : [ 6032, 6056, 6080, 6104, 6128, 6152, 6176, 6200 ]
 }, {
   "username" : "julia",
   "userId" : 510,
