@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -311,5 +312,19 @@ public class MockApiServiceTests {
       candidate++;
     }
     return candidate;
+  }
+
+  /**
+   * Clean up all test variables after all tests.
+   */
+  @AfterAll
+  public static void tearDownServiceAfterTesting() {
+    foods = null;
+    recipes = null;
+    users = null;
+    service = null;
+    food1 = null;
+    recipe1 = null;
+    user1 = null;
   }
 }
