@@ -446,4 +446,1192 @@
   "views" : 1,
   "likes" : 1,
   "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6012",
+  "recipeId" : 6012,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6012",
+    "foodId" : 7012,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6013,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7013,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6014",
+  "recipeId" : 6014,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6014",
+    "foodId" : 7014,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6015",
+  "recipeId" : 6015,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6015",
+    "foodId" : 7015,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6016,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7016,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6017,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2004,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2004,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2005,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2005,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6018",
+  "recipeId" : 6018,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6018",
+    "foodId" : 7018,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6019,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7019,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6020",
+  "recipeId" : 6020,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6020",
+    "foodId" : 7020,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6021",
+  "recipeId" : 6021,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6021",
+    "foodId" : 7021,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6022,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7022,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6023,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2006,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2006,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2007,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2007,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6024",
+  "recipeId" : 6024,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6024",
+    "foodId" : 7024,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6025,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7025,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6026",
+  "recipeId" : 6026,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6026",
+    "foodId" : 7026,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6027",
+  "recipeId" : 6027,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6027",
+    "foodId" : 7027,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6028,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7028,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6029,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2008,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2008,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2009,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2009,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6030",
+  "recipeId" : 6030,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6030",
+    "foodId" : 7030,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6031,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7031,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6032",
+  "recipeId" : 6032,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6032",
+    "foodId" : 7032,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6033",
+  "recipeId" : 6033,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6033",
+    "foodId" : 7033,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6034,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7034,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6035,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2010,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2010,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2011,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2011,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6036",
+  "recipeId" : 6036,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6036",
+    "foodId" : 7036,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6037,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7037,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6038",
+  "recipeId" : 6038,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6038",
+    "foodId" : 7038,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6039",
+  "recipeId" : 6039,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6039",
+    "foodId" : 7039,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6040,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7040,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6041,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2012,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2012,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2013,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2013,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6042",
+  "recipeId" : 6042,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6042",
+    "foodId" : 7042,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6043,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7043,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6044",
+  "recipeId" : 6044,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6044",
+    "foodId" : 7044,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6045",
+  "recipeId" : 6045,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6045",
+    "foodId" : 7045,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6046,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7046,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6047,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2014,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2014,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2015,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2015,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6048",
+  "recipeId" : 6048,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6048",
+    "foodId" : 7048,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6049,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7049,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6050",
+  "recipeId" : 6050,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6050",
+    "foodId" : 7050,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6051",
+  "recipeId" : 6051,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6051",
+    "foodId" : 7051,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6052,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7052,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6053,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2016,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2016,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2017,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2017,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6054",
+  "recipeId" : 6054,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6054",
+    "foodId" : 7054,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6055,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7055,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6056",
+  "recipeId" : 6056,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6056",
+    "foodId" : 7056,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6057",
+  "recipeId" : 6057,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6057",
+    "foodId" : 7057,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6058,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7058,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6059,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2018,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2018,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2019,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2019,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6060",
+  "recipeId" : 6060,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6060",
+    "foodId" : 7060,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6061,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7061,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6062",
+  "recipeId" : 6062,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6062",
+    "foodId" : 7062,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6063",
+  "recipeId" : 6063,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6063",
+    "foodId" : 7063,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6064,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7064,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6065,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2020,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2020,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2021,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2021,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6066",
+  "recipeId" : 6066,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6066",
+    "foodId" : 7066,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6067,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7067,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6068",
+  "recipeId" : 6068,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6068",
+    "foodId" : 7068,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6069",
+  "recipeId" : 6069,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6069",
+    "foodId" : 7069,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6070,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7070,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6071,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2022,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2022,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2023,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2023,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6072",
+  "recipeId" : 6072,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6072",
+    "foodId" : 7072,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6073,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7073,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6074",
+  "recipeId" : 6074,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6074",
+    "foodId" : 7074,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6075",
+  "recipeId" : 6075,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6075",
+    "foodId" : 7075,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6076,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7076,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6077,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2024,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2024,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2025,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2025,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Generated Recipe 6078",
+  "recipeId" : 6078,
+  "category" : "Lunch",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6078",
+    "foodId" : 7078,
+    "calories" : 90,
+    "category" : "Lunch"
+  } ],
+  "views" : 1,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Lowest Calorie Recipe",
+  "recipeId" : 6079,
+  "category" : "UniqueCategory",
+  "ingredients" : [ {
+    "foodName" : "Low Cal Food",
+    "foodId" : 7079,
+    "calories" : 1,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 1
+}, {
+  "recipeName" : "Generated Recipe 6080",
+  "recipeId" : 6080,
+  "category" : "Snack",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6080",
+    "foodId" : 7080,
+    "calories" : 90,
+    "category" : "Snack"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "Generated Recipe 6081",
+  "recipeId" : 6081,
+  "category" : "Dinner",
+  "ingredients" : [ {
+    "foodName" : "Ingredient 6081",
+    "foodId" : 7081,
+    "calories" : 90,
+    "category" : "Dinner"
+  } ],
+  "views" : 0,
+  "likes" : 1,
+  "totalCalories" : 90
+}, {
+  "recipeName" : "No Category Recipe",
+  "recipeId" : 6082,
+  "category" : null,
+  "ingredients" : [ {
+    "foodName" : "Test Food",
+    "foodId" : 7082,
+    "calories" : 100,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 100
+}, {
+  "recipeName" : "Empty Recipe",
+  "recipeId" : 6083,
+  "category" : "Test",
+  "ingredients" : [ ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 0
+}, {
+  "recipeName" : "Integration Test Recipe",
+  "recipeId" : 2026,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2026,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 0,
+  "likes" : 0,
+  "totalCalories" : 50
+}, {
+  "recipeName" : "Counter Test Recipe",
+  "recipeId" : 2027,
+  "category" : "Test",
+  "ingredients" : [ {
+    "foodName" : "Test Ingredient",
+    "foodId" : 2027,
+    "calories" : 50,
+    "category" : "Test"
+  } ],
+  "views" : 1,
+  "likes" : 1,
+  "totalCalories" : 50
 } ]

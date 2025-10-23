@@ -249,4 +249,303 @@ public class RecipeUnitTests {
     newRecipe.incrementLikes();
     assertEquals(1, newRecipe.getLikes());
   }
+
+  @Test
+  public void incrementViewsValidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.incrementViews();
+    assertEquals(1, testRecipe.getViews());
+  }
+  
+  @Test
+  public void incrementViewsInvalidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setViews(Integer.MAX_VALUE);
+    testRecipe.incrementViews();
+    assertEquals(Integer.MIN_VALUE, testRecipe.getViews());
+  }
+  
+  @Test
+  public void incrementViewsAtypicalInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setViews(0);
+    testRecipe.incrementViews();
+    assertEquals(1, testRecipe.getViews());
+    
+    testRecipe.setViews(999);
+    testRecipe.incrementViews();
+    assertEquals(1000, testRecipe.getViews());
+  }
+
+  @Test
+  public void setRecipeNameValidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setRecipeName("Valid Recipe Name");
+    assertEquals("Valid Recipe Name", testRecipe.getRecipeName());
+  }
+  
+  @Test
+  public void setRecipeNameInvalidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setRecipeName(null);
+    assertEquals(null, testRecipe.getRecipeName());
+  }
+  
+  @Test
+  public void setRecipeNameAtypicalInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setRecipeName("");
+    assertEquals("", testRecipe.getRecipeName());
+    
+    testRecipe.setRecipeName("   ");
+    assertEquals("   ", testRecipe.getRecipeName());
+    
+    testRecipe.setRecipeName("Recipe-With-Special@Characters#123");
+    assertEquals("Recipe-With-Special@Characters#123", testRecipe.getRecipeName());
+  }
+
+  @Test
+  public void setRecipeIdValidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setRecipeId(123);
+    assertEquals(123, testRecipe.getRecipeId());
+  }
+  
+  @Test
+  public void setRecipeIdInvalidInputTest() {
+    Recipe testRecipe = new Recipe();
+    try {
+      testRecipe.setRecipeId(-1);
+      assertTrue(false, "Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertTrue(true, "IllegalArgumentException thrown as expected");
+    }
+  }
+  
+  @Test
+  public void setRecipeIdAtypicalInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setRecipeId(0);
+    assertEquals(0, testRecipe.getRecipeId());
+    
+    testRecipe.setRecipeId(Integer.MAX_VALUE);
+    assertEquals(Integer.MAX_VALUE, testRecipe.getRecipeId());
+    
+  }
+
+  @Test
+  public void setCategoryValidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setCategory("Valid Category");
+    assertEquals("Valid Category", testRecipe.getCategory());
+  }
+  
+  @Test
+  public void setCategoryInvalidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setCategory(null);
+    assertEquals(null, testRecipe.getCategory());
+  }
+  
+  @Test
+  public void setCategoryAtypicalInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setCategory("");
+    assertEquals("", testRecipe.getCategory());
+    
+    testRecipe.setCategory("   ");
+    assertEquals("   ", testRecipe.getCategory());
+    
+    testRecipe.setCategory("Category-With-Special@Characters#123");
+    assertEquals("Category-With-Special@Characters#123", testRecipe.getCategory());
+  }
+
+  @Test
+  public void setIngredientsValidInputTest() {
+    Recipe testRecipe = new Recipe();
+    ArrayList<Food> ingredients = new ArrayList<>();
+    ingredients.add(new Food("Test Ingredient", 1, 100, "Test"));
+    testRecipe.setIngredients(ingredients);
+    assertEquals(1, testRecipe.getIngredients().size());
+  }
+  
+  @Test
+  public void setIngredientsInvalidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setIngredients(null);
+    assertNotNull(testRecipe.getIngredients());
+    assertEquals(0, testRecipe.getIngredients().size());
+  }
+  
+  @Test
+  public void setIngredientsAtypicalInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setIngredients(new ArrayList<>());
+    assertEquals(0, testRecipe.getIngredients().size());
+    
+    ArrayList<Food> manyIngredients = new ArrayList<>();
+    for (int i = 0; i < 100; i++) {
+      manyIngredients.add(new Food("Ingredient" + i, i, i * 10, "Test"));
+    }
+    testRecipe.setIngredients(manyIngredients);
+    assertEquals(100, testRecipe.getIngredients().size());
+  }
+
+  @Test
+  public void setViewsValidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setViews(150);
+    assertEquals(150, testRecipe.getViews());
+  }
+  
+  @Test
+  public void setViewsInvalidInputTest() {
+    Recipe testRecipe = new Recipe();
+    try {
+      testRecipe.setViews(-1);
+      assertTrue(false, "Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertTrue(true, "IllegalArgumentException thrown as expected");
+    }
+  }
+  
+  @Test
+  public void setViewsAtypicalInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setViews(0);
+    assertEquals(0, testRecipe.getViews());
+    
+    testRecipe.setViews(Integer.MAX_VALUE);
+    assertEquals(Integer.MAX_VALUE, testRecipe.getViews());
+    
+  }
+
+  @Test
+  public void getLikesValidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setLikes(25);
+    assertEquals(25, testRecipe.getLikes());
+  }
+  
+  @Test
+  public void getLikesInvalidInputTest() {
+    Recipe testRecipe = new Recipe();
+    try {
+      testRecipe.setLikes(-5);
+      assertTrue(false, "Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertTrue(true, "IllegalArgumentException thrown as expected");
+    }
+  }
+  
+  @Test
+  public void getLikesAtypicalInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setLikes(0);
+    assertEquals(0, testRecipe.getLikes());
+    
+    testRecipe.setLikes(Integer.MAX_VALUE);
+    assertEquals(Integer.MAX_VALUE, testRecipe.getLikes());
+    
+  }
+
+  @Test
+  public void setLikesValidInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setLikes(75);
+    assertEquals(75, testRecipe.getLikes());
+  }
+  
+  @Test
+  public void setLikesInvalidInputTest() {
+    Recipe testRecipe = new Recipe();
+    try {
+      testRecipe.setLikes(-10);
+      assertTrue(false, "Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertTrue(true, "IllegalArgumentException thrown as expected");
+    }
+  }
+  
+  @Test
+  public void setLikesAtypicalInputTest() {
+    Recipe testRecipe = new Recipe();
+    testRecipe.setLikes(0);
+    assertEquals(0, testRecipe.getLikes());
+    
+    testRecipe.setLikes(Integer.MAX_VALUE);
+    assertEquals(Integer.MAX_VALUE, testRecipe.getLikes());
+    
+  }
+
+  @Test
+  public void compareToValidInputTest() {
+    Recipe recipe1 = new Recipe("Recipe1", 1, "Category", new ArrayList<>(), 0, 0, 100);
+    Recipe recipe2 = new Recipe("Recipe2", 2, "Category", new ArrayList<>(), 0, 0, 200);
+    assertTrue(recipe1.compareTo(recipe2) < 0);
+    assertTrue(recipe2.compareTo(recipe1) > 0);
+    assertTrue(recipe1.compareTo(recipe1) == 0);
+  }
+  
+  @Test
+  public void compareToInvalidInputTest() {
+    Recipe recipe1 = new Recipe("Recipe1", 1, "Category", new ArrayList<>(), 0, 0, 100);
+    try {
+      recipe1.compareTo(null);
+      assertTrue(false, "Expected NullPointerException");
+    } catch (NullPointerException e) {
+      assertTrue(true, "NullPointerException thrown as expected");
+    }
+  }
+  
+  @Test
+  public void compareToAtypicalInputTest() {
+    Recipe recipe1 = new Recipe("Recipe1", 1, "Category", new ArrayList<>(), 0, 0, 100);
+    Recipe recipe2 = new Recipe("Recipe2", 0, "Category", new ArrayList<>(), 0, 0, 200);
+    Recipe recipe3 = new Recipe("Recipe3", Integer.MAX_VALUE, "Category", new ArrayList<>(), 0, 0, 
+        300);
+    Recipe recipe4 = new Recipe("Different Name", 1, "Different Category", 
+        new ArrayList<>(), 999, 999, 999);
+    
+    assertTrue(recipe1.compareTo(recipe2) > 0);  // 1 > 0
+    assertTrue(recipe1.compareTo(recipe3) < 0);  // 1 < Integer.MAX_VALUE
+    assertTrue(recipe1.compareTo(recipe4) == 0); // 1 == 1
+  }
+
+  @Test
+  public void equalsValidInputTest() {
+    Recipe recipe1 = new Recipe("Recipe1", 1, "Category", new ArrayList<>(), 0, 0, 100);
+    Recipe recipe2 = new Recipe("Recipe1", 1, "Category", new ArrayList<>(), 0, 0, 100);
+    Recipe recipe3 = new Recipe("Recipe2", 2, "Category", new ArrayList<>(), 0, 0, 200);
+    
+    assertTrue(recipe1.equals(recipe2));
+    assertFalse(recipe1.equals(recipe3));
+    assertTrue(recipe1.equals(recipe1));
+  }
+  
+  @Test
+  public void equalsInvalidInputTest() {
+    Recipe recipe1 = new Recipe("Recipe1", 1, "Category", new ArrayList<>(), 0, 0, 100);
+    assertFalse(recipe1.equals(null));
+    assertFalse(recipe1.equals("Not a Recipe"));
+    assertFalse(recipe1.equals(Integer.valueOf(1)));
+  }
+  
+  @Test
+  public void equalsAtypicalInputTest() {
+    Recipe recipe1 = new Recipe("Recipe1", 1, "Category", new ArrayList<>(), 0, 0, 100);
+    Recipe recipe2 = new Recipe("", 1, "", new ArrayList<>(), 0, 0, 0);
+    Recipe recipe3 = new Recipe(null, 1, null, new ArrayList<>(), 0, 0, 0);
+    Recipe recipe4 = new Recipe("Different Name", 1, "Different Category", 
+        new ArrayList<>(), 999, 999, 999);
+    
+    assertTrue(recipe1.equals(recipe2));
+    assertTrue(recipe1.equals(recipe3));
+    assertTrue(recipe1.equals(recipe4));
+    
+    Recipe recipe5 = new Recipe("Test", 0, "Test", new ArrayList<>(), 0, 0, 0);
+    Recipe recipe6 = new Recipe("Test", 0, "Different", new ArrayList<>(), 100, 100, 100);
+    assertTrue(recipe5.equals(recipe6));
+  }
+
 }

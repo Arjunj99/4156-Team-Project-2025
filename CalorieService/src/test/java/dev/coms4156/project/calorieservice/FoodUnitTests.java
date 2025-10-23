@@ -133,4 +133,185 @@ public class FoodUnitTests {
     assertTrue(food3.compareTo(food) > 0);
     assertTrue(food.compareTo(food3) < 0);
   }
+
+  @Test
+  public void setFoodNameValidInputTest() {
+    Food testFood = new Food();
+    testFood.setFoodName("Valid Food Name");
+    assertEquals("Valid Food Name", testFood.getFoodName());
+  }
+  
+  @Test
+  public void setFoodNameInvalidInputTest() {
+    Food testFood = new Food();
+    testFood.setFoodName(null);
+    assertEquals(null, testFood.getFoodName());
+  }
+  
+  @Test
+  public void setFoodNameAtypicalInputTest() {
+    Food testFood = new Food();
+    testFood.setFoodName("");
+    assertEquals("", testFood.getFoodName());
+    
+    testFood.setFoodName("   ");
+    assertEquals("   ", testFood.getFoodName());
+    
+    testFood.setFoodName("Food-With-Special@Characters#123");
+    assertEquals("Food-With-Special@Characters#123", testFood.getFoodName());
+  }
+
+  @Test
+  public void setFoodIdValidInputTest() {
+    Food testFood = new Food();
+    testFood.setFoodId(123);
+    assertEquals(123, testFood.getFoodId());
+  }
+  
+  @Test
+  public void setFoodIdInvalidInputTest() {
+    Food testFood = new Food();
+    try {
+      testFood.setFoodId(-1);
+      assertTrue(false, "Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertTrue(true, "IllegalArgumentException thrown as expected");
+    }
+  }
+  
+  @Test
+  public void setFoodIdAtypicalInputTest() {
+    Food testFood = new Food();
+    testFood.setFoodId(0);
+    assertEquals(0, testFood.getFoodId());
+    
+    testFood.setFoodId(Integer.MAX_VALUE);
+    assertEquals(Integer.MAX_VALUE, testFood.getFoodId());
+    
+  }
+
+  @Test
+  public void setCaloriesValidInputTest() {
+    Food testFood = new Food();
+    testFood.setCalories(150);
+    assertEquals(150, testFood.getCalories());
+  }
+  
+  @Test
+  public void setCaloriesInvalidInputTest() {
+    Food testFood = new Food();
+    try {
+      testFood.setCalories(-50);
+      assertTrue(false, "Expected IllegalArgumentException");
+    } catch (IllegalArgumentException e) {
+      assertTrue(true, "IllegalArgumentException thrown as expected");
+    }
+  }
+  
+  @Test
+  public void setCaloriesAtypicalInputTest() {
+    Food testFood = new Food();
+    testFood.setCalories(0);
+    assertEquals(0, testFood.getCalories());
+    
+    testFood.setCalories(Integer.MAX_VALUE);
+    assertEquals(Integer.MAX_VALUE, testFood.getCalories());
+    
+    testFood.setCalories(999999);
+    assertEquals(999999, testFood.getCalories());
+  }
+
+  @Test
+  public void setCategoryValidInputTest() {
+    Food testFood = new Food();
+    testFood.setCategory("Valid Category");
+    assertEquals("Valid Category", testFood.getCategory());
+  }
+  
+  @Test
+  public void setCategoryInvalidInputTest() {
+    Food testFood = new Food();
+    testFood.setCategory(null);
+    assertEquals(null, testFood.getCategory());
+  }
+  
+  @Test
+  public void setCategoryAtypicalInputTest() {
+    Food testFood = new Food();
+    testFood.setCategory("");
+    assertEquals("", testFood.getCategory());
+    
+    testFood.setCategory("   ");
+    assertEquals("   ", testFood.getCategory());
+    
+    testFood.setCategory("Category-With-Special@Characters#123");
+    assertEquals("Category-With-Special@Characters#123", testFood.getCategory());
+  }
+
+  @Test
+  public void compareToValidInputTest() {
+    Food food1 = new Food("Apple", 1, 80, "Fruit");
+    Food food2 = new Food("Banana", 2, 105, "Fruit");
+    assertTrue(food1.compareTo(food2) < 0);
+    assertTrue(food2.compareTo(food1) > 0);
+    assertTrue(food1.compareTo(food1) == 0);
+  }
+  
+  @Test
+  public void compareToInvalidInputTest() {
+    Food food1 = new Food("Apple", 1, 80, "Fruit");
+    try {
+      food1.compareTo(null);
+      assertTrue(false, "Expected NullPointerException");
+    } catch (NullPointerException e) {
+      assertTrue(true, "NullPointerException thrown as expected");
+    }
+  }
+  
+  @Test
+  public void compareToAtypicalInputTest() {
+    Food food1 = new Food("Apple", 1, 80, "Fruit");
+    Food food2 = new Food("Banana", 0, 105, "Fruit");
+    Food food3 = new Food("Cherry", -1, 50, "Fruit");
+    Food food4 = new Food("Date", Integer.MAX_VALUE, 200, "Fruit");
+    
+    assertTrue(food1.compareTo(food2) > 0);
+    assertTrue(food1.compareTo(food3) > 0);
+    assertTrue(food1.compareTo(food4) < 0);
+  }
+
+  @Test
+  public void equalsValidInputTest() {
+    Food food1 = new Food("Apple", 1, 80, "Fruit");
+    Food food2 = new Food("Apple", 1, 80, "Fruit");
+    Food food3 = new Food("Banana", 2, 105, "Fruit");
+    
+    assertTrue(food1.equals(food2));
+    assertFalse(food1.equals(food3));
+    assertTrue(food1.equals(food1));
+  }
+  
+  @Test
+  public void equalsInvalidInputTest() {
+    Food food1 = new Food("Apple", 1, 80, "Fruit");
+    assertFalse(food1.equals(null));
+    assertFalse(food1.equals("Not a Food"));
+    assertFalse(food1.equals(Integer.valueOf(1)));
+  }
+  
+  @Test
+  public void equalsAtypicalInputTest() {
+    Food food1 = new Food("Apple", 1, 80, "Fruit");
+    Food food2 = new Food("", 1, 0, "");
+    Food food3 = new Food(null, 1, -1, null);
+    Food food4 = new Food("Different Name", 1, 999, "Different Category");
+    
+    assertTrue(food1.equals(food2));
+    assertTrue(food1.equals(food3));
+    assertTrue(food1.equals(food4));
+    
+    Food food5 = new Food("Test", 0, 100, "Test");
+    Food food6 = new Food("Test", 0, 200, "Different");
+    assertTrue(food5.equals(food6));
+  }
 }

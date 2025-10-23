@@ -89,7 +89,16 @@ public class Recipe implements Comparable<Recipe> {
     return recipeId;
   }
 
+  /**
+   * Sets the recipe ID.
+   *
+   * @param recipeId the recipe ID to set
+   * @throws IllegalArgumentException if recipeId is negative
+   */
   public void setRecipeId(int recipeId) {
+    if (recipeId < 0) {
+      throw new IllegalArgumentException("Recipe ID cannot be negative");
+    }
     this.recipeId = recipeId;
   }
 
@@ -113,7 +122,16 @@ public class Recipe implements Comparable<Recipe> {
     return views;
   }
 
+  /**
+   * Sets the views count.
+   *
+   * @param views the views count to set
+   * @throws IllegalArgumentException if views is negative
+   */
   public void setViews(int views) {
+    if (views < 0) {
+      throw new IllegalArgumentException("Views cannot be negative");
+    }
     this.views = views;
   }
 
@@ -121,7 +139,16 @@ public class Recipe implements Comparable<Recipe> {
     return likes;
   }
 
+  /**
+   * Sets the likes count.
+   *
+   * @param likes the likes count to set
+   * @throws IllegalArgumentException if likes is negative
+   */
   public void setLikes(int likes) {
+    if (likes < 0) {
+      throw new IllegalArgumentException("Likes cannot be negative");
+    }
     this.likes = likes;
   }
 
