@@ -36,9 +36,9 @@ public class UserUnitTests {
     user2 = new User("Charlie", 3);
     user3 = new User("Diana", 4);
     
-    recipe = new Recipe("Pasta", 1, "Italian", new ArrayList<>(), 100, 5);
-    recipe1 = new Recipe("Pizza", 2, "Italian", new ArrayList<>(), 200, 10);
-    recipe2 = new Recipe("Salad", 3, "Healthy", new ArrayList<>(), 50, 2);
+    recipe = new Recipe("Pasta", 1, "Italian", new ArrayList<>(), 100, 5, 436);
+    recipe1 = new Recipe("Pizza", 2, "Italian", new ArrayList<>(), 200, 10, 436);
+    recipe2 = new Recipe("Salad", 3, "Healthy", new ArrayList<>(), 50, 2, 436);
   }
 
   @Test

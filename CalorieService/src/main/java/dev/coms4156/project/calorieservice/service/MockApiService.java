@@ -107,50 +107,41 @@ public class MockApiService {
     return userList;
   }
 
-  /**
- * Generic method for saving any list of objects to a JSON file.
- *
- * @param path File path to save to.
- * @param data List of data to write.
- */
-private <T> void saveData(String path, List<T> data) {
-  File file = new File(path);
-  file.getParentFile().mkdirs(); // Ensure directory exists
-  try {
-    writer.writeValue(file, data);
-  } catch (IOException e) {
-    System.err.println("Failed to save " + path + ": " + e.getMessage());
-  }
-}
-
-/**
- * Saves user data, converting likedRecipes back into recipe IDs before writing.
- */
-private void saveUsers(String path, List<User> users) {
-  File file = new File(path);
-  file.getParentFile().mkdirs();
-
-  List<Map<String, Object>> rawUsers = new ArrayList<>();
-
-  for (User user : users) {
-    Map<String, Object> rawUser = new LinkedHashMap<>();
-    rawUser.put("username", user.getUsername());
-    rawUser.put("userId", user.getUserId());
-
-    List<Integer> likedRecipeIds = user.getLikedRecipes().stream()
-        .map(Recipe::getRecipeId)
-        .collect(Collectors.toList());
-
-    rawUser.put("likedRecipes", likedRecipeIds);
-    rawUsers.add(rawUser);
+  private <T> void saveData(String path, List<T> data) {
+    File file = new File(path);
+    file.getParentFile().mkdirs(); // Ensure directory exists
+    try {
+      writer.writeValue(file, data);
+    } catch (IOException e) {
+      System.err.println("Failed to save " + path + ": " + e.getMessage());
+    }
   }
 
-  try {
-    writer.writeValue(file, rawUsers);
-  } catch (IOException e) {
-    System.err.println("Failed to save users: " + e.getMessage());
+  private void saveUsers(String path, List<User> users) {
+    File file = new File(path);
+    file.getParentFile().mkdirs();
+
+    List<Map<String, Object>> rawUsers = new ArrayList<>();
+
+    for (User user : users) {
+      Map<String, Object> rawUser = new LinkedHashMap<>();
+      rawUser.put("username", user.getUsername());
+      rawUser.put("userId", user.getUserId());
+
+      List<Integer> likedRecipeIds = user.getLikedRecipes().stream()
+          .map(Recipe::getRecipeId)
+          .collect(Collectors.toList());
+
+      rawUser.put("likedRecipes", likedRecipeIds);
+      rawUsers.add(rawUser);
+    }
+
+    try {
+      writer.writeValue(file, rawUsers);
+    } catch (IOException e) {
+      System.err.println("Failed to save users: " + e.getMessage());
+    }
   }
-}
 
   
   /**
@@ -162,7 +153,6 @@ private void saveUsers(String path, List<User> users) {
   public Recipe findRecipeById(int recipeId) {
     for (Recipe recipe : recipes) {
       if (recipe.getRecipeId() == recipeId) {
-        incrementViews(recipeId);
         return recipe;
       }
     }
