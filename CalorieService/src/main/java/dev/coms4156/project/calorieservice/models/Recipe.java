@@ -34,6 +34,7 @@ public class Recipe implements Comparable<Recipe> {
     this.ingredients = ingredients;
     this.views = views;
     this.likes = likes;
+    this.totalCalories = totalCalories;
   }
 
   /**

@@ -118,24 +118,4 @@
   "foodId" : 24,
   "calories" : 200,
   "category" : "Snack"
-}, {
-  "foodName" : "test food",
-  "foodId" : 105,
-  "calories" : 165,
-  "category" : "Protein"
-}, {
-  "foodName" : "test food1",
-  "foodId" : 106,
-  "calories" : 165,
-  "category" : "Protein"
-}, {
-  "foodName" : "test food1",
-  "foodId" : 109,
-  "calories" : 165,
-  "category" : "Protein"
-}, {
-  "foodName" : "test food3",
-  "foodId" : 110,
-  "calories" : 165,
-  "category" : "Protein"
-} ]
+}]
