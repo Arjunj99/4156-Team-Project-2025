@@ -13,6 +13,7 @@ public class Recipe implements Comparable<Recipe> {
   private ArrayList<Food> ingredients;
   private int views;
   private int likes;
+  private int totalCalories;
 
   /**
    * Complete Recipe constructor.
@@ -23,15 +24,17 @@ public class Recipe implements Comparable<Recipe> {
    * @param ingredients list of Food ingredients.
    * @param views number of views.
    * @param likes number of likes.
+   * @param totalCalories total calories of the recipe.
    */
   public Recipe(String recipeName, int recipeId, String category,
-                ArrayList<Food> ingredients, int views, int likes) {
+                ArrayList<Food> ingredients, int views, int likes, int totalCalories) {
     this.recipeName = recipeName;
     this.recipeId = recipeId;
     this.category = category;
     this.ingredients = ingredients;
     this.views = views;
     this.likes = likes;
+    this.totalCalories = totalCalories;
   }
 
   /**
@@ -44,6 +47,7 @@ public class Recipe implements Comparable<Recipe> {
     this.ingredients = new ArrayList<>();
     this.views = 0;
     this.likes = 0;
+    this.totalCalories = 0;
   }
 
   /**
@@ -147,7 +151,7 @@ public class Recipe implements Comparable<Recipe> {
 
   @Override
   public String toString() {
-    return String.format("(%d)\t%s - %d views, %d likes",
-        this.recipeId, this.recipeName, this.views, this.likes);
+    return String.format("(%d)\t%s - %d views, %d likes, %d calories",
+        this.recipeId, this.recipeName, this.views, this.likes, this.totalCalories);
   }
 }

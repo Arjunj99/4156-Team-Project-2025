@@ -43,7 +43,7 @@ public class MockApiServiceTests {
     users = service.getUsers();
     // Use very high IDs that are unlikely to exist in mock data
     food1 = new Food("Test Food", 99999, 100, "Test Category");
-    recipe1 = new Recipe("Test Recipe", 99999, "Test Category", new ArrayList<>(), 50, 5);
+    recipe1 = new Recipe("Test Recipe", 99999, "Test Category", new ArrayList<>(), 50, 5, 0);
     user1 = new User("Test User", 99999);
   }
 

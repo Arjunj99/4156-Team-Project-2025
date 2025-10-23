@@ -30,7 +30,7 @@ public class RecipeUnitTests {
     ingredients.add(new Food("Brown Rice", 2, 216, "Grain"));
     ingredients.add(new Food("Broccoli", 3, 55, "Vegetable"));
 
-    recipe = new Recipe("Test Recipe", 100, "Dinner", ingredients, 10, 5);
+    recipe = new Recipe("Test Recipe", 100, "Dinner", ingredients, 10, 5, 436);
   }
 
   @Test
@@ -63,7 +63,7 @@ public class RecipeUnitTests {
 
   @Test
   public void testGetTotalCaloriesReturnsZeroForEmptyIngredients() {
-    Recipe emptyRecipe = new Recipe("Empty", 101, "Test", new ArrayList<>(), 0, 0);
+    Recipe emptyRecipe = new Recipe("Empty", 101, "Test", new ArrayList<>(), 0, 0, 0);
     assertEquals(0, emptyRecipe.getTotalCalories());
   }
 
@@ -71,7 +71,7 @@ public class RecipeUnitTests {
   public void testGetTotalCaloriesWithSingleIngredient() {
     ArrayList<Food> singleIngredient = new ArrayList<>();
     singleIngredient.add(new Food("Apple", 1, 95, "Fruit"));
-    Recipe singleItemRecipe = new Recipe("Single", 102, "Snack", singleIngredient, 0, 0);
+    Recipe singleItemRecipe = new Recipe("Single", 102, "Snack", singleIngredient, 0, 0, 95);
     assertEquals(95, singleItemRecipe.getTotalCalories());
   }
 
@@ -114,13 +114,13 @@ public class RecipeUnitTests {
 
   @Test
   public void testEqualsReturnsTrueForSameRecipeId() {
-    Recipe recipe2 = new Recipe("Different Name", 100, "Lunch", new ArrayList<>(), 20, 15);
+    Recipe recipe2 = new Recipe("Different Name", 100, "Lunch", new ArrayList<>(), 20, 15, 436);
     assertTrue(recipe.equals(recipe2));
   }
 
   @Test
   public void testEqualsReturnsFalseForDifferentRecipeId() {
-    Recipe recipe2 = new Recipe("Test Recipe", 101, "Dinner", ingredients, 10, 5);
+    Recipe recipe2 = new Recipe("Test Recipe", 101, "Dinner", ingredients, 10, 5, 436);
     assertFalse(recipe.equals(recipe2));
   }
 
@@ -136,31 +136,31 @@ public class RecipeUnitTests {
 
   @Test
   public void testHashCodeConsistentWithEquals() {
-    Recipe recipe2 = new Recipe("Different Name", 100, "Lunch", new ArrayList<>(), 20, 15);
+    Recipe recipe2 = new Recipe("Different Name", 100, "Lunch", new ArrayList<>(), 20, 15, 436);
     assertEquals(recipe.hashCode(), recipe2.hashCode());
   }
 
   @Test
   public void testHashCodeDifferentForDifferentRecipeIds() {
-    Recipe recipe2 = new Recipe("Test Recipe", 101, "Dinner", ingredients, 10, 5);
+    Recipe recipe2 = new Recipe("Test Recipe", 101, "Dinner", ingredients, 10, 5, 436);
     assertNotEquals(recipe.hashCode(), recipe2.hashCode());
   }
 
   @Test
   public void testCompareToReturnZeroForEqualRecipeIds() {
-    Recipe recipe2 = new Recipe("Different Name", 100, "Lunch", new ArrayList<>(), 20, 15);
+    Recipe recipe2 = new Recipe("Different Name", 100, "Lunch", new ArrayList<>(), 20, 15, 436);
     assertEquals(0, recipe.compareTo(recipe2));
   }
 
   @Test
   public void testCompareToReturnNegativeForSmallerRecipeId() {
-    Recipe recipe2 = new Recipe("Another Recipe", 101, "Dinner", ingredients, 10, 5);
+    Recipe recipe2 = new Recipe("Another Recipe", 101, "Dinner", ingredients, 10, 5, 436);
     assertTrue(recipe.compareTo(recipe2) < 0);
   }
 
   @Test
   public void testCompareToReturnPositiveForLargerRecipeId() {
-    Recipe recipe2 = new Recipe("Another Recipe", 99, "Dinner", ingredients, 10, 5);
+    Recipe recipe2 = new Recipe("Another Recipe", 99, "Dinner", ingredients, 10, 5, 436);
     assertTrue(recipe.compareTo(recipe2) > 0);
   }
 
@@ -224,13 +224,13 @@ public class RecipeUnitTests {
     ArrayList<Food> zeroCalIngredients = new ArrayList<>();
     zeroCalIngredients.add(new Food("Water", 1, 0, "Beverage"));
     zeroCalIngredients.add(new Food("Ice", 2, 0, "Beverage"));
-    Recipe zeroCalRecipe = new Recipe("Zero Cal", 103, "Beverage", zeroCalIngredients, 0, 0);
+    Recipe zeroCalRecipe = new Recipe("Zero Cal", 103, "Beverage", zeroCalIngredients, 0, 0, 0);
     assertEquals(0, zeroCalRecipe.getTotalCalories());
   }
 
   @Test
   public void testRecipeWithNullCategory() {
-    Recipe nullCategoryRecipe = new Recipe("No Category", 104, null, ingredients, 0, 0);
+    Recipe nullCategoryRecipe = new Recipe("No Category", 104, null, ingredients, 0, 0, 0);
     assertEquals(null, nullCategoryRecipe.getCategory());
   }
 

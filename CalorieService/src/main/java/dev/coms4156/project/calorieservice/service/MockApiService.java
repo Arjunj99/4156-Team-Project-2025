@@ -2,10 +2,12 @@ package dev.coms4156.project.calorieservice.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
 import dev.coms4156.project.calorieservice.models.User;
-import java.io.InputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,102 +29,120 @@ public class MockApiService {
   private ArrayList<Recipe> recipes;
   private ArrayList<User> users;
 
+  private final ObjectMapper mapper = new ObjectMapper();
+  private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+
   /**
    * Constructs a new {@code MockApiService} and loads data from JSON files located at
-   * {@code resources/mockdata/}.
-   * If files are not found, empty lists are initialized. If files are found but
-   * cannot be parsed, error messages are printed and no data is loaded.
+   * {@code mockdata/}. If files are not found, empty lists are initialized.
    */
   public MockApiService() {
-    ObjectMapper mapper = new ObjectMapper();
-    
-    // Loading data basically taken from miniproject
-    try (InputStream is = Thread.currentThread().getContextClassLoader()
-        .getResourceAsStream("mockdata/food.json")) {
-      if (is == null) {
-        System.err.println("Failed to find mockdata/food.json in resources.");
-        foods = new ArrayList<>(0);
-      } else {
-        foods = mapper.readValue(is, new TypeReference<ArrayList<Food>>(){});
-        System.out.println("Successfully loaded foods from mockdata/food.json.");
-      }
-    } catch (Exception e) {
-      System.err.println("Failed to load foods: " + e.getMessage());
-      foods = new ArrayList<>(0);
-    }
-    
-    try (InputStream is = Thread.currentThread().getContextClassLoader()
-        .getResourceAsStream("mockdata/recipe.json")) {
-      if (is == null) {
-        System.err.println("Failed to find mockdata/recipe.json in resources.");
-        recipes = new ArrayList<>(0);
-      } else {
-        recipes = mapper.readValue(is, new TypeReference<ArrayList<Recipe>>(){});
-        System.out.println("Successfully loaded recipes from mockdata/recipe.json.");
-      }
-    } catch (Exception e) {
-      System.err.println("Failed to load recipes: " + e.getMessage());
-      recipes = new ArrayList<>(0);
-    }
-    
-    try (InputStream is = Thread.currentThread().getContextClassLoader()
-        .getResourceAsStream("mockdata/user.json")) {
-      if (is == null) {
-        System.err.println("Failed to find mockdata/user.json in resources.");
-        users = new ArrayList<>(0);
-      } else {
-        // Load users with recipe IDs first, then convert to Recipe objects
-        users = loadUsersWithRecipeIds(mapper, is);
-        System.out.println("Successfully loaded users from mockdata/user.json.");
-      }
-    } catch (Exception e) {
-      System.err.println("Failed to load users: " + e.getMessage());
-      users = new ArrayList<>(0);
-    }
+    foods = loadData("data/mockdata/food.json", new TypeReference<>() {});
+    recipes = loadData("data/mockdata/recipe.json", new TypeReference<>() {});
+    users = loadUsersWithRecipeIds("data/mockdata/user.json");
   }
-  
+
   /**
-   * Loads users from JSON, handling the conversion of recipe IDs to Recipe objects.
+   * Generic method for loading list data from a JSON file.
    *
-   * @param mapper The {@code ObjectMapper} used for JSON deserialization
-   * @param is The {@code InputStream} containing the user JSON data
-   * @return {@code ArrayList} of {@code User} objects with liked recipes populated
-   * @throws Exception if JSON parsing fails
+   * @param path The file path to load.
+   * @param typeRef Type reference for deserialization.
+   * @param <T> Data type to load.
+   * @return List of loaded objects, or an empty list if not found or failed.
    */
-  private ArrayList<User> loadUsersWithRecipeIds(ObjectMapper mapper, InputStream is) 
-      throws Exception {
-    @SuppressWarnings("unchecked")
-    List<Object> rawUsers = mapper.readValue(is, List.class);
-    
+  private <T> ArrayList<T> loadData(String path, TypeReference<List<T>> typeRef) {
+    File file = new File(path);
+    if (file.exists()) {
+      try {
+        System.out.println("Loading " + path + "...");
+        List<T> list = mapper.readValue(file, typeRef);
+        return new ArrayList<>(list);
+      } catch (IOException e) {
+        System.err.println("Failed to read " + path + ": " + e.getMessage());
+      }
+    } else {
+      System.err.println(path + " not found. Starting with empty list.");
+    }
+    return new ArrayList<>();
+  }
+
+  /**
+   * Loads users from a JSON file, converting liked recipe IDs to Recipe objects.
+   */
+  private ArrayList<User> loadUsersWithRecipeIds(String path) {
+    File file = new File(path);
     ArrayList<User> userList = new ArrayList<>();
-    
-    for (Object rawUser : rawUsers) {
-      @SuppressWarnings("unchecked")
-      Map<String, Object> userMap = (Map<String, Object>) rawUser;
-      
-      String username = (String) userMap.get("username");
-      Integer userId = (Integer) userMap.get("userId");
-      @SuppressWarnings("unchecked")
-      List<Integer> likedRecipeIds = (List<Integer>) userMap.get("likedRecipes");
-      
-      User user = new User(username, userId);
-      
-      ArrayList<Recipe> likedRecipes = new ArrayList<>();
-      if (likedRecipeIds != null) {
-        for (Integer recipeId : likedRecipeIds) {
-          Recipe recipe = findRecipeById(recipeId);
-          if (recipe != null) {
-            likedRecipes.add(recipe);
+
+    if (!file.exists()) {
+      System.err.println(path + " not found. Starting with empty user list.");
+      return userList;
+    }
+
+    try {
+      List<Map<String, Object>> rawUsers = mapper.readValue(file, new TypeReference<>() {});
+      for (Map<String, Object> rawUser : rawUsers) {
+        String username = (String) rawUser.get("username");
+        Integer userId = (Integer) rawUser.get("userId");
+        @SuppressWarnings("unchecked")
+        List<Integer> likedRecipeIds = (List<Integer>) rawUser.get("likedRecipes");
+
+        User user = new User(username, userId);
+        ArrayList<Recipe> likedRecipes = new ArrayList<>();
+        if (likedRecipeIds != null) {
+          for (Integer recipeId : likedRecipeIds) {
+            Recipe recipe = findRecipeById(recipeId);
+            if (recipe != null) {
+              likedRecipes.add(recipe);
+            }
           }
         }
+        user.setLikedRecipes(likedRecipes);
+        userList.add(user);
       }
-      
-      user.setLikedRecipes(likedRecipes);
-      userList.add(user);
+      System.out.println("Successfully loaded users from " + path + ".");
+    } catch (IOException e) {
+      System.err.println("Failed to load users: " + e.getMessage());
     }
-    
+
     return userList;
   }
+
+  private <T> void saveData(String path, List<T> data) {
+    File file = new File(path);
+    file.getParentFile().mkdirs(); // Ensure directory exists
+    try {
+      writer.writeValue(file, data);
+    } catch (IOException e) {
+      System.err.println("Failed to save " + path + ": " + e.getMessage());
+    }
+  }
+
+  private void saveUsers(String path, List<User> users) {
+    File file = new File(path);
+    file.getParentFile().mkdirs();
+
+    List<Map<String, Object>> rawUsers = new ArrayList<>();
+
+    for (User user : users) {
+      Map<String, Object> rawUser = new LinkedHashMap<>();
+      rawUser.put("username", user.getUsername());
+      rawUser.put("userId", user.getUserId());
+
+      List<Integer> likedRecipeIds = user.getLikedRecipes().stream()
+          .map(Recipe::getRecipeId)
+          .collect(Collectors.toList());
+
+      rawUser.put("likedRecipes", likedRecipeIds);
+      rawUsers.add(rawUser);
+    }
+
+    try {
+      writer.writeValue(file, rawUsers);
+    } catch (IOException e) {
+      System.err.println("Failed to save users: " + e.getMessage());
+    }
+  }
+
   
   /**
    * Helper method to find a recipe by its ID.
@@ -256,6 +276,7 @@ public class MockApiService {
     }
     
     foods.add(food);
+    saveData("data/mockdata/food.json", foods);
     return true;
   }
 
@@ -280,7 +301,12 @@ public class MockApiService {
       return false;
     }
     
-    return user.likeRecipe(recipe);
+    boolean result = user.likeRecipe(recipe);
+    if (result) {
+      saveUsers("data/mockdata/user.json", users);
+      saveData("data/mockdata/recipe.json", recipes);
+    }
+    return result;
   }
 
   /**
@@ -489,6 +515,7 @@ public class MockApiService {
     }
     
     recipes.add(recipe);
+    saveData("data/mockdata/recipe.json", recipes);
     return true;
   }
 
@@ -504,6 +531,7 @@ public class MockApiService {
       return false;
     }
     recipe.incrementViews();
+    saveData("data/mockdata/recipe.json", recipes);
     return true;
   }
 
@@ -519,6 +547,7 @@ public class MockApiService {
       return false;
     }
     recipe.incrementLikes();
+    saveData("data/mockdata/recipe.json", recipes);
     return true;
   }
 }
