@@ -39,6 +39,7 @@ public class MockApiServiceTests {
   @BeforeAll
   public static void setUpDataForTesting() {
     service = new MockApiService();
+    service.setTestMode(true);
     foods = service.getFoods();
     recipes = service.getRecipes();
     users = service.getUsers();

@@ -31,6 +31,7 @@ public class MockApiService {
 
   private final ObjectMapper mapper = new ObjectMapper();
   private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+  private boolean testMode = false; 
 
   /**
    * Constructs a new {@code MockApiService} and loads data from JSON files located at
@@ -108,6 +109,9 @@ public class MockApiService {
   }
 
   private <T> void saveData(String path, List<T> data) {
+    if (testMode) {
+      return;
+    }
     File file = new File(path);
     file.getParentFile().mkdirs(); // Ensure directory exists
     try {
@@ -118,6 +122,9 @@ public class MockApiService {
   }
 
   private void saveUsers(String path, List<User> users) {
+    if (testMode) {
+      return; // Don't save during tests
+    }
     File file = new File(path);
     file.getParentFile().mkdirs();
 
@@ -141,6 +148,10 @@ public class MockApiService {
     } catch (IOException e) {
       System.err.println("Failed to save users: " + e.getMessage());
     }
+  }
+
+  public void setTestMode(boolean testMode) {
+    this.testMode = testMode;
   }
 
   
