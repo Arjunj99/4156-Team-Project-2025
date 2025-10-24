@@ -544,6 +544,7 @@ public class UserUnitTests {
   /**
    * Clean up all test variables after all tests.
    */
+  
   @AfterAll
   public static void tearDownUserAfterTesting() {
     user = null;
