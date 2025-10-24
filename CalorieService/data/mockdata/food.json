@@ -278,4 +278,29 @@
   "foodId" : 10031,
   "calories" : 0,
   "category" : "ZeroCal"
+}, {
+  "foodName" : "Generated Food 10032",
+  "foodId" : 10032,
+  "calories" : 5,
+  "category" : "UniqueCategory"
+}, {
+  "foodName" : "Generated Food 10033",
+  "foodId" : 10033,
+  "calories" : 150,
+  "category" : "Snack"
+}, {
+  "foodName" : "Generated Food 10034",
+  "foodId" : 10034,
+  "calories" : 120,
+  "category" : "Snack"
+}, {
+  "foodName" : "Generated Food 10035",
+  "foodId" : 10035,
+  "calories" : 100,
+  "category" : "Test"
+}, {
+  "foodName" : "Generated Food 10036",
+  "foodId" : 10036,
+  "calories" : 0,
+  "category" : "ZeroCal"
 } ]
