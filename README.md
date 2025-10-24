@@ -181,6 +181,10 @@ This image was captured on Oct 15, 2025.
 ## Continuous Integration Report
 This repository using GitHub Actions to perform continuous integration, to view the latest results go to the following link: https://github.com/Arjunj99/4156-Miniproject-2025-Students-part-3/actions
 
+## Postman Test Documentation
+
+We used Postman to document and store our API endpoints/results. here is a link to access our API endpoints with sample responses (https://app.getpostman.com/join-team?invite_code=bc1fd36ae7da43f92c0d6aa188720c38c33af18b17aeaa68d339fffbe5decb95&target_code=5bd0b449f27ac1df88f67582412ba439).
+
 ## Tools used 
 This section includes notes on tools and technologies used in building this project, as well as any additional details if applicable.
 
@@ -198,3 +202,6 @@ This section includes notes on tools and technologies used in building this proj
     * I use MockMvc as our API testing framework for integration testing of REST endpoints. MockMvc is included with Spring Boot Test dependencies and requires no additional installation. MockMvc tests are located in RouteControllerTests.java and execute automatically when running `mvn clean test`. Test results are included in the JaCoCo coverage reports generated in /CalorieService/target/site/jacoco/index.html.
 * JaCoCo
     * I use JaCoCo for generating code coverage reports.
+
+* Postman
+    * We used postman to test that out API works.

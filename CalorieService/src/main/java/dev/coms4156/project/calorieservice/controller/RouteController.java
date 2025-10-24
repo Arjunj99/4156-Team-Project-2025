@@ -196,10 +196,10 @@ public class RouteController {
     logger.info("endpoint called: GET /recipe/alternative with recipeId={}", recipeId);
     try {
       Optional<Map<String, List<Recipe>>> alternatives =
-        mockApiService.getRecipeAlternatives(recipeId);
+          mockApiService.getRecipeAlternatives(recipeId);
       if (alternatives.isEmpty()) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-          .body(Map.of("message", "Recipe not found"));
+          return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(Map.of("message", "Recipe not found"));
       }
       return ResponseEntity.ok(alternatives.get());
     } catch (Exception e) {

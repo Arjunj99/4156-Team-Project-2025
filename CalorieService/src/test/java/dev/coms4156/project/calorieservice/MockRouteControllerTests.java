@@ -18,6 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -459,5 +460,347 @@ public class MockRouteControllerTests {
       .andExpect(status().isOk());
 
     verify(mockApiService, times(1)).incrementViews(1);
+  }
+
+  // ======= 400 Tests - Atypical Inputs / Edge Cases ======================
+  /*
+   It should be noted that although we explictly return requests in the 400s
+   for atypical requests, I found that the endpoint default returns 400
+   with bad requests (bad param inputs). I will also be testing these.
+   */
+
+  /**
+   * Ensures {@code GET /food/alternative}
+   * returns HTTP 404 when service gracefully fails.
+   */
+  @Test
+  void foodAlternativeReturns404() throws Exception {
+    when(mockApiService.getFoodAlternatives(999)).thenReturn(null);
+
+    mockMvc.perform(get("/food/alternative").param("foodId", "999"))
+      .andExpect(status().isNotFound())
+      .andExpect(content().string("Food with ID 999 not found."));
+
+    verify(mockApiService, times(1)).getFoodAlternatives(999);
+  }
+
+  /**
+   * Ensures {@code GET /food/alternative}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void foodAlternativeReturns400() throws Exception {
+    mockMvc.perform(get("/food/alternative").param("foodId", "garbage"))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/alternative}
+   * returns HTTP 404 when service gracefully fails.
+   */
+  @Test
+  void recipeAlternativeReturns404() throws Exception {
+    when(mockApiService.getRecipeAlternatives(404))
+      .thenReturn(java.util.Optional.empty());
+
+    mockMvc.perform(get("/recipe/alternative").param("recipeId", "404"))
+      .andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.message").value("Recipe not found"));
+
+    verify(mockApiService, times(1)).getRecipeAlternatives(404);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/alternative}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void recipeAlternativeReturns400() throws Exception {
+    mockMvc.perform(get("/recipe/alternative").param("recipeId", "garbage"))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/totalCalorie}
+   * returns HTTP 404 when service gracefully fails.
+   */
+  @Test
+  void totalCalorieReturns404() throws Exception {
+    when(mockApiService.getTotalCalories(7))
+      .thenReturn(java.util.Optional.empty());
+
+    mockMvc.perform(get("/recipe/totalCalorie").param("recipeId", "7"))
+      .andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.message").value("Recipe not found"));
+
+    verify(mockApiService, times(1)).getTotalCalories(7);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/totalCalorie}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void totalCalorieReturns400() throws Exception {
+    mockMvc.perform(get("/recipe/totalCalorie").param("recipeId", "NaN"))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/calorieBreakdown}
+   * returns HTTP 404 when service gracefully fails.
+   */
+  @Test
+  void calorieBreakdownReturns404() throws Exception {
+    when(mockApiService.getCalorieBreakdown(55))
+      .thenReturn(java.util.Optional.empty());
+
+    mockMvc.perform(get("/recipe/calorieBreakdown").param("recipeId", "55"))
+      .andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.message").value("Recipe not found"));
+
+    verify(mockApiService, times(1)).getCalorieBreakdown(55);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/calorieBreakdown}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void calorieBreakdownReturns400() throws Exception {
+    mockMvc.perform(get("/recipe/calorieBreakdown").param("recipeId", "garbage"))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /user/recommend}
+   * returns HTTP 404 when service gracefully fails.
+   */
+  @Test
+  void recommendReturns404() throws Exception {
+    when(mockApiService.recommend(999)).thenReturn(null);
+
+    mockMvc.perform(get("/user/recommend").param("userId", "999"))
+      .andExpect(status().isNotFound())
+      .andExpect(content().string("User with ID 999 not found."));
+
+    verify(mockApiService, times(1)).recommend(999);
+  }
+
+  /**
+   * Ensures {@code GET /user/recommend}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void recommendReturns400() throws Exception {
+    mockMvc.perform(get("/user/recommend").param("userId", "garbage"))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /user/recommendHealthy}
+   * returns HTTP 404 when service gracefully fails.
+   */
+  @Test
+  void recommendHealthyReturns404() throws Exception {
+    when(mockApiService.recommendHealthy(42, 500)).thenReturn(null);
+
+    mockMvc.perform(get("/user/recommendHealthy")
+        .param("userId", "42")
+        .param("calorieMax", "500"))
+      .andExpect(status().isNotFound())
+      .andExpect(content().string("User with ID 42 not found."));
+
+    verify(mockApiService, times(1)).recommendHealthy(42, 500);
+  }
+
+  /**
+   * Ensures {@code GET /user/recommendHealthy}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void recommendHealthyReturns400() throws Exception {
+    mockMvc.perform(get("/user/recommendHealthy")
+        .param("userId", "zero")
+        .param("calorieMax", "NaN"))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /user/likeRecipe}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void userLikeRecipe400_1() throws Exception {
+    when(mockApiService.likeRecipe(1, 2)).thenReturn(false);
+
+    mockMvc.perform(post("/user/likeRecipe")
+        .param("userId", "1")
+        .param("recipeId", "2"))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().string(
+        "User with ID 1 or recipe with ID 2 not found, or recipe already liked."));
+
+    verify(mockApiService, times(1)).likeRecipe(1, 2);
+  }
+
+  /**
+   * Ensures {@code GET /user/likeRecipe}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void userLikeRecipe400_2() throws Exception {
+    mockMvc.perform(post("/user/likeRecipe").param("userId", "1"))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/addRecipe}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void addRecipeReturns400() throws Exception {
+    mockMvc.perform(post("/recipe/addRecipe")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(recipePayload(0, "garbage")))
+      .andExpect(status().isBadRequest())
+      .andExpect(jsonPath("$.message").value("Recipe id must be provided"));
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/addRecipe}
+   * returns HTTP 409 when service gracefully fails.
+   */
+  @Test
+  void addRecipeReturns409() throws Exception {
+    when(mockApiService.addRecipe(any(Recipe.class))).thenReturn(false);
+
+    mockMvc.perform(post("/recipe/addRecipe")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(recipePayload(123, "garbage")))
+      .andExpect(status().isConflict())
+      .andExpect(jsonPath("$.message").value("Recipe with id already exists"))
+      .andExpect(jsonPath("$.recipeId").value(123));
+
+    verify(mockApiService, times(1)).addRecipe(any(Recipe.class));
+  }
+
+  /**
+   * Ensures {@code GET /recipe/addRecipe}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void addRecipeReturns400_1() throws Exception {
+    String badJson = "{ \"recipeId\": \"garbage\" }";
+
+    mockMvc.perform(post("/recipe/addRecipe")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(badJson))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /food/addFood}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void addFoodReturns400_1() throws Exception {
+    when(mockApiService.addFood(any(Food.class))).thenReturn(false);
+
+    mockMvc.perform(post("/food/addFood")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(foodPayload(101, "Fruit", 95)))
+      .andExpect(status().isBadRequest())
+      .andExpect(content().string("Food with ID 101 already exists or is invalid."));
+
+    verify(mockApiService, times(1)).addFood(any(Food.class));
+  }
+
+  /**
+   * Ensures {@code GET /food/addFood}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void addFoodReturns400_2() throws Exception {
+    String badJson = "{ \"foodId\": \"garbage\" }";
+
+    mockMvc.perform(post("/food/addFood")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(badJson))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/viewRecipe}
+   * returns HTTP 404 when service gracefully fails.
+   */
+  @Test
+  void viewRecipeReturns404() throws Exception {
+    when(mockApiService.incrementViews(1)).thenReturn(false);
+
+    mockMvc.perform(post("/recipe/viewRecipe").param("recipeId", "1"))
+      .andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.message").value("Recipe not found"));
+
+    verify(mockApiService, times(1)).incrementViews(1);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/viewRecipe}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void viewRecipeReturns400() throws Exception {
+    mockMvc.perform(post("/recipe/viewRecipe"))
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/likeRecipe}
+   * returns HTTP 404 when service gracefully fails.
+   */
+  @Test
+  void recipeLikeRecipeReturns404() throws Exception {
+    when(mockApiService.incrementLikes(1)).thenReturn(false);
+
+    mockMvc.perform(post("/recipe/likeRecipe").param("recipeId", "1"))
+      .andExpect(status().isNotFound())
+      .andExpect(jsonPath("$.message").value("Recipe not found"));
+
+    verify(mockApiService, times(1)).incrementLikes(1);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/likeRecipe}
+   * returns HTTP 400 when service gracefully fails.
+   */
+  @Test
+  void recipeLikeRecipeReturns400() throws Exception {
+    mockMvc.perform(post("/recipe/likeRecipe")) // no recipeId
+      .andExpect(status().isBadRequest());
+
+    verifyNoInteractions(mockApiService);
   }
 }
