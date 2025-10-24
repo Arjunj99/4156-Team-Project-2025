@@ -6,13 +6,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import dev.coms4156.project.calorieservice.controller.RouteController;
 import dev.coms4156.project.calorieservice.models.User;
 import dev.coms4156.project.calorieservice.service.MockApiService;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -524,6 +530,131 @@ public class RouteControllerTests {
             .param("recipeId", String.valueOf(recipeId)))
         .andExpect(status().isOk())
         .andExpect(content().string("Recipe liked successfully."));
+  }
+
+  @Test
+  public void loggingVerificationForIndexEndpoint() throws Exception {
+    Logger logger = (Logger) LoggerFactory.getLogger(RouteController.class);
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+    listAppender.start();
+    logger.addAppender(listAppender);
+
+    mockMvc.perform(get("/index"))
+        .andExpect(status().isOk());
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    boolean logFound = logsList.stream()
+        .anyMatch(event -> event.getFormattedMessage().contains("endpoint called: GET /index"));
+
+    logger.detachAppender(listAppender);
+    Assertions.assertTrue(logFound, "Expected log message for GET /index not found");
+  }
+
+  @Test
+  public void loggingVerificationForGetEndpoints() throws Exception {
+    Logger logger = (Logger) LoggerFactory.getLogger(RouteController.class);
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+    listAppender.start();
+    logger.addAppender(listAppender);
+
+    mockMvc.perform(get("/food/alternative").param("foodId", "1"))
+        .andExpect(status().isOk());
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    boolean logFound = logsList.stream()
+        .anyMatch(event -> event.getFormattedMessage()
+            .contains("endpoint called: GET /food/alternative with foodId=1"));
+
+    logger.detachAppender(listAppender);
+    Assertions.assertTrue(logFound, 
+        "Expected log message for GET /food/alternative not found");
+  }
+
+  @Test
+  public void loggingVerificationForPostEndpoints() throws Exception {
+    Logger logger = (Logger) LoggerFactory.getLogger(RouteController.class);
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+    listAppender.start();
+    logger.addAppender(listAppender);
+
+    int foodId = findUnusedFoodId();
+    mockMvc.perform(post("/food/addFood")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(foodPayload(foodId, "Test", 100)))
+        .andExpect(status().isOk());
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    boolean logFound = logsList.stream()
+        .anyMatch(event -> event.getFormattedMessage()
+            .contains("endpoint called: POST /food/addFood"));
+
+    logger.detachAppender(listAppender);
+    Assertions.assertTrue(logFound, 
+        "Expected log message for POST /food/addFood not found");
+  }
+
+  @Test
+  public void loggingVerificationForRecipeEndpoints() throws Exception {
+    Logger logger = (Logger) LoggerFactory.getLogger(RouteController.class);
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+    listAppender.start();
+    logger.addAppender(listAppender);
+
+    mockMvc.perform(get("/recipe/totalCalorie").param("recipeId", "1001"))
+        .andExpect(status().isOk());
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    boolean logFound = logsList.stream()
+        .anyMatch(event -> event.getFormattedMessage()
+            .contains("endpoint called: GET /recipe/totalCalorie with recipeId=1001"));
+
+    logger.detachAppender(listAppender);
+    Assertions.assertTrue(logFound,
+        "Expected log message for GET /recipe/totalCalorie not found");
+  }
+
+  @Test
+  public void loggingVerificationForUserEndpoints() throws Exception {
+    Logger logger = (Logger) LoggerFactory.getLogger(RouteController.class);
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+    listAppender.start();
+    logger.addAppender(listAppender);
+
+    mockMvc.perform(get("/user/recommend").param("userId", "501"))
+        .andExpect(status().isOk());
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    boolean logFound = logsList.stream()
+        .anyMatch(event -> event.getFormattedMessage()
+            .contains("endpoint called: GET /user/recommend with userId=501"));
+
+    logger.detachAppender(listAppender);
+    Assertions.assertTrue(logFound,
+        "Expected log message for GET /user/recommend not found");
+  }
+
+  @Test
+  public void loggingVerificationForMultipleParameters() throws Exception {
+    Logger logger = (Logger) LoggerFactory.getLogger(RouteController.class);
+    ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
+    listAppender.start();
+    logger.addAppender(listAppender);
+
+    mockMvc.perform(get("/user/recommendHealthy")
+            .param("userId", "501")
+            .param("calorieMax", "600"))
+        .andExpect(status().isOk());
+
+    List<ILoggingEvent> logsList = listAppender.list;
+    boolean logFound = logsList.stream()
+        .anyMatch(event -> event.getFormattedMessage()
+            .contains("endpoint called: GET /user/recommendHealthy")
+            && event.getFormattedMessage().contains("userId=501")
+            && event.getFormattedMessage().contains("calorieMax=600"));
+
+    logger.detachAppender(listAppender);
+    Assertions.assertTrue(logFound,
+        "Expected log message for GET /user/recommendHealthy with parameters not found");
   }
 
   private String recipePayload(int recipeId, String category) {
