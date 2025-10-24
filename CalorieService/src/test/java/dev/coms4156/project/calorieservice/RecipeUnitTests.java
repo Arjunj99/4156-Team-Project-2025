@@ -9,16 +9,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
 import java.util.ArrayList;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 
 /**
  * Unit tests for the Recipe model class.
  */
 public class RecipeUnitTests {
 
-  private Recipe recipe;
-  private ArrayList<Food> ingredients;
+  private static Recipe recipe;
+  private static ArrayList<Food> ingredients;
 
   /**
    * Set up test fixtures before each test.
@@ -585,4 +587,12 @@ public class RecipeUnitTests {
     assertTrue(recipe5.equals(recipe6));
   }
 
+  /**
+   * Clean up all test variables after all tests.
+   */
+  @AfterAll
+  public static void tearDownRecipeAfterTesting() {
+    recipe = null;
+    ingredients = null;
+  }
 }

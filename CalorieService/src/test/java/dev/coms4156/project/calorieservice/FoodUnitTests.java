@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.coms4156.project.calorieservice.models.Food;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
 
 /**
  * This class contains the unit tests for the Food class.
@@ -340,5 +342,16 @@ public class FoodUnitTests {
     assertFalse(food1.equals(food5));
     Food food6 = new Food("Test", 0, 0, "");
     assertFalse(food1.equals(food6));
+  }
+
+  /**
+   * Clean up all test variables after all tests.
+   */
+  @AfterAll
+  public static void tearDownFoodAfterTesting() {
+    food = null;
+    food1 = null;
+    food2 = null;
+    food3 = null;
   }
 }
