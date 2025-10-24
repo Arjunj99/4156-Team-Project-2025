@@ -54,60 +54,110 @@ In order to build and use our service you must install the following (This guide
 
 ### Functions
 #### /food/alternative
+* HTTP Method: GET
 * Expected Input Parameters: foodId (int)
 * Expected Output: foodAlternatives (ResponseEntity<?>)
 * Returns 5 random foods of the same food category with lower calorie count.
+* Status Codes:
+  * 200 OK: Successfully retrieved food alternatives or no alternatives found
+  * 404 NOT FOUND: Food with specified ID not found
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /recipe/alternative
+* HTTP Method: GET
 * Expected Input Parameters: recipeId (int)
 * Expected Output: recipeAlternatives (ResponseEntity<?>)
 * Returns 3 recipes of same recipe category with lower calorie count and 
 highest views, as well as 3 random recipes of the same category with lower calorie count.
+* Status Codes:
+  * 200 OK: Successfully retrieved recipe alternatives
+  * 404 NOT FOUND: Recipe with specified ID not found
 
 #### /recipe/totalCalorie
+* HTTP Method: GET
 * Expected Input Parameters: recipeId (int)
 * Expected Output: calorie (ResponseEntity<?>)
 * Returns the estimated total calorie of a given recipe.
+* Status Codes:
+  * 200 OK: Successfully calculated total calories
+  * 404 NOT FOUND: Recipe with specified ID not found
 
 #### /recipe/calorieBreakdown
+* HTTP Method: GET
 * Expected Input Parameters: recipeId (int)
 * Expected Output: calorieBreakdown (ResponseEntity<?>)
 * Returns a dict of each ingredient in recipe and estimated calorie value for that ingredient.
+* Status Codes:
+  * 200 OK: Successfully retrieved calorie breakdown
+  * 404 NOT FOUND: Recipe with specified ID not found
 
 #### /user/recommend
+* HTTP Method: GET
 * Expected Input Parameters: userId (int)
 * Expected Output: recipes (ResponseEntity<?>)
 * Returns a list of 10 recommended recipes based on user's liked recipes.
+* Status Codes:
+  * 200 OK: Successfully retrieved recommendations or no recommendations found
+  * 404 NOT FOUND: User with specified ID not found
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /user/recommendHealthy
+* HTTP Method: GET
 * Expected Input Parameters: userId (int), calorieMax (int)
 * Expected Output: recipes (ResponseEntity<?>)
 * Returns a list of 10 recommended recipes based on user's liked recipes under the calorieMax value.
+* Status Codes:
+  * 200 OK: Successfully retrieved healthy recommendations or no recommendations found
+  * 404 NOT FOUND: User with specified ID not found
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /user/likeRecipe
+* HTTP Method: POST
 * Expected Input Parameters: userId (int), recipeId (int)
 * Expected Output: status (ResponseEntity<?>)
 * Adds a recipe to user's likedRecipes.
+* Status Codes:
+  * 200 OK: Recipe successfully added to user's liked recipes
+  * 400 BAD REQUEST: User/recipe not found or recipe already liked
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /recipe/addRecipe
+* HTTP Method: POST
 * Expected Input Parameters: recipe (Recipe)
 * Expected Output: status (ResponseEntity<?>)
 * Adds a recipe to service.
+* Status Codes:
+  * 201 CREATED: Recipe successfully added
+  * 400 BAD REQUEST: Recipe payload is invalid or recipe ID is missing
+  * 409 CONFLICT: Recipe with specified ID already exists
 
 #### /food/addFood
+* HTTP Method: POST
 * Expected Input Parameters: food (Food)
 * Expected Output: status (ResponseEntity<?>)
 * Adds a food to service.
+* Status Codes:
+  * 200 OK: Food successfully added
+  * 400 BAD REQUEST: Food object is null, invalid, or ID already exists
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /recipe/viewRecipe
+* HTTP Method: POST
 * Expected Input Parameters: recipeId (int)
 * Expected Output: status (ResponseEntity<?>)
 * Increment Recipe's Views.
+* Status Codes:
+  * 200 OK: Recipe view successfully recorded
+  * 404 NOT FOUND: Recipe with specified ID not found
 
 #### /recipe/likeRecipe
+* HTTP Method: POST
 * Expected Input Parameters: recipeId (int)
 * Expected Output: status (ResponseEntity<?>)
 * Increment Recipe's likes.
+* Status Codes:
+  * 200 OK: Recipe like successfully recorded
+  * 404 NOT FOUND: Recipe with specified ID not found
 
 ## Style Checking Report
 I used the tool "checkstyle" to check the style of our code and generate style checking reports. Here is the report
@@ -144,5 +194,7 @@ This section includes notes on tools and technologies used in building this proj
     * I am using PMD to do static analysis of our Java code.
 * JUnit
     * JUnit tests get run automatically as part of the CI pipeline.
+* MockMvc (API Testing)
+    * I use MockMvc as our API testing framework for integration testing of REST endpoints. MockMvc is included with Spring Boot Test dependencies and requires no additional installation. MockMvc tests are located in RouteControllerTests.java and execute automatically when running `mvn clean test`. Test results are included in the JaCoCo coverage reports generated in /CalorieService/target/site/jacoco/index.html.
 * JaCoCo
     * I use JaCoCo for generating code coverage reports.

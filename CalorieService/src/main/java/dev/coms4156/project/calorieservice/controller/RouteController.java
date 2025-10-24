@@ -6,6 +6,8 @@ import dev.coms4156.project.calorieservice.service.MockApiService;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RouteController {
 
+  private static final Logger logger = LoggerFactory.getLogger(RouteController.class);
   private final MockApiService mockApiService;
 
   /**
@@ -38,6 +41,7 @@ public class RouteController {
    */
   @GetMapping({"/", "/index"})
   public String index() {
+    logger.info("endpoint called: GET /index");
     return "Welcome to the home page! In order to make an API call direct your browser"
         + "or Postman to an endpoint.";
   }
@@ -54,6 +58,7 @@ public class RouteController {
    */
   @GetMapping("/food/alternative")
   public ResponseEntity<?> getFoodAlternatives(@RequestParam int foodId) {
+    logger.info("endpoint called: GET /food/alternative with foodId={}", foodId);
     try {
       List<Food> alternatives = mockApiService.getFoodAlternatives(foodId);
       
@@ -86,6 +91,7 @@ public class RouteController {
    */
   @PostMapping("/food/addFood")
   public ResponseEntity<?> addFood(@RequestBody Food food) {
+    logger.info("endpoint called: POST /food/addFood");
     try {
       if (food == null) {
         return new ResponseEntity<>("Food object cannot be null.", HttpStatus.BAD_REQUEST);
@@ -120,6 +126,8 @@ public class RouteController {
   @GetMapping("/user/recommendHealthy")
   public ResponseEntity<?> recommendHealthy(@RequestParam int userId, 
       @RequestParam int calorieMax) {
+    logger.info("endpoint called: GET /user/recommendHealthy with userId={}, calorieMax={}",
+        userId, calorieMax);
     try {
       List<Recipe> recommendations = mockApiService.recommendHealthy(userId, calorieMax);
       
@@ -152,6 +160,7 @@ public class RouteController {
    */
   @GetMapping("/user/recommend")
   public ResponseEntity<?> recommend(@RequestParam int userId) {
+    logger.info("endpoint called: GET /user/recommend with userId={}", userId);
     try {
       List<Recipe> recommendations = mockApiService.recommend(userId);
       
@@ -183,6 +192,7 @@ public class RouteController {
    */
   @GetMapping("/recipe/alternative")
   public ResponseEntity<?> getRecipeAlternatives(@RequestParam("recipeId") int recipeId) {
+    logger.info("endpoint called: GET /recipe/alternative with recipeId={}", recipeId);
     Optional<Map<String, List<Recipe>>> alternatives =
         mockApiService.getRecipeAlternatives(recipeId);
     if (alternatives.isEmpty()) {
@@ -201,6 +211,7 @@ public class RouteController {
    */
   @GetMapping("/recipe/totalCalorie")
   public ResponseEntity<?> getTotalCalories(@RequestParam("recipeId") int recipeId) {
+    logger.info("endpoint called: GET /recipe/totalCalorie with recipeId={}", recipeId);
     Optional<Integer> totalCalories = mockApiService.getTotalCalories(recipeId);
     if (totalCalories.isEmpty()) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -219,6 +230,7 @@ public class RouteController {
    */
   @GetMapping("/recipe/calorieBreakdown")
   public ResponseEntity<?> getCalorieBreakdown(@RequestParam("recipeId") int recipeId) {
+    logger.info("endpoint called: GET /recipe/calorieBreakdown with recipeId={}", recipeId);
     Optional<Map<String, Integer>> breakdown = mockApiService.getCalorieBreakdown(recipeId);
     if (breakdown.isEmpty()) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -238,6 +250,7 @@ public class RouteController {
    */
   @PostMapping("/recipe/addRecipe")
   public ResponseEntity<?> addRecipe(@RequestBody Recipe recipe) {
+    logger.info("endpoint called: POST /recipe/addRecipe");
     if (recipe == null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body(Map.of("message", "Recipe payload is required"));
@@ -266,6 +279,7 @@ public class RouteController {
    */
   @PostMapping("/recipe/viewRecipe")
   public ResponseEntity<?> viewRecipe(@RequestParam("recipeId") int recipeId) {
+    logger.info("endpoint called: POST /recipe/viewRecipe with recipeId={}", recipeId);
     boolean updated = mockApiService.incrementViews(recipeId);
     if (!updated) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -284,6 +298,7 @@ public class RouteController {
    */
   @PostMapping("/recipe/likeRecipe")
   public ResponseEntity<?> likeRecipe(@RequestParam("recipeId") int recipeId) {
+    logger.info("endpoint called: POST /recipe/likeRecipe with recipeId={}", recipeId);
     boolean updated = mockApiService.incrementLikes(recipeId);
     if (!updated) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -305,6 +320,8 @@ public class RouteController {
    */
   @PostMapping("/user/likeRecipe")
   public ResponseEntity<?> likeRecipe(@RequestParam int userId, @RequestParam int recipeId) {
+    logger.info("endpoint called: POST /user/likeRecipe with userId={}, recipeId={}",
+        userId, recipeId);
     try {
       boolean success = mockApiService.likeRecipe(userId, recipeId);
       
