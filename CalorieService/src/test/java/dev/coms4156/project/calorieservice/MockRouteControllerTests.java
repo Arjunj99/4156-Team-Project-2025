@@ -16,8 +16,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -84,6 +88,8 @@ public class MockRouteControllerTests {
         """, recipeId, recipeId, category, recipeId, recipeId + 1000, category, views, likes);
   }
 
+  // ======= 500 Tests - Invalid Inputs ====================================
+
   /**
    * Ensures {@code GET /food/alternative}
    * returns HTTP 500 when service fails.
@@ -95,6 +101,8 @@ public class MockRouteControllerTests {
 
     mockMvc.perform(get("/food/alternative").param("foodId", "1"))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).getFoodAlternatives(1);
   }
 
   /**
@@ -110,6 +118,8 @@ public class MockRouteControllerTests {
         .contentType(MediaType.APPLICATION_JSON)
         .content(foodPayload(0, "Garbage", 0)))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).addFood(any(Food.class));
   }
 
   /**
@@ -123,6 +133,8 @@ public class MockRouteControllerTests {
 
     mockMvc.perform(get("/recipe/alternative").param("recipeId", "1"))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).getRecipeAlternatives(1);
   }
 
   /**
@@ -138,6 +150,8 @@ public class MockRouteControllerTests {
         .contentType(MediaType.APPLICATION_JSON)
         .content(recipePayload(1, "Garbage")))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).addRecipe(any(Recipe.class));
   }
 
   /**
@@ -151,6 +165,8 @@ public class MockRouteControllerTests {
 
     mockMvc.perform(get("/recipe/totalCalorie").param("recipeId", "1"))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).getTotalCalories(1);
   }
 
   /**
@@ -164,6 +180,8 @@ public class MockRouteControllerTests {
 
     mockMvc.perform(get("/recipe/calorieBreakdown").param("recipeId", "1"))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).getCalorieBreakdown(1);
   }
 
   /**
@@ -177,6 +195,8 @@ public class MockRouteControllerTests {
 
     mockMvc.perform(get("/user/recommend").param("userId", "1"))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).recommend(1);
   }
 
   /**
@@ -192,6 +212,8 @@ public class MockRouteControllerTests {
         .param("userId", "1")
         .param("calorieMax", "0"))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).recommendHealthy(1, 0);
   }
 
   /**
@@ -206,6 +228,8 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/recipe/likeRecipe")
         .param("recipeId", "1"))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).incrementLikes(1);
   }
 
   /**
@@ -221,6 +245,8 @@ public class MockRouteControllerTests {
         .param("userId", "1")
         .param("recipeId", "2"))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).likeRecipe(1, 2);
   }
 
   /**
@@ -235,5 +261,203 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/recipe/viewRecipe")
         .param("recipeId", "1"))
       .andExpect(status().isInternalServerError());
+
+    verify(mockApiService, times(1)).incrementViews(1);
+  }
+
+  // ======= 200 Tests - Valid Inputs ====================================
+  /**
+   * Ensures {@code GET /food/alternative}
+   * returns HTTP 200 when service suceeds.
+   */
+  @Test
+  void foodAlternativeReturns200() throws Exception {
+    var foods = java.util.List.of(new Food(), new Food());
+    when(mockApiService.getFoodAlternatives(1)).thenReturn(foods);
+
+    mockMvc.perform(get("/food/alternative").param("foodId", "1"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$").isArray())
+      .andExpect(jsonPath("$.length()").value(2));
+
+    verify(mockApiService, times(1)).getFoodAlternatives(1);
+  }
+
+  /**
+   * Ensures {@code POST /food/addFood}
+   * returns HTTP 200 when service suceeds.
+   */
+  @Test
+  void addFoodReturns200() throws Exception {
+    when(mockApiService.addFood(any(Food.class))).thenReturn(true);
+
+    mockMvc.perform(post("/food/addFood")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(foodPayload(101, "Fruit", 95)))
+      .andExpect(status().isOk())
+      .andExpect(content().string("Food added successfully."));
+
+    verify(mockApiService, times(1)).addFood(any(Food.class));
+  }
+
+  /**
+   * Ensures {@code GET /recipe/alternative}
+   * returns HTTP 200 when service succeeds.
+   */
+  @Test
+  void recipeAlternativeReturns200() throws Exception {
+    var r1 = new Recipe();
+    var r2 = new Recipe();
+    var r3 = new Recipe();
+
+    when(mockApiService.getRecipeAlternatives(1))
+      .thenReturn(java.util.Optional.of(java.util.Map.of(
+        "alternatives", java.util.List.of(r1, r2, r3)
+      )));
+
+    mockMvc.perform(get("/recipe/alternative").param("recipeId", "1"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.alternatives").isArray())
+      .andExpect(jsonPath("$.alternatives.length()").value(3));
+
+    verify(mockApiService, times(1)).getRecipeAlternatives(1);
+  }
+
+  /**
+   * Ensures {@code POST /recipe/addRecipe}
+   * returns HTTP 201 when service succeeds.
+   */
+  @Test
+  void addRecipeReturns201() throws Exception {
+    when(mockApiService.addRecipe(any(Recipe.class))).thenReturn(true);
+
+    mockMvc.perform(post("/recipe/addRecipe")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(recipePayload(123, "Dinner")))
+      .andExpect(status().isCreated())
+      .andExpect(jsonPath("$.message").value("Recipe added"))
+      .andExpect(jsonPath("$.recipeId").value(123));
+
+    verify(mockApiService, times(1)).addRecipe(any(Recipe.class));
+  }
+
+  /**
+   * Ensures {@code GET /recipe/totalCalorie}
+   * returns HTTP 200 when service succeeds.
+   */
+  @Test
+  void totalCalorieReturns200() throws Exception {
+    when(mockApiService.getTotalCalories(7))
+      .thenReturn(java.util.Optional.of(450));
+
+    mockMvc.perform(get("/recipe/totalCalorie").param("recipeId", "7"))
+      .andExpect(status().isOk());
+
+    verify(mockApiService, times(1)).getTotalCalories(7);
+  }
+
+  /**
+   * Ensures {@code GET /recipe/calorieBreakdown}
+   * returns HTTP 200 when service succeeds.
+   */
+  @Test
+  void calorieBreakdownReturns200() throws Exception {
+    when(mockApiService.getCalorieBreakdown(7))
+      .thenReturn(java.util.Optional.of(java.util.Map.of(
+        "carbs", 100,
+        "protein", 200,
+        "fat", 150
+      )));
+
+    mockMvc.perform(get("/recipe/calorieBreakdown").param("recipeId", "7"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.carbs").value(100))
+      .andExpect(jsonPath("$.protein").value(200))
+      .andExpect(jsonPath("$.fat").value(150));
+
+    verify(mockApiService, times(1)).getCalorieBreakdown(7);
+  }
+
+  /**
+   * Ensures {@code GET /user/recommend}
+   * returns HTTP 200 when service succeeds.
+   */
+  @Test
+  void recommendReturns200() throws Exception {
+    var recs = java.util.List.of(new Recipe(), new Recipe());
+    when(mockApiService.recommend(1)).thenReturn(recs);
+
+    mockMvc.perform(get("/user/recommend").param("userId", "1"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$").isArray())
+      .andExpect(jsonPath("$.length()").value(2));
+
+    verify(mockApiService, times(1)).recommend(1);
+  }
+
+  /**
+   * Ensures {@code GET /user/recommendHealthy}
+   * returns HTTP 200 when service succeeds.
+   */
+  @Test
+  void recommendHealthyReturns200() throws Exception {
+    var recs = java.util.List.of(new Recipe());
+    when(mockApiService.recommendHealthy(1, 500)).thenReturn(recs);
+
+    mockMvc.perform(get("/user/recommendHealthy")
+        .param("userId", "1")
+        .param("calorieMax", "500"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$").isArray())
+      .andExpect(jsonPath("$.length()").value(1));
+
+    verify(mockApiService, times(1)).recommendHealthy(1, 500);
+  }
+
+  /**
+   * Ensures {@code POST /recipe/likeRecipe}
+   * returns HTTP 200 when service succeeds.
+   */
+  @Test
+  void recipeLikeRecipeReturns200() throws Exception {
+    when(mockApiService.incrementLikes(1)).thenReturn(true);
+
+    mockMvc.perform(post("/recipe/likeRecipe").param("recipeId", "1"))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.message").value("Recipe like recorded"))
+      .andExpect(jsonPath("$.recipeId").value(1));
+
+    verify(mockApiService, times(1)).incrementLikes(1);
+  }
+
+  /**
+   * Ensures {@code POST /user/likeRecipe}
+   * returns HTTP 200 when service succeeds.
+   */
+  @Test
+  void userLikeRecipeReturns200() throws Exception {
+    when(mockApiService.likeRecipe(1, 2)).thenReturn(true);
+
+    mockMvc.perform(post("/user/likeRecipe")
+        .param("userId", "1")
+        .param("recipeId", "2"))
+      .andExpect(status().isOk())
+      .andExpect(content().string("Recipe liked successfully."));
+
+    verify(mockApiService, times(1)).likeRecipe(1, 2);
+  }
+
+  /**
+   * Ensures {@code POST /recipe/viewRecipe}
+   * returns HTTP 200 when service succeeds.
+   */
+  @Test
+  void viewRecipeReturns200() throws Exception {
+    when(mockApiService.incrementViews(1)).thenReturn(true);
+
+    mockMvc.perform(post("/recipe/viewRecipe").param("recipeId", "1"))
+      .andExpect(status().isOk());
+
+    verify(mockApiService, times(1)).incrementViews(1);
   }
 }
