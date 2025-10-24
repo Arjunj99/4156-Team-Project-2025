@@ -256,6 +256,19 @@ public class RouteControllerTests {
   }
 
   @Test
+  public void addRecipeInvalidRequest() throws Exception {
+    String json = """
+      {"recipeId":0,"name":"Test","ingredients":[]}
+    """;
+
+    int recipeId = findUnusedRecipeId();
+    mockMvc.perform(post("/recipe/addRecipe")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(json))
+      .andExpect(status().isBadRequest());
+  }
+
+  @Test
   public void addRecipeEndpointRejectsDuplicateIds() throws Exception {
     int recipeId = findUnusedRecipeId();
     String payload = recipePayload(recipeId, "Lunch");
