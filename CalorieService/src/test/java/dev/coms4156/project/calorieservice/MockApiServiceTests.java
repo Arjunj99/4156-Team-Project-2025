@@ -39,6 +39,7 @@ public class MockApiServiceTests {
   @BeforeAll
   public static void setUpDataForTesting() {
     service = new MockApiService();
+    service.setTestMode(true);
     foods = service.getFoods();
     recipes = service.getRecipes();
     users = service.getUsers();
@@ -301,7 +302,7 @@ public class MockApiServiceTests {
       }
 
       int initialLikes = recipe.getLikes();
-      int initialUserLikedCount = user.getLikedRecipes().size();
+      final int initialUserLikedCount = user.getLikedRecipes().size();
 
       boolean result = service.likeRecipe(user.getUserId(), recipe.getRecipeId());
       assertTrue(result);
@@ -401,7 +402,8 @@ public class MockApiServiceTests {
   public void getRecipeAlternativesValidTest() {
     if (!recipes.isEmpty()) {
       Recipe recipe = recipes.get(0);
-      Optional<Map<String, List<Recipe>>> alternatives = service.getRecipeAlternatives(recipe.getRecipeId());
+      Optional<Map<String, List<Recipe>>> alternatives = 
+          service.getRecipeAlternatives(recipe.getRecipeId());
       assertTrue(alternatives.isPresent());
       Map<String, List<Recipe>> alternativeMap = alternatives.get();
       assertNotNull(alternativeMap.get("topAlternatives"));

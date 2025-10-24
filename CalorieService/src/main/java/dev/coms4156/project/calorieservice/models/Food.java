@@ -19,6 +19,12 @@ public class Food implements Comparable<Food> {
    * @param category category of the food.
    */
   public Food(String foodName, int foodId, int calories, String category) {
+    if (foodId < 0) {
+      throw new IllegalArgumentException("Food ID cannot be negative");
+    }
+    if (calories < 0) {
+      throw new IllegalArgumentException("Calories cannot be negative");
+    }
     this.foodName = foodName;
     this.foodId = foodId;
     this.calories = calories;
@@ -47,7 +53,16 @@ public class Food implements Comparable<Food> {
     return foodId;
   }
 
+  /**
+   * Sets the food ID.
+   *
+   * @param foodId the food ID to set
+   * @throws IllegalArgumentException if foodId is negative
+   */
   public void setFoodId(int foodId) {
+    if (foodId < 0) {
+      throw new IllegalArgumentException("Food ID cannot be negative");
+    }
     this.foodId = foodId;
   }
 
@@ -55,7 +70,16 @@ public class Food implements Comparable<Food> {
     return calories;
   }
 
+  /**
+   * Sets the calories.
+   *
+   * @param calories the calories to set
+   * @throws IllegalArgumentException if calories is negative
+   */
   public void setCalories(int calories) {
+    if (calories < 0) {
+      throw new IllegalArgumentException("Calories cannot be negative");
+    }
     this.calories = calories;
   }
 

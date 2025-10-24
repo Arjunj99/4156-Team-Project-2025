@@ -17,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+
 
 /**
  * Integration tests for the API routes exposed by
@@ -25,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class RouteControllerTests {
 
   @Autowired
@@ -33,8 +36,13 @@ public class RouteControllerTests {
   @Autowired
   private MockApiService mockApiService;
 
+  @BeforeEach
+  public void enableTestMode() {
+    mockApiService.setTestMode(true);
+  }
+  
   private long testStartTime;
-
+  
   /**
    * runs before each test to log test start and record start time.
    *

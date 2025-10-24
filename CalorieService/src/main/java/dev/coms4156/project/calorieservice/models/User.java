@@ -21,7 +21,7 @@ public class User implements Comparable<User> {
   public User(String username, int userId, ArrayList<Recipe> likedRecipes) {
     this.username = username;
     this.userId = userId;
-    this.likedRecipes = likedRecipes;
+    this.likedRecipes = likedRecipes != null ? likedRecipes : new ArrayList<>();
   }
 
   /**
@@ -67,6 +67,9 @@ public class User implements Comparable<User> {
    * @return {@code true} if the recipe was removed; {@code false} if not found.
    */
   public boolean unlikeRecipe(Recipe recipe) {
+    if (recipe == null) {
+      return false;
+    }
     if (likedRecipes.contains(recipe)) {
       likedRecipes.remove(recipe);
       return true;
