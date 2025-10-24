@@ -198,7 +198,7 @@ public class RouteController {
       Optional<Map<String, List<Recipe>>> alternatives =
           mockApiService.getRecipeAlternatives(recipeId);
       if (alternatives.isEmpty()) {
-          return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(Map.of("message", "Recipe not found"));
       }
       return ResponseEntity.ok(alternatives.get());

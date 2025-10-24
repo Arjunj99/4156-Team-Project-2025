@@ -1,5 +1,17 @@
 package dev.coms4156.project.calorieservice;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import dev.coms4156.project.calorieservice.controller.RouteController;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
@@ -13,18 +25,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Mocking Framework tests for the API routes exposed by
@@ -40,9 +40,7 @@ public class MockRouteControllerTests {
   private MockApiService mockApiService;
 
   /**
-   * runs before each test to log test start and record start time.
-   *
-   * @param testInfo current test information
+   * Setup Function In case it is required by a future dev.
    */
   @BeforeEach
   public void setUp() {
@@ -50,9 +48,7 @@ public class MockRouteControllerTests {
   }
 
   /**
-   * runs after each test to log test completion and execution time.
-   *
-   * @param testInfo current test information
+   * Teardown Function In case it is required by a future dev.
    */
   @AfterEach
   public void tearDown() {
@@ -98,10 +94,10 @@ public class MockRouteControllerTests {
   @Test
   public void foodAlternativeReturns500() throws Exception {
     when(mockApiService.getFoodAlternatives(anyInt()))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(get("/food/alternative").param("foodId", "1"))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).getFoodAlternatives(1);
   }
@@ -113,12 +109,12 @@ public class MockRouteControllerTests {
   @Test
   public void addFoodReturns500() throws Exception {
     when(mockApiService.addFood(any(Food.class)))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(post("/food/addFood")
         .contentType(MediaType.APPLICATION_JSON)
         .content(foodPayload(0, "Garbage", 0)))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).addFood(any(Food.class));
   }
@@ -130,10 +126,10 @@ public class MockRouteControllerTests {
   @Test
   public void recipeAlternativeReturns500() throws Exception {
     when(mockApiService.getRecipeAlternatives(anyInt()))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(get("/recipe/alternative").param("recipeId", "1"))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).getRecipeAlternatives(1);
   }
@@ -145,12 +141,12 @@ public class MockRouteControllerTests {
   @Test
   public void addRecipeReturns500() throws Exception {
     when(mockApiService.addRecipe(any(Recipe.class)))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(post("/recipe/addRecipe")
         .contentType(MediaType.APPLICATION_JSON)
         .content(recipePayload(1, "Garbage")))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).addRecipe(any(Recipe.class));
   }
@@ -162,10 +158,10 @@ public class MockRouteControllerTests {
   @Test
   public void totalCalorieReturns500() throws Exception {
     when(mockApiService.getTotalCalories(anyInt()))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(get("/recipe/totalCalorie").param("recipeId", "1"))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).getTotalCalories(1);
   }
@@ -177,10 +173,10 @@ public class MockRouteControllerTests {
   @Test
   public void calorieBreakdownReturns500() throws Exception {
     when(mockApiService.getCalorieBreakdown(anyInt()))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(get("/recipe/calorieBreakdown").param("recipeId", "1"))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).getCalorieBreakdown(1);
   }
@@ -192,10 +188,10 @@ public class MockRouteControllerTests {
   @Test
   public void recommendReturns500() throws Exception {
     when(mockApiService.recommend(anyInt()))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(get("/user/recommend").param("userId", "1"))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).recommend(1);
   }
@@ -207,12 +203,12 @@ public class MockRouteControllerTests {
   @Test
   public void recommendHealthyReturns500() throws Exception {
     when(mockApiService.recommendHealthy(anyInt(), anyInt()))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(get("/user/recommendHealthy")
         .param("userId", "1")
         .param("calorieMax", "0"))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).recommendHealthy(1, 0);
   }
@@ -224,11 +220,11 @@ public class MockRouteControllerTests {
   @Test
   public void recipeLikeRecipeReturns500() throws Exception {
     when(mockApiService.incrementLikes(anyInt()))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(post("/recipe/likeRecipe")
         .param("recipeId", "1"))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).incrementLikes(1);
   }
@@ -240,12 +236,12 @@ public class MockRouteControllerTests {
   @Test
   public void userLikeRecipeReturns500() throws Exception {
     when(mockApiService.likeRecipe(anyInt(), anyInt()))
-      .thenThrow(new RuntimeException("DB down"));
+        .thenThrow(new RuntimeException("DB down"));
 
     mockMvc.perform(post("/user/likeRecipe")
         .param("userId", "1")
         .param("recipeId", "2"))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).likeRecipe(1, 2);
   }
@@ -257,11 +253,11 @@ public class MockRouteControllerTests {
   @Test
   public void viewRecipeReturns500() throws Exception {
     when(mockApiService.incrementViews(anyInt()))
-      .thenThrow(new RuntimeException("DB is down"));
+        .thenThrow(new RuntimeException("DB is down"));
 
     mockMvc.perform(post("/recipe/viewRecipe")
         .param("recipeId", "1"))
-      .andExpect(status().isInternalServerError());
+        .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).incrementViews(1);
   }
@@ -279,7 +275,7 @@ public class MockRouteControllerTests {
     mockMvc.perform(get("/food/alternative").param("foodId", "1"))
       .andExpect(status().isOk())
       .andExpect(jsonPath("$").isArray())
-      .andExpect(jsonPath("$.length()").value(2));
+          .andExpect(jsonPath("$.length()").value(2));
 
     verify(mockApiService, times(1)).getFoodAlternatives(1);
   }
@@ -295,8 +291,8 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/food/addFood")
         .contentType(MediaType.APPLICATION_JSON)
         .content(foodPayload(101, "Fruit", 95)))
-      .andExpect(status().isOk())
-      .andExpect(content().string("Food added successfully."));
+        .andExpect(status().isOk())
+        .andExpect(content().string("Food added successfully."));
 
     verify(mockApiService, times(1)).addFood(any(Food.class));
   }
@@ -312,14 +308,14 @@ public class MockRouteControllerTests {
     var r3 = new Recipe();
 
     when(mockApiService.getRecipeAlternatives(1))
-      .thenReturn(java.util.Optional.of(java.util.Map.of(
-        "alternatives", java.util.List.of(r1, r2, r3)
-      )));
+        .thenReturn(java.util.Optional.of(java.util.Map.of(
+            "alternatives", java.util.List.of(r1, r2, r3)
+        )));
 
     mockMvc.perform(get("/recipe/alternative").param("recipeId", "1"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.alternatives").isArray())
-      .andExpect(jsonPath("$.alternatives.length()").value(3));
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.alternatives").isArray())
+        .andExpect(jsonPath("$.alternatives.length()").value(3));
 
     verify(mockApiService, times(1)).getRecipeAlternatives(1);
   }
@@ -335,9 +331,9 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/recipe/addRecipe")
         .contentType(MediaType.APPLICATION_JSON)
         .content(recipePayload(123, "Dinner")))
-      .andExpect(status().isCreated())
-      .andExpect(jsonPath("$.message").value("Recipe added"))
-      .andExpect(jsonPath("$.recipeId").value(123));
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.message").value("Recipe added"))
+        .andExpect(jsonPath("$.recipeId").value(123));
 
     verify(mockApiService, times(1)).addRecipe(any(Recipe.class));
   }
@@ -349,10 +345,10 @@ public class MockRouteControllerTests {
   @Test
   void totalCalorieReturns200() throws Exception {
     when(mockApiService.getTotalCalories(7))
-      .thenReturn(java.util.Optional.of(450));
+        .thenReturn(java.util.Optional.of(450));
 
     mockMvc.perform(get("/recipe/totalCalorie").param("recipeId", "7"))
-      .andExpect(status().isOk());
+        .andExpect(status().isOk());
 
     verify(mockApiService, times(1)).getTotalCalories(7);
   }
@@ -364,17 +360,17 @@ public class MockRouteControllerTests {
   @Test
   void calorieBreakdownReturns200() throws Exception {
     when(mockApiService.getCalorieBreakdown(7))
-      .thenReturn(java.util.Optional.of(java.util.Map.of(
-        "carbs", 100,
-        "protein", 200,
-        "fat", 150
-      )));
+        .thenReturn(java.util.Optional.of(java.util.Map.of(
+           "carbs", 100,
+           "protein", 200,
+            "fat", 150
+        )));
 
     mockMvc.perform(get("/recipe/calorieBreakdown").param("recipeId", "7"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.carbs").value(100))
-      .andExpect(jsonPath("$.protein").value(200))
-      .andExpect(jsonPath("$.fat").value(150));
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.carbs").value(100))
+        .andExpect(jsonPath("$.protein").value(200))
+        .andExpect(jsonPath("$.fat").value(150));
 
     verify(mockApiService, times(1)).getCalorieBreakdown(7);
   }
@@ -389,9 +385,9 @@ public class MockRouteControllerTests {
     when(mockApiService.recommend(1)).thenReturn(recs);
 
     mockMvc.perform(get("/user/recommend").param("userId", "1"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$").isArray())
-      .andExpect(jsonPath("$.length()").value(2));
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$.length()").value(2));
 
     verify(mockApiService, times(1)).recommend(1);
   }
@@ -408,9 +404,9 @@ public class MockRouteControllerTests {
     mockMvc.perform(get("/user/recommendHealthy")
         .param("userId", "1")
         .param("calorieMax", "500"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$").isArray())
-      .andExpect(jsonPath("$.length()").value(1));
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$.length()").value(1));
 
     verify(mockApiService, times(1)).recommendHealthy(1, 500);
   }
@@ -424,9 +420,9 @@ public class MockRouteControllerTests {
     when(mockApiService.incrementLikes(1)).thenReturn(true);
 
     mockMvc.perform(post("/recipe/likeRecipe").param("recipeId", "1"))
-      .andExpect(status().isOk())
-      .andExpect(jsonPath("$.message").value("Recipe like recorded"))
-      .andExpect(jsonPath("$.recipeId").value(1));
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Recipe like recorded"))
+        .andExpect(jsonPath("$.recipeId").value(1));
 
     verify(mockApiService, times(1)).incrementLikes(1);
   }
@@ -442,8 +438,8 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/user/likeRecipe")
         .param("userId", "1")
         .param("recipeId", "2"))
-      .andExpect(status().isOk())
-      .andExpect(content().string("Recipe liked successfully."));
+        .andExpect(status().isOk())
+        .andExpect(content().string("Recipe liked successfully."));
 
     verify(mockApiService, times(1)).likeRecipe(1, 2);
   }
@@ -457,7 +453,7 @@ public class MockRouteControllerTests {
     when(mockApiService.incrementViews(1)).thenReturn(true);
 
     mockMvc.perform(post("/recipe/viewRecipe").param("recipeId", "1"))
-      .andExpect(status().isOk());
+        .andExpect(status().isOk());
 
     verify(mockApiService, times(1)).incrementViews(1);
   }
@@ -478,8 +474,8 @@ public class MockRouteControllerTests {
     when(mockApiService.getFoodAlternatives(999)).thenReturn(null);
 
     mockMvc.perform(get("/food/alternative").param("foodId", "999"))
-      .andExpect(status().isNotFound())
-      .andExpect(content().string("Food with ID 999 not found."));
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("Food with ID 999 not found."));
 
     verify(mockApiService, times(1)).getFoodAlternatives(999);
   }
@@ -491,7 +487,7 @@ public class MockRouteControllerTests {
   @Test
   void foodAlternativeReturns400() throws Exception {
     mockMvc.perform(get("/food/alternative").param("foodId", "garbage"))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -503,11 +499,11 @@ public class MockRouteControllerTests {
   @Test
   void recipeAlternativeReturns404() throws Exception {
     when(mockApiService.getRecipeAlternatives(404))
-      .thenReturn(java.util.Optional.empty());
+        .thenReturn(java.util.Optional.empty());
 
     mockMvc.perform(get("/recipe/alternative").param("recipeId", "404"))
-      .andExpect(status().isNotFound())
-      .andExpect(jsonPath("$.message").value("Recipe not found"));
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Recipe not found"));
 
     verify(mockApiService, times(1)).getRecipeAlternatives(404);
   }
@@ -519,7 +515,7 @@ public class MockRouteControllerTests {
   @Test
   void recipeAlternativeReturns400() throws Exception {
     mockMvc.perform(get("/recipe/alternative").param("recipeId", "garbage"))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -531,11 +527,11 @@ public class MockRouteControllerTests {
   @Test
   void totalCalorieReturns404() throws Exception {
     when(mockApiService.getTotalCalories(7))
-      .thenReturn(java.util.Optional.empty());
+        .thenReturn(java.util.Optional.empty());
 
     mockMvc.perform(get("/recipe/totalCalorie").param("recipeId", "7"))
-      .andExpect(status().isNotFound())
-      .andExpect(jsonPath("$.message").value("Recipe not found"));
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Recipe not found"));
 
     verify(mockApiService, times(1)).getTotalCalories(7);
   }
@@ -547,7 +543,7 @@ public class MockRouteControllerTests {
   @Test
   void totalCalorieReturns400() throws Exception {
     mockMvc.perform(get("/recipe/totalCalorie").param("recipeId", "NaN"))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -559,11 +555,11 @@ public class MockRouteControllerTests {
   @Test
   void calorieBreakdownReturns404() throws Exception {
     when(mockApiService.getCalorieBreakdown(55))
-      .thenReturn(java.util.Optional.empty());
+        .thenReturn(java.util.Optional.empty());
 
     mockMvc.perform(get("/recipe/calorieBreakdown").param("recipeId", "55"))
-      .andExpect(status().isNotFound())
-      .andExpect(jsonPath("$.message").value("Recipe not found"));
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Recipe not found"));
 
     verify(mockApiService, times(1)).getCalorieBreakdown(55);
   }
@@ -575,7 +571,7 @@ public class MockRouteControllerTests {
   @Test
   void calorieBreakdownReturns400() throws Exception {
     mockMvc.perform(get("/recipe/calorieBreakdown").param("recipeId", "garbage"))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -589,8 +585,8 @@ public class MockRouteControllerTests {
     when(mockApiService.recommend(999)).thenReturn(null);
 
     mockMvc.perform(get("/user/recommend").param("userId", "999"))
-      .andExpect(status().isNotFound())
-      .andExpect(content().string("User with ID 999 not found."));
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("User with ID 999 not found."));
 
     verify(mockApiService, times(1)).recommend(999);
   }
@@ -602,7 +598,7 @@ public class MockRouteControllerTests {
   @Test
   void recommendReturns400() throws Exception {
     mockMvc.perform(get("/user/recommend").param("userId", "garbage"))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -618,8 +614,8 @@ public class MockRouteControllerTests {
     mockMvc.perform(get("/user/recommendHealthy")
         .param("userId", "42")
         .param("calorieMax", "500"))
-      .andExpect(status().isNotFound())
-      .andExpect(content().string("User with ID 42 not found."));
+        .andExpect(status().isNotFound())
+        .andExpect(content().string("User with ID 42 not found."));
 
     verify(mockApiService, times(1)).recommendHealthy(42, 500);
   }
@@ -633,7 +629,7 @@ public class MockRouteControllerTests {
     mockMvc.perform(get("/user/recommendHealthy")
         .param("userId", "zero")
         .param("calorieMax", "NaN"))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -649,8 +645,8 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/user/likeRecipe")
         .param("userId", "1")
         .param("recipeId", "2"))
-      .andExpect(status().isBadRequest())
-      .andExpect(content().string(
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(
         "User with ID 1 or recipe with ID 2 not found, or recipe already liked."));
 
     verify(mockApiService, times(1)).likeRecipe(1, 2);
@@ -663,7 +659,7 @@ public class MockRouteControllerTests {
   @Test
   void userLikeRecipe400_2() throws Exception {
     mockMvc.perform(post("/user/likeRecipe").param("userId", "1"))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -677,8 +673,8 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/recipe/addRecipe")
         .contentType(MediaType.APPLICATION_JSON)
         .content(recipePayload(0, "garbage")))
-      .andExpect(status().isBadRequest())
-      .andExpect(jsonPath("$.message").value("Recipe id must be provided"));
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("Recipe id must be provided"));
 
     verifyNoInteractions(mockApiService);
   }
@@ -694,9 +690,9 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/recipe/addRecipe")
         .contentType(MediaType.APPLICATION_JSON)
         .content(recipePayload(123, "garbage")))
-      .andExpect(status().isConflict())
-      .andExpect(jsonPath("$.message").value("Recipe with id already exists"))
-      .andExpect(jsonPath("$.recipeId").value(123));
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.message").value("Recipe with id already exists"))
+        .andExpect(jsonPath("$.recipeId").value(123));
 
     verify(mockApiService, times(1)).addRecipe(any(Recipe.class));
   }
@@ -712,7 +708,7 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/recipe/addRecipe")
         .contentType(MediaType.APPLICATION_JSON)
         .content(badJson))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -728,8 +724,8 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/food/addFood")
         .contentType(MediaType.APPLICATION_JSON)
         .content(foodPayload(101, "Fruit", 95)))
-      .andExpect(status().isBadRequest())
-      .andExpect(content().string("Food with ID 101 already exists or is invalid."));
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string("Food with ID 101 already exists or is invalid."));
 
     verify(mockApiService, times(1)).addFood(any(Food.class));
   }
@@ -745,7 +741,7 @@ public class MockRouteControllerTests {
     mockMvc.perform(post("/food/addFood")
         .contentType(MediaType.APPLICATION_JSON)
         .content(badJson))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -759,8 +755,8 @@ public class MockRouteControllerTests {
     when(mockApiService.incrementViews(1)).thenReturn(false);
 
     mockMvc.perform(post("/recipe/viewRecipe").param("recipeId", "1"))
-      .andExpect(status().isNotFound())
-      .andExpect(jsonPath("$.message").value("Recipe not found"));
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Recipe not found"));
 
     verify(mockApiService, times(1)).incrementViews(1);
   }
@@ -772,7 +768,7 @@ public class MockRouteControllerTests {
   @Test
   void viewRecipeReturns400() throws Exception {
     mockMvc.perform(post("/recipe/viewRecipe"))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
@@ -786,8 +782,8 @@ public class MockRouteControllerTests {
     when(mockApiService.incrementLikes(1)).thenReturn(false);
 
     mockMvc.perform(post("/recipe/likeRecipe").param("recipeId", "1"))
-      .andExpect(status().isNotFound())
-      .andExpect(jsonPath("$.message").value("Recipe not found"));
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.message").value("Recipe not found"));
 
     verify(mockApiService, times(1)).incrementLikes(1);
   }
@@ -799,7 +795,7 @@ public class MockRouteControllerTests {
   @Test
   void recipeLikeRecipeReturns400() throws Exception {
     mockMvc.perform(post("/recipe/likeRecipe")) // no recipeId
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }

@@ -19,40 +19,9 @@ In order to build and use our service you must install the following (This guide
 8. If you wish to run static analysis of the code base, you can with <code>mvn pmd:check</code>.
 9. All CI/CD development logic for Github Actions are set up in /.github/workflows/java-build.yml, which tests code pushed to main or dev branches of your repo.
 
-# List of all Functions, and Endpoints
-## Food.java
-### Variables
-- foodName (string)
-- foodId (int)
-- calories (int)
-- category (string)
-### Functions
+# List of all Endpoints
 
-## Recipe.java
-### Variables
-- recipeName (string)
-- recipeId (int)
-- category (string)
-- ingredients (list<Food>)
-- views (int)
-- likes (int)
-### Functions
-
-## User.java
-### Variables
-- username (string)
-- userId (int)
-- likedRecipes (list<int>)
-### Functions
-
-## Model.java
-### Variables
-### Functions
-
-## Service.java
-### Variables
-
-### Functions
+## RouteController.java
 #### /food/alternative
 * HTTP Method: GET
 * Expected Input Parameters: foodId (int)
@@ -72,6 +41,7 @@ highest views, as well as 3 random recipes of the same category with lower calor
 * Status Codes:
   * 200 OK: Successfully retrieved recipe alternatives
   * 404 NOT FOUND: Recipe with specified ID not found
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /recipe/totalCalorie
 * HTTP Method: GET
@@ -81,6 +51,7 @@ highest views, as well as 3 random recipes of the same category with lower calor
 * Status Codes:
   * 200 OK: Successfully calculated total calories
   * 404 NOT FOUND: Recipe with specified ID not found
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /recipe/calorieBreakdown
 * HTTP Method: GET
@@ -90,6 +61,7 @@ highest views, as well as 3 random recipes of the same category with lower calor
 * Status Codes:
   * 200 OK: Successfully retrieved calorie breakdown
   * 404 NOT FOUND: Recipe with specified ID not found
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /user/recommend
 * HTTP Method: GET
@@ -130,6 +102,7 @@ highest views, as well as 3 random recipes of the same category with lower calor
   * 201 CREATED: Recipe successfully added
   * 400 BAD REQUEST: Recipe payload is invalid or recipe ID is missing
   * 409 CONFLICT: Recipe with specified ID already exists
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /food/addFood
 * HTTP Method: POST
@@ -149,6 +122,7 @@ highest views, as well as 3 random recipes of the same category with lower calor
 * Status Codes:
   * 200 OK: Recipe view successfully recorded
   * 404 NOT FOUND: Recipe with specified ID not found
+  * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /recipe/likeRecipe
 * HTTP Method: POST
@@ -158,12 +132,20 @@ highest views, as well as 3 random recipes of the same category with lower calor
 * Status Codes:
   * 200 OK: Recipe like successfully recorded
   * 404 NOT FOUND: Recipe with specified ID not found
+  * 500 INTERNAL SERVER ERROR: Server error occurred
+
+## Project Management Tools
+We used a combination of Jira and a spreadsheet to keep track of tasks. These are the links to them.
+- https://arjunsomekawa.atlassian.net/jira/software/projects/OPS/boards/1?atlOrigin=eyJpIjoiNWY5ZmRkNjQxMWEyNGI0Y2FmZjRjMzBiZWMwNmY0NWYiLCJwIjoiaiJ9
+- https://docs.google.com/spreadsheets/d/1q3fpW9lZYhbR_of1h09LZfC2FTuzpdeuxaPmUfPsXw8/edit?usp=sharing
 
 ## Style Checking Report
 I used the tool "checkstyle" to check the style of our code and generate style checking reports. Here is the report
-as of the day of Oct 15, 2025. (These can be found in the reports folder):
+as of the day of Oct 23, 2025. (These can be found in the reports folder):
 
 ![Screenshot of a checkstyle with no errors](reports/checkstyle_report.png)
+
+Our Style Checking Ruleset is google_checks.xml.
 
 ## Branch Coverage Reporting
 I used JaCoCo to perform branch analysis in order to see the branch coverage of the relevant code within the code base. See below
@@ -176,10 +158,13 @@ I used PMD to perform static analysis on our codebase, see below for the most re
 
 ![Screenshot of PMD analysis report](reports/mvd_report.png)
 
-This image was captured on Oct 15, 2025.
+This image was captured on Oct 23, 2025.
 
 ## Continuous Integration Report
 This repository using GitHub Actions to perform continuous integration, to view the latest results go to the following link: https://github.com/Arjunj99/4156-Miniproject-2025-Students-part-3/actions
+
+## Discussion of Endpoint Ordering
+As a group, we discussed and decided that for our project, Endpoint Ordering does not matter.
 
 ## Postman Test Documentation
 
@@ -202,6 +187,7 @@ This section includes notes on tools and technologies used in building this proj
     * I use MockMvc as our API testing framework for integration testing of REST endpoints. MockMvc is included with Spring Boot Test dependencies and requires no additional installation. MockMvc tests are located in RouteControllerTests.java and execute automatically when running `mvn clean test`. Test results are included in the JaCoCo coverage reports generated in /CalorieService/target/site/jacoco/index.html.
 * JaCoCo
     * I use JaCoCo for generating code coverage reports.
-
+* Mockito
+    * We used Mockito to mock our MockAPIService to do isolated testing of RouteController.
 * Postman
     * We used postman to test that out API works.

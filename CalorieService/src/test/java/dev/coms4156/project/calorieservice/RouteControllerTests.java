@@ -273,13 +273,13 @@ public class RouteControllerTests {
   public void addRecipeInvalidRequest() throws Exception {
     String json = """
       {"recipeId":0,"name":"Test","ingredients":[]}
-    """;
+        """;
 
     int recipeId = findUnusedRecipeId();
     mockMvc.perform(post("/recipe/addRecipe")
         .contentType(MediaType.APPLICATION_JSON)
         .content(json))
-      .andExpect(status().isBadRequest());
+        .andExpect(status().isBadRequest());
   }
 
   @Test
