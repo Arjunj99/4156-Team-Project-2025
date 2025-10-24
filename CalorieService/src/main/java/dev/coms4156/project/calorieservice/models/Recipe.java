@@ -28,6 +28,15 @@ public class Recipe implements Comparable<Recipe> {
    */
   public Recipe(String recipeName, int recipeId, String category,
                 ArrayList<Food> ingredients, int views, int likes, int totalCalories) {
+    if (recipeId < 0) {
+      throw new IllegalArgumentException("Recipe ID cannot be negative");
+    }
+    if (views < 0) {
+      throw new IllegalArgumentException("Views cannot be negative");
+    }
+    if (likes < 0) {
+      throw new IllegalArgumentException("Likes cannot be negative");
+    }
     this.recipeName = recipeName;
     this.recipeId = recipeId;
     this.category = category;

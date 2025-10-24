@@ -106,6 +106,35 @@ public class FoodUnitTests {
   }
 
   @Test
+  public void completeArgsConstructorInvalidInputTest() {
+    try {
+      new Food("Test", -1, 100, "Test");
+      assertTrue(false, "Should throw exception for negative food ID");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+    try {
+      new Food("Test", 1, -100, "Test");
+      assertTrue(false, "Should throw exception for negative calories");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  public void completeArgsConstructorAtypicalInputTest() {
+    try {
+      new Food("Test", Integer.MIN_VALUE, 100, "Test");
+      assertTrue(false, "Should throw exception for Integer.MIN_VALUE");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+    Food extremeFood = new Food("Extreme", Integer.MAX_VALUE, 9999, "Test");
+    assertEquals(Integer.MAX_VALUE, extremeFood.getFoodId());
+    assertEquals(9999, extremeFood.getCalories());
+  }
+
+  @Test
   public void gettersAndSettersTest() {
     Food testFood = new Food();
     
@@ -272,12 +301,12 @@ public class FoodUnitTests {
   public void compareToAtypicalInputTest() {
     Food food1 = new Food("Apple", 1, 80, "Fruit");
     Food food2 = new Food("Banana", 0, 105, "Fruit");
-    Food food3 = new Food("Cherry", -1, 50, "Fruit");
-    Food food4 = new Food("Date", Integer.MAX_VALUE, 200, "Fruit");
+    Food food3 = new Food("Cherry", Integer.MAX_VALUE, 50, "Fruit");
+    Food food4 = new Food("Date", 2, Integer.MAX_VALUE, "Fruit");
     
     assertTrue(food1.compareTo(food2) > 0);
-    assertTrue(food1.compareTo(food3) > 0);
-    assertTrue(food1.compareTo(food4) < 0);
+    assertTrue(food1.compareTo(food3) < 0); 
+    assertTrue(food1.compareTo(food4) < 0); 
   }
 
   @Test
@@ -303,15 +332,13 @@ public class FoodUnitTests {
   public void equalsAtypicalInputTest() {
     Food food1 = new Food("Apple", 1, 80, "Fruit");
     Food food2 = new Food("", 1, 0, "");
-    Food food3 = new Food(null, 1, -1, null);
-    Food food4 = new Food("Different Name", 1, 999, "Different Category");
+    Food food3 = new Food(null, 1, 0, null);
+    Food food5 = new Food("Test", Integer.MAX_VALUE, 100, "Test");
     
     assertTrue(food1.equals(food2));
     assertTrue(food1.equals(food3));
-    assertTrue(food1.equals(food4));
-    
-    Food food5 = new Food("Test", 0, 100, "Test");
-    Food food6 = new Food("Test", 0, 200, "Different");
-    assertTrue(food5.equals(food6));
+    assertFalse(food1.equals(food5));
+    Food food6 = new Food("Test", 0, 0, "");
+    assertFalse(food1.equals(food6));
   }
 }

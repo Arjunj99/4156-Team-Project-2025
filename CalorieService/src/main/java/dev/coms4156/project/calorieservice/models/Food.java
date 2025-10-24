@@ -19,6 +19,12 @@ public class Food implements Comparable<Food> {
    * @param category category of the food.
    */
   public Food(String foodName, int foodId, int calories, String category) {
+    if (foodId < 0) {
+      throw new IllegalArgumentException("Food ID cannot be negative");
+    }
+    if (calories < 0) {
+      throw new IllegalArgumentException("Calories cannot be negative");
+    }
     this.foodName = foodName;
     this.foodId = foodId;
     this.calories = calories;

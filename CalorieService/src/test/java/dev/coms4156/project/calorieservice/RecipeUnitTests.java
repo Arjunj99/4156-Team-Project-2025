@@ -56,6 +56,43 @@ public class RecipeUnitTests {
   }
 
   @Test
+  public void testFullConstructorInvalidInputTest() {
+    try {
+      new Recipe("Test", -1, "Test", new ArrayList<>(), 0, 0, 0);
+      assertTrue(false, "Should throw exception for negative recipe ID");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+    try {
+      new Recipe("Test", 1, "Test", new ArrayList<>(), -1, 0, 0);
+      assertTrue(false, "Should throw exception for negative views");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+    try {
+      new Recipe("Test", 1, "Test", new ArrayList<>(), 0, -1, 0);
+      assertTrue(false, "Should throw exception for negative likes");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+  }
+
+  @Test
+  public void testFullConstructorAtypicalInputTest() {
+    try {
+      new Recipe("Test", Integer.MIN_VALUE, "Test", new ArrayList<>(), 0, 0, 0);
+      assertTrue(false, "Should throw exception for Integer.MIN_VALUE");
+    } catch (IllegalArgumentException e) {
+      // Expected exception
+    }
+    Recipe extremeRecipe = new Recipe("Extreme", Integer.MAX_VALUE, "Test", 
+        new ArrayList<>(), Integer.MAX_VALUE, Integer.MAX_VALUE, 0);
+    assertEquals(Integer.MAX_VALUE, extremeRecipe.getRecipeId());
+    assertEquals(Integer.MAX_VALUE, extremeRecipe.getViews());
+    assertEquals(Integer.MAX_VALUE, extremeRecipe.getLikes());
+  }
+
+  @Test
   public void testGetTotalCaloriesReturnsSumOfIngredients() {
     int expectedTotal = 165 + 216 + 55;
     assertEquals(expectedTotal, recipe.getTotalCalories());
