@@ -27,3 +27,8 @@ replay_pid*
 
 target/
 .DS_Store
+
+# Ignore mock data files
+data/mockdata/food.json
+data/mockdata/recipe.json
+data/mockdata/user.json

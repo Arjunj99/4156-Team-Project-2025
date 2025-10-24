@@ -188,18 +188,25 @@ public class RouteController {
    * @param recipeId identifier of the recipe to compare against.
    * @return A {@code ResponseEntity} containing a map of up to 3 top-viewed 
    *         {@code Recipe} objects and up to 3 random {@code Recipe} objects 
-   *         with HTTP 200 if successful, or HTTP 404 if the recipe was not found.
+   *         with HTTP 200 if successful, or HTTP 404 if the recipe was not found,
+   *         or HTTP 500 for server errors.
    */
   @GetMapping("/recipe/alternative")
   public ResponseEntity<?> getRecipeAlternatives(@RequestParam("recipeId") int recipeId) {
     logger.info("endpoint called: GET /recipe/alternative with recipeId={}", recipeId);
-    Optional<Map<String, List<Recipe>>> alternatives =
-        mockApiService.getRecipeAlternatives(recipeId);
-    if (alternatives.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
-          .body(Map.of("message", "Recipe not found"));
+    try {
+      Optional<Map<String, List<Recipe>>> alternatives =
+          mockApiService.getRecipeAlternatives(recipeId);
+      if (alternatives.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(Map.of("message", "Recipe not found"));
+      }
+      return ResponseEntity.ok(alternatives.get());
+    } catch (Exception e) {
+      System.err.println(e);
+      return new ResponseEntity<>("Error occurred when getting alternatives.",
+        HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return ResponseEntity.ok(alternatives.get());
   }
 
   /**
@@ -207,18 +214,25 @@ public class RouteController {
    *
    * @param recipeId identifier of the recipe.
    * @return A {@code ResponseEntity} containing a map with the recipe ID and total calories 
-   *         with HTTP 200 if successful, or HTTP 404 if the recipe was not found.
+   *         with HTTP 200 if successful, or HTTP 404 if the recipe was not found,
+   *         or HTTP 500 for server errors.
    */
   @GetMapping("/recipe/totalCalorie")
   public ResponseEntity<?> getTotalCalories(@RequestParam("recipeId") int recipeId) {
     logger.info("endpoint called: GET /recipe/totalCalorie with recipeId={}", recipeId);
-    Optional<Integer> totalCalories = mockApiService.getTotalCalories(recipeId);
-    if (totalCalories.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    try {
+      Optional<Integer> totalCalories = mockApiService.getTotalCalories(recipeId);
+      if (totalCalories.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
           .body(Map.of("message", "Recipe not found"));
-    }
-    return ResponseEntity.ok(
+      }
+      return ResponseEntity.ok(
         Map.of("recipeId", recipeId, "totalCalories", totalCalories.get()));
+    } catch (Exception e) {
+      System.err.println(e);
+      return new ResponseEntity<>("Error occurred when getting total calorie.",
+        HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   /**
@@ -226,17 +240,24 @@ public class RouteController {
    *
    * @param recipeId identifier of the recipe.
    * @return A {@code ResponseEntity} containing a map of ingredient names to calorie values 
-   *         with HTTP 200 if successful, or HTTP 404 if the recipe was not found.
+   *         with HTTP 200 if successful, or HTTP 404 if the recipe was not found,
+   *         or HTTP 500 for server errors.
    */
   @GetMapping("/recipe/calorieBreakdown")
   public ResponseEntity<?> getCalorieBreakdown(@RequestParam("recipeId") int recipeId) {
     logger.info("endpoint called: GET /recipe/calorieBreakdown with recipeId={}", recipeId);
-    Optional<Map<String, Integer>> breakdown = mockApiService.getCalorieBreakdown(recipeId);
-    if (breakdown.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    try {
+      Optional<Map<String, Integer>> breakdown = mockApiService.getCalorieBreakdown(recipeId);
+      if (breakdown.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
           .body(Map.of("message", "Recipe not found"));
+      }
+      return ResponseEntity.ok(breakdown.get());
+    } catch (Exception e) {
+      System.err.println(e);
+      return new ResponseEntity<>("Error occurred when getting calorie breakdown.",
+        HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    return ResponseEntity.ok(breakdown.get());
   }
 
   /**
@@ -246,28 +267,35 @@ public class RouteController {
    * @return A {@code ResponseEntity} containing a success message with 
    *         HTTP 201 when created, or an error message with HTTP 400 if 
    *         recipe payload is invalid or recipe ID is missing, or HTTP 409 
-   *         if the recipe ID already exists.
+   *         if the recipe ID already exists,
+   *         or HTTP 500 for server errors.
    */
   @PostMapping("/recipe/addRecipe")
   public ResponseEntity<?> addRecipe(@RequestBody Recipe recipe) {
     logger.info("endpoint called: POST /recipe/addRecipe");
-    if (recipe == null) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    try {
+      if (recipe == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body(Map.of("message", "Recipe payload is required"));
-    }
-    if (recipe.getRecipeId() == 0) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+      }
+      if (recipe.getRecipeId() == 0) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body(Map.of("message", "Recipe id must be provided"));
-    }
-    boolean added = mockApiService.addRecipe(recipe);
-    if (!added) {
-      return ResponseEntity.status(HttpStatus.CONFLICT)
+      }
+      boolean added = mockApiService.addRecipe(recipe);
+      if (!added) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
           .body(Map.of(
-              "message", "Recipe with id already exists",
-              "recipeId", recipe.getRecipeId()));
-    }
-    return ResponseEntity.status(HttpStatus.CREATED)
+            "message", "Recipe with id already exists",
+            "recipeId", recipe.getRecipeId()));
+      }
+      return ResponseEntity.status(HttpStatus.CREATED)
         .body(Map.of("message", "Recipe added", "recipeId", recipe.getRecipeId()));
+    } catch (Exception e) {
+      System.err.println(e);
+      return new ResponseEntity<>("Error occurred when adding a recipe.",
+        HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   /**
@@ -275,18 +303,25 @@ public class RouteController {
    *
    * @param recipeId identifier of the recipe.
    * @return A {@code ResponseEntity} containing a confirmation message with 
-   *         HTTP 200 if successful, or HTTP 404 if the recipe was not found.
+   *         HTTP 200 if successful, or HTTP 404 if the recipe was not found,
+   *         or HTTP 500 for server errors.
    */
   @PostMapping("/recipe/viewRecipe")
   public ResponseEntity<?> viewRecipe(@RequestParam("recipeId") int recipeId) {
     logger.info("endpoint called: POST /recipe/viewRecipe with recipeId={}", recipeId);
-    boolean updated = mockApiService.incrementViews(recipeId);
-    if (!updated) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    try {
+      boolean updated = mockApiService.incrementViews(recipeId);
+      if (!updated) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
           .body(Map.of("message", "Recipe not found"));
-    }
-    return ResponseEntity.ok(
+      }
+      return ResponseEntity.ok(
         Map.of("message", "Recipe view recorded", "recipeId", recipeId));
+    } catch (Exception e) {
+      System.err.println(e);
+      return new ResponseEntity<>("Error occurred when viewing a recipe.",
+        HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   /**
@@ -294,18 +329,25 @@ public class RouteController {
    *
    * @param recipeId identifier of the recipe.
    * @return A {@code ResponseEntity} containing a confirmation message with 
-   *         HTTP 200 if successful, or HTTP 404 if the recipe was not found.
+   *         HTTP 200 if successful, or HTTP 404 if the recipe was not found,
+   *         or HTTP 500 for server errors.
    */
   @PostMapping("/recipe/likeRecipe")
   public ResponseEntity<?> likeRecipe(@RequestParam("recipeId") int recipeId) {
     logger.info("endpoint called: POST /recipe/likeRecipe with recipeId={}", recipeId);
-    boolean updated = mockApiService.incrementLikes(recipeId);
-    if (!updated) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+    try {
+      boolean updated = mockApiService.incrementLikes(recipeId);
+      if (!updated) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
           .body(Map.of("message", "Recipe not found"));
-    }
-    return ResponseEntity.ok(
+      }
+      return ResponseEntity.ok(
         Map.of("message", "Recipe like recorded", "recipeId", recipeId));
+    } catch (Exception e) {
+      System.err.println(e);
+      return new ResponseEntity<>("Error occurred when liking a recipe.",
+        HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   /**
