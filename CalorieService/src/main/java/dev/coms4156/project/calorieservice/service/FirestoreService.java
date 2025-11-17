@@ -1,7 +1,6 @@
 package dev.coms4156.project.calorieservice.service;
 
 import com.google.api.core.ApiFuture;
-import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class FirestoreService {
 
-  private static final String CREDENTIALS_PATH = "advanced-swe-project-477720-703e2bde35bf.json";
   private static final String PROJECT_ID = "advanced-swe-project-477720";
   private static final String FOODS_COLLECTION = "food";
   private static final String RECIPES_COLLECTION = "recipes";
@@ -84,18 +82,13 @@ public class FirestoreService {
   @PostConstruct
   public void initialize() {
       try {
-          FirestoreOptions firestoreOptions =
-              FirestoreOptions.getDefaultInstance()
-                  .toBuilder()
-                  .setProjectId(PROJECT_ID)
-                  .build();
+          Firestore db = FirestoreOptions.getDefaultInstance().getService();
+          this.db = db;
   
-          db = firestoreOptions.getService();
-  
-          System.out.println("✅ Firestore initialized using Application Default Credentials (ADC)");
+          System.out.println("✅ Firestore initialized using Cloud Run ADC");
   
       } catch (Exception e) {
-          throw new RuntimeException("Failed to initialize Firestore with ADC: " + e.getMessage(), e);
+          throw new RuntimeException("Failed to initialize Firestore: " + e.getMessage(), e);
       }
   }
   
