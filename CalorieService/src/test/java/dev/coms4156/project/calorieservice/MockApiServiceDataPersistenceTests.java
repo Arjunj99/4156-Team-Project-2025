@@ -31,6 +31,9 @@ public class MockApiServiceDataPersistenceTests {
 
   private MockApiService service;
 
+  /**
+   * Sets up the test environment before each test.
+   */
   @BeforeEach
   public void setUp() throws ExecutionException, InterruptedException {
     // Set up mock to return some initial data

@@ -70,18 +70,26 @@ public class MockApiServiceTests {
     // Use thenAnswer to handle specific IDs and general case
     when(firestoreService.getFoodById(anyInt())).thenAnswer(invocation -> {
       int id = invocation.getArgument(0);
-      if (id == 1) return testFoods.get(0);
-      if (id == 2) return testFoods.get(1);
+      if (id == 1) {
+        return testFoods.get(0);
+      }
+      if (id == 2) {
+        return testFoods.get(1);
+      }
       return null;
     });
     when(firestoreService.getRecipeById(anyInt())).thenAnswer(invocation -> {
       int id = invocation.getArgument(0);
-      if (id == 1001) return testRecipe;
+      if (id == 1001) {
+        return testRecipe;
+      }
       return null;
     });
     when(firestoreService.getUserById(anyInt())).thenAnswer(invocation -> {
       int id = invocation.getArgument(0);
-      if (id == 1) return testUser;
+      if (id == 1) {
+        return testUser;
+      }
       return null;
     });
     when(firestoreService.getFoodsByCategoryAndCalories(anyString(), anyInt()))
@@ -107,7 +115,8 @@ public class MockApiServiceTests {
   }
 
   @Test
-  public void initializeEmptyMockApiServiceValidTest() throws ExecutionException, InterruptedException {
+  public void initializeEmptyMockApiServiceValidTest()
+      throws ExecutionException, InterruptedException {
     // Create a new mock for this test
     FirestoreService mockFirestore = org.mockito.Mockito.mock(FirestoreService.class);
     when(mockFirestore.getAllFoods()).thenReturn(new ArrayList<>());

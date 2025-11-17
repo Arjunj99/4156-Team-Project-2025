@@ -12,7 +12,6 @@ import com.google.cloud.firestore.WriteResult;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
 import dev.coms4156.project.calorieservice.models.User;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class FirestoreService {
 
-  private static final String PROJECT_ID = "advanced-swe-project-477720";
   private static final String FOODS_COLLECTION = "food";
   private static final String RECIPES_COLLECTION = "recipes";
   private static final String USERS_COLLECTION = "users";
@@ -81,15 +79,15 @@ public class FirestoreService {
   // }
   @PostConstruct
   public void initialize() {
-      try {
-          Firestore db = FirestoreOptions.getDefaultInstance().getService();
-          this.db = db;
-  
-          System.out.println("✅ Firestore initialized using Cloud Run ADC");
-  
-      } catch (Exception e) {
-          throw new RuntimeException("Failed to initialize Firestore: " + e.getMessage(), e);
-      }
+    try {
+      Firestore db = FirestoreOptions.getDefaultInstance().getService();
+      this.db = db;
+
+      System.out.println("✅ Firestore initialized using Cloud Run ADC");
+
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to initialize Firestore: " + e.getMessage(), e);
+    }
   }
   
   
