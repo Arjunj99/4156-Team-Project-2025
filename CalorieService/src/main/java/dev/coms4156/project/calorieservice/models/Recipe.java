@@ -61,15 +61,29 @@ public class Recipe implements Comparable<Recipe> {
 
   /**
    * Calculates the total calories of the recipe by summing ingredient calories.
+   * If ingredients list is empty or null, returns the stored totalCalories value.
    *
    * @return total calorie count of the recipe.
    */
   public int getTotalCalories() {
+    if (ingredients == null || ingredients.isEmpty()) {
+      return totalCalories;
+    }
     int total = 0;
     for (Food ingredient : ingredients) {
       total += ingredient.getCalories();
     }
+    this.totalCalories = total;
     return total;
+  }
+  
+  /**
+   * Sets the total calories for the recipe.
+   *
+   * @param totalCalories the total calories to set
+   */
+  public void setTotalCalories(int totalCalories) {
+    this.totalCalories = totalCalories;
   }
 
   /**
@@ -123,8 +137,22 @@ public class Recipe implements Comparable<Recipe> {
     return ingredients;
   }
 
+  /**
+   * Sets the ingredients list and automatically calculates total calories.
+   *
+   * @param ingredients the list of ingredients to set
+   */
   public void setIngredients(ArrayList<Food> ingredients) {
     this.ingredients = ingredients != null ? ingredients : new ArrayList<>();
+    if (this.ingredients.isEmpty()) {
+      this.totalCalories = 0;
+      return;
+    }
+    int total = 0;
+    for (Food ingredient : this.ingredients) {
+      total += ingredient.getCalories();
+    }
+    this.totalCalories = total;
   }
 
   public int getViews() {

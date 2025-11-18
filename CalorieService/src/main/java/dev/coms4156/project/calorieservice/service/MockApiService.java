@@ -119,7 +119,7 @@ public class MockApiService {
    * @return true if the user was added successfully, false if user is null or already exists
    */
   public boolean addUser(User user) {
-    if (user == null || testMode) {
+    if (user == null) {
       return false;
     }
     try {
@@ -218,7 +218,7 @@ public class MockApiService {
    * @return true if the food was added successfully, false if food is null or already exists
    */
   public boolean addFood(Food food) {
-    if (food == null || testMode) {
+    if (food == null) {
       return false;
     }
     try {
@@ -237,10 +237,6 @@ public class MockApiService {
    * @return true if the recipe was added successfully, false if user or recipe not found
    */
   public boolean likeRecipe(int userId, int recipeId) {
-    if (testMode) {
-      return false;
-    }
-
     try {
       User user = findUserById(userId);
 
@@ -256,8 +252,7 @@ public class MockApiService {
 
       boolean result = user.likeRecipe(recipe);
       if (result) {
-        // Update recipe likes count
-        recipe.incrementLikes();
+
         firestoreService.updateRecipe(recipe);
         // Update user with new liked recipe
         firestoreService.updateUser(user);
@@ -491,7 +486,7 @@ public class MockApiService {
    * @return true when the recipe is added; false if recipe is null or the ID already exists
    */
   public boolean addRecipe(Recipe recipe) {
-    if (recipe == null || testMode) {
+    if (recipe == null) {
       return false;
     }
 
@@ -514,9 +509,6 @@ public class MockApiService {
    * @return true when the recipe exists and the view is recorded.
    */
   public boolean incrementViews(int recipeId) {
-    if (testMode) {
-      return false;
-    }
     try {
       Recipe recipe = findRecipeById(recipeId);
       if (recipe == null) {
@@ -537,9 +529,6 @@ public class MockApiService {
    * @return true when the recipe exists and the like is recorded.
    */
   public boolean incrementLikes(int recipeId) {
-    if (testMode) {
-      return false;
-    }
     try {
       Recipe recipe = findRecipeById(recipeId);
       if (recipe == null) {

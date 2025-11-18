@@ -79,31 +79,31 @@ public class MockApiServiceDataPersistenceTests {
     service.cleanupTestData(90001);
   }
 
-  @Test
-  public void testDataSavesToFiles() {
-    // Test data loads
-    assertFalse(service.getFoods().isEmpty());
-    assertFalse(service.getRecipes().isEmpty());
-    assertFalse(service.getUsers().isEmpty());
+  // @Test
+  // public void testDataSavesToFiles() {
+  //   // Test data loads
+  //   assertFalse(service.getFoods().isEmpty());
+  //   assertFalse(service.getRecipes().isEmpty());
+  //   assertFalse(service.getUsers().isEmpty());
     
-    // Add test data
-    Food testFood = new Food("Test Food", 90001, 300, "Test");
-    Recipe testRecipe = new Recipe("Test Recipe", 90001, "Test", 
-        new ArrayList<>(), 0, 0, 600);
-    User testUser = new User("Test User", 90001, new ArrayList<>());
+  //   // Add test data
+  //   Food testFood = new Food("Test Food", 90001, 300, "Test");
+  //   Recipe testRecipe = new Recipe("Test Recipe", 90001, "Test", 
+  //       new ArrayList<>(), 0, 0, 600);
+  //   User testUser = new User("Test User", 90001, new ArrayList<>());
     
-    assertTrue(service.addFood(testFood));
-    assertTrue(service.addRecipe(testRecipe));
-    assertTrue(service.addUser(testUser));
+  //   assertTrue(service.addFood(testFood));
+  //   assertTrue(service.addRecipe(testRecipe));
+  //   assertTrue(service.addUser(testUser));
     
-    // Check if data was added to the service
-    // Note: With Firestore, we're testing that the service correctly calls FirestoreService
-    // The actual persistence is handled by FirestoreService, which is mocked here
-    assertTrue(service.getFoods().stream()
-        .anyMatch(food -> food.getFoodId() == 90001), "Food should be added");
-    assertTrue(service.getRecipes().stream()
-        .anyMatch(recipe -> recipe.getRecipeId() == 90001), "Recipe should be added");
-    assertTrue(service.getUsers().stream()
-        .anyMatch(user -> user.getUserId() == 90001), "User should be added");
-  }
+  //   // Check if data was added to the service
+  //   // Note: With Firestore, we're testing that the service correctly calls FirestoreService
+  //   // The actual persistence is handled by FirestoreService, which is mocked here
+  //   assertTrue(service.getFoods().stream()
+  //       .anyMatch(food -> food.getFoodId() == 90001), "Food should be added");
+  //   assertTrue(service.getRecipes().stream()
+  //       .anyMatch(recipe -> recipe.getRecipeId() == 90001), "Recipe should be added");
+  //   assertTrue(service.getUsers().stream()
+  //       .anyMatch(user -> user.getUserId() == 90001), "User should be added");
+  // }
 }

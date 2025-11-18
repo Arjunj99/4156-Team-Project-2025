@@ -1,5 +1,9 @@
 package dev.coms4156.project.calorieservice;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -10,9 +14,14 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import dev.coms4156.project.calorieservice.controller.RouteController;
+import dev.coms4156.project.calorieservice.models.Food;
+import dev.coms4156.project.calorieservice.models.Recipe;
 import dev.coms4156.project.calorieservice.models.User;
+import dev.coms4156.project.calorieservice.service.FirestoreService;
 import dev.coms4156.project.calorieservice.service.MockApiService;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,9 +52,166 @@ public class RouteControllerTests {
   @Autowired
   private MockApiService mockApiService;
 
+  @MockBean
+  private FirestoreService firestoreService;
+
+  // Instance variables to hold mock data that persists across method calls within a test
+  private ArrayList<Food> mockFoods;
+  private ArrayList<Recipe> mockRecipes;
+  private ArrayList<User> mockUsers;
+
+  /**
+   * Sets up the mock FirestoreService with test data before each test.
+   *
+   * @throws ExecutionException if there's an error setting up the mock
+   * @throws InterruptedException if the setup is interrupted
+   */
   @BeforeEach
-  public void enableTestMode() {
-    mockApiService.setTestMode(true);
+  public void setUpMockFirestore() throws ExecutionException, InterruptedException {
+    // Set up initial mock data - use instance variables so they persist across method calls
+    mockFoods = new ArrayList<>();
+    // Food ID 1 - Apple (95 calories, Fruit) - needs lower calorie alternatives
+    mockFoods.add(new Food("Apple", 1, 95, "Fruit"));
+    // Add lower calorie fruit alternatives for food ID 1
+    mockFoods.add(new Food("Strawberry", 3, 49, "Fruit")); // Lower than Apple (95)
+    mockFoods.add(new Food("Orange", 4, 62, "Fruit")); // Lower than Apple (95)
+    mockFoods.add(new Food("Banana", 2, 105, "Fruit")); // Higher than Apple, won't be alternative
+    
+    mockRecipes = new ArrayList<>();
+    // Recipe 1001 needs ingredients with "Chicken Breast" and totalCalories of 488
+    ArrayList<Food> recipe1001Ingredients = new ArrayList<>();
+    Food chickenBreast = new Food("Chicken Breast", 13, 165, "Protein");
+    Food brownRice = new Food("Brown Rice (1 cup)", 10, 216, "Grain");
+    Food broccoli = new Food("Broccoli", 5, 55, "Vegetable");
+    Food carrots = new Food("Carrots", 6, 52, "Vegetable");
+    recipe1001Ingredients.add(chickenBreast);
+    recipe1001Ingredients.add(brownRice);
+    recipe1001Ingredients.add(broccoli);
+    recipe1001Ingredients.add(carrots);
+    // Total: 165 + 216 + 55 + 52 = 488
+    Recipe mockRecipe = new Recipe("Test Recipe", 1001, "Dessert", 
+        recipe1001Ingredients, 10, 5, 488);
+    mockRecipes.add(mockRecipe);
+    
+    // Add more recipes for recommendations to work
+    Recipe recipe2 = new Recipe("Another Recipe", 1002, "Dessert", 
+        new ArrayList<>(), 5, 2, 300);
+    mockRecipes.add(recipe2);
+    Recipe recipe3 = new Recipe("Third Recipe", 1003, "Dessert", 
+        new ArrayList<>(), 3, 1, 400);
+    mockRecipes.add(recipe3);
+    
+    mockUsers = new ArrayList<>();
+    User mockUser = new User("Test User", 501);
+    mockUser.getLikedRecipes().add(mockRecipe);
+    mockUsers.add(mockUser);
+    
+    // Add users 508 and 509 for tests that need them
+    User user508 = new User("User 508", 508);
+    mockUsers.add(user508);
+    User user509 = new User("User 509", 509);
+    mockUsers.add(user509);
+    
+    // Mock FirestoreService methods - return the lists so they can be modified
+    when(firestoreService.getAllFoods()).thenAnswer(invocation -> new ArrayList<>(mockFoods));
+    when(firestoreService.getAllRecipes()).thenAnswer(invocation -> new ArrayList<>(mockRecipes));
+    when(firestoreService.getAllUsers()).thenAnswer(invocation -> new ArrayList<>(mockUsers));
+    
+    // Mock getById methods
+    when(firestoreService.getFoodById(anyInt())).thenAnswer(invocation -> {
+      int id = invocation.getArgument(0);
+      return mockFoods.stream()
+          .filter(f -> f.getFoodId() == id)
+          .findFirst()
+          .orElse(null);
+    });
+    
+    when(firestoreService.getRecipeById(anyInt())).thenAnswer(invocation -> {
+      int id = invocation.getArgument(0);
+      return mockRecipes.stream()
+          .filter(r -> r.getRecipeId() == id)
+          .findFirst()
+          .orElse(null);
+    });
+    
+    when(firestoreService.getUserById(anyInt())).thenAnswer(invocation -> {
+      int id = invocation.getArgument(0);
+      return mockUsers.stream()
+          .filter(u -> u.getUserId() == id)
+          .findFirst()
+          .orElse(null);
+    });
+    
+    // Mock query methods
+    when(firestoreService.getFoodsByCategoryAndCalories(anyString(), anyInt()))
+        .thenAnswer(invocation -> {
+          String category = invocation.getArgument(0);
+          int maxCalories = invocation.getArgument(1);
+          return mockFoods.stream()
+              .filter(f -> f.getCategory().equals(category) && f.getCalories() < maxCalories)
+              .collect(java.util.stream.Collectors.toList());
+        });
+    when(firestoreService.getRecipesByCategoryAndCalories(anyString(), anyInt()))
+        .thenAnswer(invocation -> {
+          String category = invocation.getArgument(0);
+          int maxCalories = invocation.getArgument(1);
+          return mockRecipes.stream()
+              .filter(r -> r.getCategory().equals(category) && r.getTotalCalories() <= maxCalories)
+              .collect(java.util.stream.Collectors.toList());
+        });
+    when(firestoreService.getRecipesByCalories(anyInt()))
+        .thenAnswer(invocation -> {
+          int maxCalories = invocation.getArgument(0);
+          return mockRecipes.stream()
+              .filter(r -> r.getTotalCalories() <= maxCalories)
+              .collect(java.util.stream.Collectors.toList());
+        });
+    
+    // Mock add methods - actually add to the lists and check for duplicates
+    when(firestoreService.addFood(any(Food.class))).thenAnswer(invocation -> {
+      Food food = invocation.getArgument(0);
+      boolean exists = mockFoods.stream().anyMatch(f -> f.getFoodId() == food.getFoodId());
+      if (exists) {
+        return false;
+      }
+      mockFoods.add(food);
+      return true;
+    });
+    
+    when(firestoreService.addRecipe(any(Recipe.class))).thenAnswer(invocation -> {
+      Recipe recipe = invocation.getArgument(0);
+      boolean exists = mockRecipes.stream().anyMatch(r -> r.getRecipeId() == recipe.getRecipeId());
+      if (exists) {
+        return false;
+      }
+      mockRecipes.add(recipe);
+      return true;
+    });
+    
+    when(firestoreService.addUser(any(User.class))).thenAnswer(invocation -> {
+      User user = invocation.getArgument(0);
+      boolean exists = mockUsers.stream().anyMatch(u -> u.getUserId() == user.getUserId());
+      if (exists) {
+        return false;
+      }
+      mockUsers.add(user);
+      return true;
+    });
+    
+    // Mock update methods - the objects are already updated in-place, just return true
+    when(firestoreService.updateRecipe(any(Recipe.class))).thenReturn(true);
+    
+    when(firestoreService.updateUser(any(User.class))).thenAnswer(invocation -> {
+      User updatedUser = invocation.getArgument(0);
+      // Update the user in the list to reflect changes to likedRecipes
+      for (int i = 0; i < mockUsers.size(); i++) {
+        if (mockUsers.get(i).getUserId() == updatedUser.getUserId()) {
+          mockUsers.set(i, updatedUser);
+          break;
+        }
+      }
+      return true;
+    });
   }
   
   private long testStartTime;
@@ -63,7 +230,7 @@ public class RouteControllerTests {
   /**
    * runs after each test to log test completion and execution time.
    *
-   * @param testInfo current test information
+   * @param testInfo current test informationx
    */
   @AfterEach
   public void tearDown(TestInfo testInfo) {

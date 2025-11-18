@@ -49,57 +49,115 @@ public class MockApiServiceTests {
     firestoreService = org.mockito.Mockito.mock(FirestoreService.class);
     
     // Create some test data for tests that expect data to be present
+    // Use instance variables that persist across method calls
     ArrayList<Food> testFoods = new ArrayList<>();
     testFoods.add(new Food("Apple", 1, 95, "Fruit"));
     testFoods.add(new Food("Banana", 2, 105, "Fruit"));
     
     ArrayList<Recipe> testRecipes = new ArrayList<>();
+    // Recipe 1001 needs ingredients for calorie breakdown test
+    ArrayList<Food> recipe1001Ingredients = new ArrayList<>();
+    recipe1001Ingredients.add(new Food("Test Ingredient 1", 101, 200, "Test"));
+    recipe1001Ingredients.add(new Food("Test Ingredient 2", 102, 288, "Test"));
     Recipe testRecipe = new Recipe("Test Recipe", 1001, "Dessert", 
-        new ArrayList<>(), 10, 5, 488);
+        recipe1001Ingredients, 10, 5, 488);
     testRecipes.add(testRecipe);
+    
+    // Add another recipe in same category with lower calories for alternatives test
+    ArrayList<Food> recipe2Ingredients = new ArrayList<>();
+    recipe2Ingredients.add(new Food("Test Ingredient 3", 103, 100, "Test"));
+    Recipe testRecipe2 = new Recipe("Lower Cal Recipe", 1002, "Dessert", 
+        recipe2Ingredients, 5, 2, 100);
+    testRecipes.add(testRecipe2);
     
     ArrayList<User> testUsers = new ArrayList<>();
     User testUser = new User("Test User", 1);
     testUser.getLikedRecipes().add(testRecipe);
     testUsers.add(testUser);
     
-    // Mock FirestoreService to return test data
-    when(firestoreService.getAllFoods()).thenReturn(testFoods);
-    when(firestoreService.getAllRecipes()).thenReturn(testRecipes);
-    when(firestoreService.getAllUsers()).thenReturn(testUsers);
-    // Use thenAnswer to handle specific IDs and general case
+    // Mock FirestoreService to return test data - use thenAnswer to return current state
+    when(firestoreService.getAllFoods()).thenAnswer(invocation -> new ArrayList<>(testFoods));
+    when(firestoreService.getAllRecipes()).thenAnswer(invocation -> new ArrayList<>(testRecipes));
+    when(firestoreService.getAllUsers()).thenAnswer(invocation -> new ArrayList<>(testUsers));
+    
+    // Use thenAnswer to handle specific IDs and general case - check the lists dynamically
     when(firestoreService.getFoodById(anyInt())).thenAnswer(invocation -> {
       int id = invocation.getArgument(0);
-      if (id == 1) {
-        return testFoods.get(0);
-      }
-      if (id == 2) {
-        return testFoods.get(1);
-      }
-      return null;
+      return testFoods.stream()
+          .filter(f -> f.getFoodId() == id)
+          .findFirst()
+          .orElse(null);
     });
     when(firestoreService.getRecipeById(anyInt())).thenAnswer(invocation -> {
       int id = invocation.getArgument(0);
-      if (id == 1001) {
-        return testRecipe;
-      }
-      return null;
+      return testRecipes.stream()
+          .filter(r -> r.getRecipeId() == id)
+          .findFirst()
+          .orElse(null);
     });
     when(firestoreService.getUserById(anyInt())).thenAnswer(invocation -> {
       int id = invocation.getArgument(0);
-      if (id == 1) {
-        return testUser;
-      }
-      return null;
+      return testUsers.stream()
+          .filter(u -> u.getUserId() == id)
+          .findFirst()
+          .orElse(null);
     });
+    
+    // Mock query methods
     when(firestoreService.getFoodsByCategoryAndCalories(anyString(), anyInt()))
-        .thenReturn(new ArrayList<>());
+        .thenAnswer(invocation -> {
+          String category = invocation.getArgument(0);
+          int maxCalories = invocation.getArgument(1);
+          return testFoods.stream()
+              .filter(f -> f.getCategory().equals(category) && f.getCalories() < maxCalories)
+              .collect(java.util.stream.Collectors.toList());
+        });
     when(firestoreService.getRecipesByCategoryAndCalories(anyString(), anyInt()))
-        .thenReturn(new ArrayList<>());
-    when(firestoreService.getRecipesByCalories(anyInt())).thenReturn(new ArrayList<>());
-    when(firestoreService.addFood(any(Food.class))).thenReturn(true);
-    when(firestoreService.addRecipe(any(Recipe.class))).thenReturn(true);
-    when(firestoreService.addUser(any(User.class))).thenReturn(true);
+        .thenAnswer(invocation -> {
+          String category = invocation.getArgument(0);
+          int maxCalories = invocation.getArgument(1);
+          return testRecipes.stream()
+              .filter(r -> r.getCategory().equals(category) && r.getTotalCalories() <= maxCalories)
+              .collect(java.util.stream.Collectors.toList());
+        });
+    when(firestoreService.getRecipesByCalories(anyInt()))
+        .thenAnswer(invocation -> {
+          int maxCalories = invocation.getArgument(0);
+          return testRecipes.stream()
+              .filter(r -> r.getTotalCalories() <= maxCalories)
+              .collect(java.util.stream.Collectors.toList());
+        });
+    
+    // Mock add methods - actually add to the lists and check for duplicates
+    when(firestoreService.addFood(any(Food.class))).thenAnswer(invocation -> {
+      Food food = invocation.getArgument(0);
+      boolean exists = testFoods.stream().anyMatch(f -> f.getFoodId() == food.getFoodId());
+      if (exists) {
+        return false;
+      }
+      testFoods.add(food);
+      return true;
+    });
+    when(firestoreService.addRecipe(any(Recipe.class))).thenAnswer(invocation -> {
+      Recipe recipe = invocation.getArgument(0);
+      boolean exists = testRecipes.stream().anyMatch(r -> r.getRecipeId() == recipe.getRecipeId());
+      if (exists) {
+        return false;
+      }
+      testRecipes.add(recipe);
+      return true;
+    });
+    when(firestoreService.addUser(any(User.class))).thenAnswer(invocation -> {
+      User user = invocation.getArgument(0);
+      boolean exists = testUsers.stream().anyMatch(u -> u.getUserId() == user.getUserId());
+      if (exists) {
+        return false;
+      }
+      testUsers.add(user);
+      return true;
+    });
+    
+    // Mock update methods - objects are updated in-place, just return true
     when(firestoreService.updateRecipe(any(Recipe.class))).thenReturn(true);
     when(firestoreService.updateUser(any(User.class))).thenReturn(true);
 
