@@ -275,7 +275,6 @@ public class RouteControllerTests {
       {"recipeId":0,"name":"Test","ingredients":[]}
         """;
 
-    int recipeId = findUnusedRecipeId();
     mockMvc.perform(post("/recipe/addRecipe")
         .contentType(MediaType.APPLICATION_JSON)
         .content(json))

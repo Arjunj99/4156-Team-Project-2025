@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service class for managing Firestore database operations.
- * Handles all CRUD operations for Food, Recipe, and User entities.
  */
 @Service
 public class FirestoreService {
@@ -35,55 +34,16 @@ public class FirestoreService {
   private Firestore db;
 
   /**
-   * Initializes the Firestore connection after bean construction.
+   * Initializes the Firestore connection.
    */
-  // @PostConstruct
-  // public void initialize() {
-  //   try {
-  //     // Read credentials from resources
-  //     InputStream credentialsStream = FirestoreService.class.getClassLoader()
-  //         .getResourceAsStream(CREDENTIALS_PATH);
-
-  //     if (credentialsStream == null) {
-  //       throw new RuntimeException("❌ Could not find credentials file: " + CREDENTIALS_PATH);
-  //     }
-
-  //     System.out.println("📁 Found credentials file in resources: " + CREDENTIALS_PATH);
-
-  //     // Load credentials
-  //     ServiceAccountCredentials credentials =
-  //         ServiceAccountCredentials.fromStream(credentialsStream);
-
-  //     // Force-token refresh to ensure JSON is valid and service-account is used
-  //     credentials = (ServiceAccountCredentials) credentials.createScoped(
-  //         java.util.Collections.singletonList("https://www.googleapis.com/auth/cloud-platform")
-  //     );
-  //     credentials.refreshAccessToken();
-
-  //     System.out.println("🔍 Loaded credentials class = " + credentials.getClass().getName());
-  //     System.out.println("🔑 Using service account: " + credentials.getClientEmail());
-
-  //     // Build Firestore client
-  //     FirestoreOptions firestoreOptions =
-  //         FirestoreOptions.newBuilder()
-  //             .setProjectId(PROJECT_ID)
-  //             .setCredentials(credentials)
-  //             .build();
-
-  //     db = firestoreOptions.getService();
-  //     System.out.println("✅ Connected to Firestore project: " + PROJECT_ID);
-
-  //   } catch (Exception e) {
-  //     throw new RuntimeException("Failed to initialize Firestore: " + e.getMessage(), e);
-  //   }
-  // }
+ 
   @PostConstruct
   public void initialize() {
     try {
       Firestore db = FirestoreOptions.getDefaultInstance().getService();
       this.db = db;
 
-      System.out.println("✅ Firestore initialized using Cloud Run ADC");
+      System.out.println("Firestore initialized using Cloud Run ADC");
 
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialize Firestore: " + e.getMessage(), e);
@@ -100,7 +60,7 @@ public class FirestoreService {
     if (db != null) {
       try {
         db.close();
-        System.out.println("🔌 Firestore connection closed");
+        System.out.println("Firestore connection closed");
       } catch (Exception e) {
         System.err.println("Error closing Firestore connection: " + e.getMessage());
       }
