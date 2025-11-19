@@ -131,15 +131,24 @@ public class MockApiServiceDataPersistenceTests {
     // Delete all objects
     assertTrue(firestoreService.deleteUser(TEST_USER_ID), "User should be deleted");
     assertTrue(firestoreService.deleteRecipe(TEST_RECIPE_ID), "Recipe should be deleted");
-    assertTrue(firestoreService.deleteFood(TEST_INGREDIENT_FOOD_ID_2), "Ingredient 2 should be deleted");
-    assertTrue(firestoreService.deleteFood(TEST_INGREDIENT_FOOD_ID_1), "Ingredient 1 should be deleted");
+    assertTrue(
+        firestoreService.deleteFood(TEST_INGREDIENT_FOOD_ID_2), "Ingredient 2 should be deleted");
+    assertTrue(
+        firestoreService.deleteFood(TEST_INGREDIENT_FOOD_ID_1), "Ingredient 1 should be deleted");
     assertTrue(firestoreService.deleteFood(TEST_FOOD_ID), "Food should be deleted");
 
     // Verify all objects are deleted
-    assertNull(firestoreService.getUserById(TEST_USER_ID), "User should not exist after deletion");
-    assertNull(firestoreService.getRecipeById(TEST_RECIPE_ID), "Recipe should not exist after deletion");
+    assertNull(
+        firestoreService.getUserById(TEST_USER_ID), "User should not exist after deletion");
+    assertNull(
+        firestoreService.getRecipeById(TEST_RECIPE_ID),
+        "Recipe should not exist after deletion");
     assertNull(firestoreService.getFoodById(TEST_FOOD_ID), "Food should not exist after deletion");
-    assertNull(firestoreService.getFoodById(TEST_INGREDIENT_FOOD_ID_1), "Ingredient 1 should not exist after deletion");
-    assertNull(firestoreService.getFoodById(TEST_INGREDIENT_FOOD_ID_2), "Ingredient 2 should not exist after deletion");
+    assertNull(
+        firestoreService.getFoodById(TEST_INGREDIENT_FOOD_ID_1),
+        "Ingredient 1 should not exist after deletion");
+    assertNull(
+        firestoreService.getFoodById(TEST_INGREDIENT_FOOD_ID_2),
+        "Ingredient 2 should not exist after deletion");
   }
 }
