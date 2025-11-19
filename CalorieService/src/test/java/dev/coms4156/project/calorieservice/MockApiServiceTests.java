@@ -28,7 +28,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * This class contains the unit tests for the MockApiService class.
  */
-@SpringBootTest
 public class MockApiServiceTests {
 
   private static List<Food> foods;
