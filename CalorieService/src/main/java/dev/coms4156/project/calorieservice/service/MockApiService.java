@@ -353,21 +353,29 @@ public class MockApiService {
         return null;
       }
 
-      // Get all recipes and filter by category
-      List<Recipe> allRecipes = getRecipes();
+      // Use Firestore queries to get recipes by category instead of fetching all
+      // Use a very high calorie limit to effectively get all recipes in each category
+      List<Recipe> categoryRecipes = new ArrayList<>();
+      for (String category : likedCategories) {
+        List<Recipe> recipes = firestoreService.getRecipesByCategoryAndCalories(
+            category, Integer.MAX_VALUE);
+        categoryRecipes.addAll(recipes);
+      }
 
-      List<Recipe> recommendations = allRecipes.stream()
-          .filter(recipe -> likedCategories.contains(recipe.getCategory()))
+      // Filter out already liked recipes
+      List<Recipe> recommendations = categoryRecipes.stream()
           .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
           .collect(Collectors.toList());
 
       if (recommendations.size() < 10) {
-        List<Recipe> additionalRecipes = allRecipes.stream()
+        // Get additional recipes from all categories, excluding already liked ones
+        List<Recipe> additionalRecipes = firestoreService.getRecipesByCalories(Integer.MAX_VALUE);
+        List<Recipe> filteredAdditional = additionalRecipes.stream()
             .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
             .filter(recipe -> !recommendations.contains(recipe))
             .collect(Collectors.toList());
 
-        recommendations.addAll(additionalRecipes);
+        recommendations.addAll(filteredAdditional);
       }
 
       Collections.shuffle(recommendations);
@@ -396,13 +404,14 @@ public class MockApiService {
       int baseCalories = baseRecipe.getTotalCalories();
       String baseCategory = baseRecipe.getCategory();
 
-      // Get all recipes and filter
-      List<Recipe> allRecipes = getRecipes();
+      // Use Firestore query to get recipes in same category with lower calories
+      // Use baseCalories - 1 to get only recipes with calories strictly less than base
+      List<Recipe> candidates = firestoreService.getRecipesByCategoryAndCalories(
+          baseCategory, baseCalories - 1);
 
-      List<Recipe> candidates = allRecipes.stream()
+      // Filter out the base recipe itself
+      candidates = candidates.stream()
           .filter(recipe -> recipe.getRecipeId() != recipeId)
-          .filter(recipe -> sameCategory(baseCategory, recipe.getCategory()))
-          .filter(recipe -> recipe.getTotalCalories() < baseCalories)
           .collect(Collectors.toList());
 
       List<Recipe> topAlternatives = candidates.stream()
@@ -426,23 +435,6 @@ public class MockApiService {
       System.err.println("Error getting recipe alternatives: " + e.getMessage());
       return Optional.empty();
     }
-  }
-
-  /**
-   * Helper method to check if two categories are the same (case-insensitive).
-   *
-   * @param first first category {@code String}
-   * @param second second category {@code String}
-   * @return {@code true} if categories are the same, {@code false} otherwise
-   */
-  private boolean sameCategory(String first, String second) {
-    if (first == null && second == null) {
-      return true;
-    }
-    if (first == null || second == null) {
-      return false;
-    }
-    return first.equalsIgnoreCase(second);
   }
 
   /**

@@ -43,7 +43,7 @@ public class FirestoreService {
       Firestore db = FirestoreOptions.getDefaultInstance().getService();
       this.db = db;
 
-      System.out.println("Firestore initialized using Cloud Run ADC");
+      System.out.println("Firestore initialized");
 
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialize Firestore: " + e.getMessage(), e);
@@ -446,6 +446,50 @@ public class FirestoreService {
     DocumentReference docRef = db.collection(USERS_COLLECTION)
         .document(String.valueOf(user.getUserId()));
     ApiFuture<WriteResult> future = docRef.set(userToMap(user));
+    future.get();
+    return true;
+  }
+
+  // ==================== DELETE OPERATIONS ====================
+
+  /**
+   * Deletes a food from Firestore.
+   *
+   * @param foodId the ID of the food to delete
+   * @return true if the food was deleted, false if it didn't exist
+   */
+  public boolean deleteFood(int foodId) throws ExecutionException, InterruptedException {
+    DocumentReference docRef = db.collection(FOODS_COLLECTION)
+        .document(String.valueOf(foodId));
+    ApiFuture<WriteResult> future = docRef.delete();
+    future.get();
+    return true;
+  }
+
+  /**
+   * Deletes a recipe from Firestore.
+   *
+   * @param recipeId the ID of the recipe to delete
+   * @return true if the recipe was deleted, false if it didn't exist
+   */
+  public boolean deleteRecipe(int recipeId) throws ExecutionException, InterruptedException {
+    DocumentReference docRef = db.collection(RECIPES_COLLECTION)
+        .document(String.valueOf(recipeId));
+    ApiFuture<WriteResult> future = docRef.delete();
+    future.get();
+    return true;
+  }
+
+  /**
+   * Deletes a user from Firestore.
+   *
+   * @param userId the ID of the user to delete
+   * @return true if the user was deleted, false if it didn't exist
+   */
+  public boolean deleteUser(int userId) throws ExecutionException, InterruptedException {
+    DocumentReference docRef = db.collection(USERS_COLLECTION)
+        .document(String.valueOf(userId));
+    ApiFuture<WriteResult> future = docRef.delete();
     future.get();
     return true;
   }
