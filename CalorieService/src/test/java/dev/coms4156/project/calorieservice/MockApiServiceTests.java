@@ -5,15 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
 import dev.coms4156.project.calorieservice.models.User;
+import dev.coms4156.project.calorieservice.service.FirestoreService;
 import dev.coms4156.project.calorieservice.service.MockApiService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -22,7 +28,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * This class contains the unit tests for the MockApiService class.
  */
-@SpringBootTest
 public class MockApiServiceTests {
 
   private static List<Food> foods;
@@ -32,13 +37,130 @@ public class MockApiServiceTests {
   public static Food food1;
   public static Recipe recipe1;
   public static User user1;
+  private static FirestoreService firestoreService;
 
   /**
    * This method sets up our testing variables.
    */
   @BeforeAll
-  public static void setUpDataForTesting() {
-    service = new MockApiService();
+  public static void setUpDataForTesting() throws ExecutionException, InterruptedException {
+    // Create mock FirestoreService manually since @BeforeAll is static
+    firestoreService = org.mockito.Mockito.mock(FirestoreService.class);
+    
+    // Create some test data for tests that expect data to be present
+    // Use instance variables that persist across method calls
+    ArrayList<Food> testFoods = new ArrayList<>();
+    testFoods.add(new Food("Apple", 1, 95, "Fruit"));
+    testFoods.add(new Food("Banana", 2, 105, "Fruit"));
+    
+    ArrayList<Recipe> testRecipes = new ArrayList<>();
+    // Recipe 1001 needs ingredients for calorie breakdown test
+    ArrayList<Food> recipe1001Ingredients = new ArrayList<>();
+    recipe1001Ingredients.add(new Food("Test Ingredient 1", 101, 200, "Test"));
+    recipe1001Ingredients.add(new Food("Test Ingredient 2", 102, 288, "Test"));
+    Recipe testRecipe = new Recipe("Test Recipe", 1001, "Dessert", 
+        recipe1001Ingredients, 10, 5, 488);
+    testRecipes.add(testRecipe);
+    
+    // Add another recipe in same category with lower calories for alternatives test
+    ArrayList<Food> recipe2Ingredients = new ArrayList<>();
+    recipe2Ingredients.add(new Food("Test Ingredient 3", 103, 100, "Test"));
+    Recipe testRecipe2 = new Recipe("Lower Cal Recipe", 1002, "Dessert", 
+        recipe2Ingredients, 5, 2, 100);
+    testRecipes.add(testRecipe2);
+    
+    ArrayList<User> testUsers = new ArrayList<>();
+    User testUser = new User("Test User", 1);
+    testUser.getLikedRecipes().add(testRecipe);
+    testUsers.add(testUser);
+    
+    // Mock FirestoreService to return test data - use thenAnswer to return current state
+    when(firestoreService.getAllFoods()).thenAnswer(invocation -> new ArrayList<>(testFoods));
+    when(firestoreService.getAllRecipes()).thenAnswer(invocation -> new ArrayList<>(testRecipes));
+    when(firestoreService.getAllUsers()).thenAnswer(invocation -> new ArrayList<>(testUsers));
+    
+    // Use thenAnswer to handle specific IDs and general case - check the lists dynamically
+    when(firestoreService.getFoodById(anyInt())).thenAnswer(invocation -> {
+      int id = invocation.getArgument(0);
+      return testFoods.stream()
+          .filter(f -> f.getFoodId() == id)
+          .findFirst()
+          .orElse(null);
+    });
+    when(firestoreService.getRecipeById(anyInt())).thenAnswer(invocation -> {
+      int id = invocation.getArgument(0);
+      return testRecipes.stream()
+          .filter(r -> r.getRecipeId() == id)
+          .findFirst()
+          .orElse(null);
+    });
+    when(firestoreService.getUserById(anyInt())).thenAnswer(invocation -> {
+      int id = invocation.getArgument(0);
+      return testUsers.stream()
+          .filter(u -> u.getUserId() == id)
+          .findFirst()
+          .orElse(null);
+    });
+    
+    // Mock query methods
+    when(firestoreService.getFoodsByCategoryAndCalories(anyString(), anyInt()))
+        .thenAnswer(invocation -> {
+          String category = invocation.getArgument(0);
+          int maxCalories = invocation.getArgument(1);
+          return testFoods.stream()
+              .filter(f -> f.getCategory().equals(category) && f.getCalories() < maxCalories)
+              .collect(java.util.stream.Collectors.toList());
+        });
+    when(firestoreService.getRecipesByCategoryAndCalories(anyString(), anyInt()))
+        .thenAnswer(invocation -> {
+          String category = invocation.getArgument(0);
+          int maxCalories = invocation.getArgument(1);
+          return testRecipes.stream()
+              .filter(r -> r.getCategory().equals(category) && r.getTotalCalories() <= maxCalories)
+              .collect(java.util.stream.Collectors.toList());
+        });
+    when(firestoreService.getRecipesByCalories(anyInt()))
+        .thenAnswer(invocation -> {
+          int maxCalories = invocation.getArgument(0);
+          return testRecipes.stream()
+              .filter(r -> r.getTotalCalories() <= maxCalories)
+              .collect(java.util.stream.Collectors.toList());
+        });
+    
+    // Mock add methods - actually add to the lists and check for duplicates
+    when(firestoreService.addFood(any(Food.class))).thenAnswer(invocation -> {
+      Food food = invocation.getArgument(0);
+      boolean exists = testFoods.stream().anyMatch(f -> f.getFoodId() == food.getFoodId());
+      if (exists) {
+        return false;
+      }
+      testFoods.add(food);
+      return true;
+    });
+    when(firestoreService.addRecipe(any(Recipe.class))).thenAnswer(invocation -> {
+      Recipe recipe = invocation.getArgument(0);
+      boolean exists = testRecipes.stream().anyMatch(r -> r.getRecipeId() == recipe.getRecipeId());
+      if (exists) {
+        return false;
+      }
+      testRecipes.add(recipe);
+      return true;
+    });
+    when(firestoreService.addUser(any(User.class))).thenAnswer(invocation -> {
+      User user = invocation.getArgument(0);
+      boolean exists = testUsers.stream().anyMatch(u -> u.getUserId() == user.getUserId());
+      if (exists) {
+        return false;
+      }
+      testUsers.add(user);
+      return true;
+    });
+    
+    // Mock update methods - objects are updated in-place, just return true
+    when(firestoreService.updateRecipe(any(Recipe.class))).thenReturn(true);
+    when(firestoreService.updateUser(any(User.class))).thenReturn(true);
+
+    service = new MockApiService(firestoreService);
     service.setTestMode(true);
     foods = service.getFoods();
     recipes = service.getRecipes();
@@ -50,8 +172,15 @@ public class MockApiServiceTests {
   }
 
   @Test
-  public void initializeEmptyMockApiServiceValidTest() {
-    MockApiService emptyService = new MockApiService();
+  public void initializeEmptyMockApiServiceValidTest()
+      throws ExecutionException, InterruptedException {
+    // Create a new mock for this test
+    FirestoreService mockFirestore = org.mockito.Mockito.mock(FirestoreService.class);
+    when(mockFirestore.getAllFoods()).thenReturn(new ArrayList<>());
+    when(mockFirestore.getAllRecipes()).thenReturn(new ArrayList<>());
+    when(mockFirestore.getAllUsers()).thenReturn(new ArrayList<>());
+    
+    MockApiService emptyService = new MockApiService(mockFirestore);
     assertNotNull(emptyService);
     assertNotNull(emptyService.getFoods());
     assertNotNull(emptyService.getRecipes());
@@ -83,8 +212,13 @@ public class MockApiServiceTests {
   }
 
   @Test
-  public void loadUsersWithRecipeIdsInvalidTest() {
-    MockApiService serviceWithMissingFile = new MockApiService();
+  public void loadUsersWithRecipeIdsInvalidTest() throws ExecutionException, InterruptedException {
+    // Create a new mock for this test
+    FirestoreService mockFirestore = org.mockito.Mockito.mock(FirestoreService.class);
+    when(mockFirestore.getAllUsers()).thenReturn(new ArrayList<>());
+    when(mockFirestore.getRecipeById(anyInt())).thenReturn(null);
+    
+    MockApiService serviceWithMissingFile = new MockApiService(mockFirestore);
 
     assertNotNull(serviceWithMissingFile.getUsers());
     assertTrue(serviceWithMissingFile.getUsers().size() >= 0);

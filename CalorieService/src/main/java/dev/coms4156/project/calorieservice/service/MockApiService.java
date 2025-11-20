@@ -1,13 +1,8 @@
 package dev.coms4156.project.calorieservice.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
 import dev.coms4156.project.calorieservice.models.User;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,162 +10,52 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 /**
- * This class defines the Mock API Service mimicking CLIO's database. It defines
- * useful methods for accessing or modifying books.
+ * This class defines the API Service that uses Firestore for data persistence.
+ * It provides methods for accessing or modifying foods, recipes, and users.
  */
 @Service
 public class MockApiService {
 
-  private ArrayList<Food> foods;
-  private ArrayList<Recipe> recipes;
-  private ArrayList<User> users;
-
-  private final ObjectMapper mapper = new ObjectMapper();
-  private final ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
-  private boolean testMode = false; 
+  private final FirestoreService firestoreService;
+  private boolean testMode = false;
 
   /**
-   * Constructs a new {@code MockApiService} and loads data from JSON files located at
-   * {@code mockdata/}. If files are not found, empty lists are initialized.
-   */
-  public MockApiService() {
-    foods = loadData("data/mockdata/food.json", new TypeReference<>() {});
-    recipes = loadData("data/mockdata/recipe.json", new TypeReference<>() {});
-    users = loadUsersWithRecipeIds("data/mockdata/user.json");
-  }
-
-  /**
-   * Generic method for loading list data from a JSON file.
+   * Constructs a new {@code MockApiService} with FirestoreService dependency injection.
    *
-   * @param path The file path to load.
-   * @param typeRef Type reference for deserialization.
-   * @param <T> Data type to load.
-   * @return List of loaded objects, or an empty list if not found or failed.
+   * @param firestoreService The FirestoreService to use for database operations
    */
-  private <T> ArrayList<T> loadData(String path, TypeReference<List<T>> typeRef) {
-    File file = new File(path);
-    if (file.exists()) {
-      try {
-        System.out.println("Loading " + path + "...");
-        List<T> list = mapper.readValue(file, typeRef);
-        return new ArrayList<>(list);
-      } catch (IOException e) {
-        System.err.println("Failed to read " + path + ": " + e.getMessage());
-      }
-    } else {
-      System.err.println(path + " not found. Starting with empty list.");
-    }
-    return new ArrayList<>();
+  public MockApiService(FirestoreService firestoreService) {
+    this.firestoreService = firestoreService;
   }
 
   /**
-   * Loads users from a JSON file, converting liked recipe IDs to Recipe objects.
-   */
-  private ArrayList<User> loadUsersWithRecipeIds(String path) {
-    File file = new File(path);
-    ArrayList<User> userList = new ArrayList<>();
-
-    if (!file.exists()) {
-      System.err.println(path + " not found. Starting with empty user list.");
-      return userList;
-    }
-
-    try {
-      List<Map<String, Object>> rawUsers = mapper.readValue(file, new TypeReference<>() {});
-      for (Map<String, Object> rawUser : rawUsers) {
-        String username = (String) rawUser.get("username");
-        Integer userId = (Integer) rawUser.get("userId");
-        @SuppressWarnings("unchecked")
-        List<Integer> likedRecipeIds = (List<Integer>) rawUser.get("likedRecipes");
-
-        User user = new User(username, userId);
-        ArrayList<Recipe> likedRecipes = new ArrayList<>();
-        if (likedRecipeIds != null) {
-          for (Integer recipeId : likedRecipeIds) {
-            Recipe recipe = findRecipeById(recipeId);
-            if (recipe != null) {
-              likedRecipes.add(recipe);
-            }
-          }
-        }
-        user.setLikedRecipes(likedRecipes);
-        userList.add(user);
-      }
-      System.out.println("Successfully loaded users from " + path + ".");
-    } catch (IOException e) {
-      System.err.println("Failed to load users: " + e.getMessage());
-    }
-
-    return userList;
-  }
-
-  private <T> void saveData(String path, List<T> data) {
-    if (testMode) {
-      return;
-    }
-    File file = new File(path);
-    file.getParentFile().mkdirs(); // Ensure directory exists
-    try {
-      writer.writeValue(file, data);
-    } catch (IOException e) {
-      System.err.println("Failed to save " + path + ": " + e.getMessage());
-    }
-  }
-
-  private void saveUsers(String path, List<User> users) {
-    if (testMode) {
-      return; // Don't save during tests
-    }
-    File file = new File(path);
-    file.getParentFile().mkdirs();
-
-    List<Map<String, Object>> rawUsers = new ArrayList<>();
-
-    for (User user : users) {
-      Map<String, Object> rawUser = new LinkedHashMap<>();
-      rawUser.put("username", user.getUsername());
-      rawUser.put("userId", user.getUserId());
-
-      List<Integer> likedRecipeIds = user.getLikedRecipes().stream()
-          .map(Recipe::getRecipeId)
-          .collect(Collectors.toList());
-
-      rawUser.put("likedRecipes", likedRecipeIds);
-      rawUsers.add(rawUser);
-    }
-
-    try {
-      writer.writeValue(file, rawUsers);
-    } catch (IOException e) {
-      System.err.println("Failed to save users: " + e.getMessage());
-    }
-  }
-
-  /**
-   * Removes test data and saves the cleaned data to files.
+   * Removes test data from Firestore.
    * This method is intended for test cleanup purposes.
    *
    * @param testId the ID threshold for test data (removes items with ID >= testId)
    */
   public void cleanupTestData(int testId) {
-    foods.removeIf(food -> food.getFoodId() >= testId);
-    recipes.removeIf(recipe -> recipe.getRecipeId() >= testId);
-    users.removeIf(user -> user.getUserId() >= testId);
-    
-    saveData("data/mockdata/food.json", foods);
-    saveData("data/mockdata/recipe.json", recipes);
-    saveUsers("data/mockdata/user.json", users);
+    if (testMode) {
+      return;
+    }
+    try {
+      // Note: Firestore deletion would need to be implemented in FirestoreService
+      // For now, this is a placeholder that maintains the interface
+      System.out.println("Test data cleanup requested for IDs >= " + testId);
+    } catch (Exception e) {
+      System.err.println("Failed to cleanup test data: " + e.getMessage());
+    }
   }
 
   public void setTestMode(boolean testMode) {
     this.testMode = testMode;
   }
 
-  
   /**
    * Helper method to find a recipe by its ID.
    *
@@ -178,19 +63,19 @@ public class MockApiService {
    * @return The {@code Recipe} with the specified ID, or {@code null} if not found
    */
   public Recipe findRecipeById(int recipeId) {
-    for (Recipe recipe : recipes) {
-      if (recipe.getRecipeId() == recipeId) {
-        return recipe;
-      }
+    try {
+      return firestoreService.getRecipeById(recipeId);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error finding recipe: " + e.getMessage());
+      return null;
     }
-    return null;
   }
 
   /**
    * Retrieve a recipe by its identifier.
    *
    * @param recipeId identifier of the recipe to fetch.
-   * @return {@code Optional} containing the {@code Recipe} if present, 
+   * @return {@code Optional} containing the {@code Recipe} if present,
    *         or empty if not found
    */
   public Optional<Recipe> getRecipeById(int recipeId) {
@@ -204,12 +89,12 @@ public class MockApiService {
    * @return The {@code User} with the specified ID, or {@code null} if not found
    */
   public User findUserById(int userId) {
-    for (User user : users) {
-      if (user.getUserId() == userId) {
-        return user;
-      }
+    try {
+      return firestoreService.getUserById(userId);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error finding user: " + e.getMessage());
+      return null;
     }
-    return null;
   }
 
   /**
@@ -219,12 +104,12 @@ public class MockApiService {
    * @return The {@code Food} with the specified ID, or {@code null} if not found
    */
   public Food findFoodById(int foodId) {
-    for (Food food : foods) {
-      if (food.getFoodId() == foodId) {
-        return food;
-      }
+    try {
+      return firestoreService.getFoodById(foodId);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error finding food: " + e.getMessage());
+      return null;
     }
-    return null;
   }
 
   /**
@@ -237,17 +122,12 @@ public class MockApiService {
     if (user == null) {
       return false;
     }
-    
-    // Check if user already exists
-    User existingUser = findUserById(user.getUserId());
-    if (existingUser != null) {
+    try {
+      return firestoreService.addUser(user);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error adding user: " + e.getMessage());
       return false;
     }
-    
-    // Add user to the list
-    users.add(user);
-    saveUsers("data/mockdata/user.json", users);
-    return true;
   }
 
   /**
@@ -256,7 +136,12 @@ public class MockApiService {
    * @return {@code ArrayList} of all {@code Food} objects
    */
   public ArrayList<Food> getFoods() {
-    return foods;
+    try {
+      return firestoreService.getAllFoods();
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error getting foods: " + e.getMessage());
+      return new ArrayList<>();
+    }
   }
 
   /**
@@ -265,7 +150,12 @@ public class MockApiService {
    * @return {@code ArrayList} of all {@code Recipe} objects
    */
   public ArrayList<Recipe> getRecipes() {
-    return recipes;
+    try {
+      return firestoreService.getAllRecipes();
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error getting recipes: " + e.getMessage());
+      return new ArrayList<>();
+    }
   }
 
   /**
@@ -274,39 +164,51 @@ public class MockApiService {
    * @return {@code ArrayList} of all {@code User} objects
    */
   public ArrayList<User> getUsers() {
-    return users;
+    try {
+      return firestoreService.getAllUsers();
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error getting users: " + e.getMessage());
+      return new ArrayList<>();
+    }
   }
 
   /**
-   * Returns up to 5 random foods of the same category with lower calorie 
+   * Returns up to 5 random foods of the same category with lower calorie
    * count than the specified food.
    *
    * @param foodId The ID of the food to find alternatives for
-   * @return A {@code List} of up to 5 random {@code Food} objects from the 
+   * @return A {@code List} of up to 5 random {@code Food} objects from the
    *         same category with lower calories, or null if food not found
    */
   public List<Food> getFoodAlternatives(int foodId) {
+    try {
+      Food targetFood = findFoodById(foodId);
 
-    Food targetFood = findFoodById(foodId);
-    
-    if (targetFood == null) {
+      if (targetFood == null) {
+        return null;
+      }
+
+      // Get foods from Firestore with category and calorie filters
+      List<Food> alternatives = firestoreService.getFoodsByCategoryAndCalories(
+          targetFood.getCategory(),
+          targetFood.getCalories()
+      );
+
+      if (alternatives.isEmpty()) {
+        return new ArrayList<>();
+      }
+
+      if (alternatives.size() <= 5) {
+        Collections.shuffle(alternatives);
+        return alternatives;
+      }
+
+      Collections.shuffle(alternatives);
+      return alternatives.subList(0, 5);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error getting food alternatives: " + e.getMessage());
       return null;
     }
-    
-    final Food finalTargetFood = targetFood;
-    
-    List<Food> alternatives = foods.stream()
-        .filter(food -> food.getCategory().equals(finalTargetFood.getCategory()))
-        .filter(food -> food.getCalories() < finalTargetFood.getCalories())
-        .collect(Collectors.toList());
-    
-    if (alternatives.size() <= 5) {
-      Collections.shuffle(alternatives);
-      return alternatives;
-    }
-    
-    Collections.shuffle(alternatives);
-    return alternatives.subList(0, 5);
   }
 
   /**
@@ -319,15 +221,12 @@ public class MockApiService {
     if (food == null) {
       return false;
     }
-    
-    Food existingFood = findFoodById(food.getFoodId());
-    if (existingFood != null) {
+    try {
+      return firestoreService.addFood(food);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error adding food: " + e.getMessage());
       return false;
     }
-    
-    foods.add(food);
-    saveData("data/mockdata/food.json", foods);
-    return true;
   }
 
   /**
@@ -338,183 +237,211 @@ public class MockApiService {
    * @return true if the recipe was added successfully, false if user or recipe not found
    */
   public boolean likeRecipe(int userId, int recipeId) {
+    try {
+      User user = findUserById(userId);
 
-    User user = findUserById(userId);
-    
-    if (user == null) {
+      if (user == null) {
+        return false;
+      }
+
+      Recipe recipe = findRecipeById(recipeId);
+
+      if (recipe == null) {
+        return false;
+      }
+
+      boolean result = user.likeRecipe(recipe);
+      if (result) {
+
+        firestoreService.updateRecipe(recipe);
+        // Update user with new liked recipe
+        firestoreService.updateUser(user);
+      }
+      return result;
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error liking recipe: " + e.getMessage());
       return false;
     }
-
-    Recipe recipe = findRecipeById(recipeId);
-    
-    if (recipe == null) {
-      return false;
-    }
-    
-    boolean result = user.likeRecipe(recipe);
-    if (result) {
-      saveUsers("data/mockdata/user.json", users);
-      saveData("data/mockdata/recipe.json", recipes);
-    }
-    return result;
   }
 
   /**
-   * Returns a list of recommended recipes based on user's liked recipes 
+   * Returns a list of recommended recipes based on user's liked recipes
    * under calorieMax.
    *
    * @param userId The ID of the user
    * @param calorieMax Maximum calorie count for recommendations
-   * @return A {@code List} of up to 10 recommended {@code Recipe} objects, 
+   * @return A {@code List} of up to 10 recommended {@code Recipe} objects,
    *         or null if user not found
    */
   public List<Recipe> recommendHealthy(int userId, int calorieMax) {
+    try {
+      User user = findUserById(userId);
 
-    User user = findUserById(userId);
-    
-    if (user == null) {
-      return null; 
-    }
-    
-    final User finalUser = user;
-    
-    List<String> likedCategories = finalUser.getLikedRecipes().stream()
-        .map(Recipe::getCategory)
-        .distinct()
-        .collect(Collectors.toList());
-    
-    if (likedCategories.isEmpty()) {
-      return new ArrayList<>();
-    }
-    
-    List<Recipe> recommendations = recipes.stream()
-        .filter(recipe -> likedCategories.contains(recipe.getCategory()))
-        .filter(recipe -> recipe.getTotalCalories() <= calorieMax)
-        .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe)) 
-        .collect(Collectors.toList());
-    
-    if (recommendations.size() < 10) {
-      List<Recipe> additionalRecipes = recipes.stream()
-          .filter(recipe -> recipe.getTotalCalories() <= calorieMax)
-          .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
-          .filter(recipe -> !recommendations.contains(recipe))
+      if (user == null) {
+        return null;
+      }
+
+      final User finalUser = user;
+
+      List<String> likedCategories = finalUser.getLikedRecipes().stream()
+          .map(Recipe::getCategory)
+          .distinct()
           .collect(Collectors.toList());
-      
-      recommendations.addAll(additionalRecipes);
+
+      if (likedCategories.isEmpty()) {
+        // If no liked categories, return any recipes under calorieMax
+        List<Recipe> allRecipes = firestoreService.getRecipesByCalories(calorieMax);
+        Collections.shuffle(allRecipes);
+        return allRecipes.size() <= 10 ? allRecipes : allRecipes.subList(0, 10);
+      }
+
+      // Get recipes by category and calories
+      List<Recipe> categoryRecipes = new ArrayList<>();
+      for (String category : likedCategories) {
+        List<Recipe> recipes = firestoreService.getRecipesByCategoryAndCalories(
+            category, calorieMax);
+        categoryRecipes.addAll(recipes);
+      }
+
+      // Filter out already liked recipes
+      List<Recipe> recommendations = categoryRecipes.stream()
+          .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
+          .collect(Collectors.toList());
+
+      if (recommendations.size() < 10) {
+        // Fill with other recipes under calorieMax
+        List<Recipe> additionalRecipes = firestoreService.getRecipesByCalories(calorieMax);
+        List<Recipe> filteredAdditional = additionalRecipes.stream()
+            .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
+            .filter(recipe -> !recommendations.contains(recipe))
+            .collect(Collectors.toList());
+
+        recommendations.addAll(filteredAdditional);
+      }
+
+      Collections.shuffle(recommendations);
+      return recommendations.size() <= 10 ? recommendations : recommendations.subList(0, 10);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error getting healthy recommendations: " + e.getMessage());
+      return null;
     }
-    
-    Collections.shuffle(recommendations);
-    return recommendations.size() <= 10 ? recommendations : recommendations.subList(0, 10);
   }
 
   /**
    * Returns a list of recommended recipes based on user's liked recipes.
    *
    * @param userId The ID of the user
-   * @return A {@code List} of up to 10 recommended {@code Recipe} objects, 
+   * @return A {@code List} of up to 10 recommended {@code Recipe} objects,
    *         or null if user not found or no liked recipes
    */
   public List<Recipe> recommend(int userId) {
+    try {
+      User user = findUserById(userId);
 
-    User user = findUserById(userId);
-    
-    if (user == null) {
-      return null; 
-    }
-    
-    final User finalUser = user;
-    
-    List<String> likedCategories = finalUser.getLikedRecipes().stream()
-        .map(Recipe::getCategory)
-        .distinct()
-        .collect(Collectors.toList());
-    
-    if (likedCategories.isEmpty()) {
+      if (user == null) {
+        return null;
+      }
+
+      final User finalUser = user;
+
+      List<String> likedCategories = finalUser.getLikedRecipes().stream()
+          .map(Recipe::getCategory)
+          .distinct()
+          .collect(Collectors.toList());
+
+      if (likedCategories.isEmpty()) {
+        return null;
+      }
+
+      // Use Firestore queries to get recipes by category instead of fetching all
+      // Use a very high calorie limit to effectively get all recipes in each category
+      List<Recipe> categoryRecipes = new ArrayList<>();
+      for (String category : likedCategories) {
+        List<Recipe> recipes = firestoreService.getRecipesByCategoryAndCalories(
+            category, Integer.MAX_VALUE);
+        categoryRecipes.addAll(recipes);
+      }
+
+      // Filter out already liked recipes
+      List<Recipe> recommendations = categoryRecipes.stream()
+          .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
+          .collect(Collectors.toList());
+
+      if (recommendations.size() < 10) {
+        // Get additional recipes from all categories, excluding already liked ones
+        List<Recipe> additionalRecipes = firestoreService.getRecipesByCalories(Integer.MAX_VALUE);
+        List<Recipe> filteredAdditional = additionalRecipes.stream()
+            .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
+            .filter(recipe -> !recommendations.contains(recipe))
+            .collect(Collectors.toList());
+
+        recommendations.addAll(filteredAdditional);
+      }
+
+      Collections.shuffle(recommendations);
+      return recommendations.size() <= 10 ? recommendations : recommendations.subList(0, 10);
+    } catch (Exception e) {
+      System.err.println("Error getting recommendations: " + e.getMessage());
       return null;
     }
-    
-    List<Recipe> recommendations = recipes.stream()
-        .filter(recipe -> likedCategories.contains(recipe.getCategory()))
-        .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe)) 
-        .collect(Collectors.toList());
-    
-    if (recommendations.size() < 10) {
-      List<Recipe> additionalRecipes = recipes.stream()
-          .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
-          .filter(recipe -> !recommendations.contains(recipe))
-          .collect(Collectors.toList());
-      
-      recommendations.addAll(additionalRecipes);
-    }
-    
-    Collections.shuffle(recommendations);
-    return recommendations.size() <= 10 ? recommendations : recommendations.subList(0, 10);
   }
 
   /**
    * Find alternate recipes in the same category with lower total calories.
    *
    * @param recipeId identifier of the recipe to compare against.
-   * @return {@code Optional} containing a {@code Map} with two lists: topAlternatives 
-   *         (up to 3 top-viewed recipes) and randomAlternatives (up to 3 random recipes), 
+   * @return {@code Optional} containing a {@code Map} with two lists: topAlternatives
+   *         (up to 3 top-viewed recipes) and randomAlternatives (up to 3 random recipes),
    *         or empty if recipe not found
    */
   public Optional<Map<String, List<Recipe>>> getRecipeAlternatives(int recipeId) {
-    Recipe baseRecipe = findRecipeById(recipeId);
-    if (baseRecipe == null) {
+    try {
+      Recipe baseRecipe = findRecipeById(recipeId);
+      if (baseRecipe == null) {
+        return Optional.empty();
+      }
+
+      int baseCalories = baseRecipe.getTotalCalories();
+      String baseCategory = baseRecipe.getCategory();
+
+      // Use Firestore query to get recipes in same category with lower calories
+      // Use baseCalories - 1 to get only recipes with calories strictly less than base
+      List<Recipe> candidates = firestoreService.getRecipesByCategoryAndCalories(
+          baseCategory, baseCalories - 1);
+
+      // Filter out the base recipe itself
+      candidates = candidates.stream()
+          .filter(recipe -> recipe.getRecipeId() != recipeId)
+          .collect(Collectors.toList());
+
+      List<Recipe> topAlternatives = candidates.stream()
+          .sorted((first, second) -> Integer.compare(second.getViews(), first.getViews()))
+          .limit(3)
+          .collect(Collectors.toList());
+
+      List<Recipe> randomPool = new ArrayList<>(candidates);
+      randomPool.removeAll(topAlternatives);
+      Collections.shuffle(randomPool);
+
+      List<Recipe> randomAlternatives = randomPool.stream()
+          .limit(3)
+          .collect(Collectors.toList());
+
+      Map<String, List<Recipe>> response = new HashMap<>();
+      response.put("topAlternatives", topAlternatives);
+      response.put("randomAlternatives", randomAlternatives);
+      return Optional.of(response);
+    } catch (Exception e) {
+      System.err.println("Error getting recipe alternatives: " + e.getMessage());
       return Optional.empty();
     }
-
-    int baseCalories = baseRecipe.getTotalCalories();
-    String baseCategory = baseRecipe.getCategory();
-
-    List<Recipe> candidates = recipes.stream()
-        .filter(recipe -> recipe.getRecipeId() != recipeId)
-        .filter(recipe -> sameCategory(baseCategory, recipe.getCategory()))
-        .filter(recipe -> recipe.getTotalCalories() < baseCalories)
-        .collect(Collectors.toList());
-
-    List<Recipe> topAlternatives = candidates.stream()
-        .sorted((first, second) -> Integer.compare(second.getViews(), first.getViews()))
-        .limit(3)
-        .collect(Collectors.toList());
-
-    List<Recipe> randomPool = new ArrayList<>(candidates);
-    randomPool.removeAll(topAlternatives);
-    Collections.shuffle(randomPool);
-
-    List<Recipe> randomAlternatives = randomPool.stream()
-        .limit(3)
-        .collect(Collectors.toList());
-
-    Map<String, List<Recipe>> response = new HashMap<>();
-    response.put("topAlternatives", topAlternatives);
-    response.put("randomAlternatives", randomAlternatives);
-    return Optional.of(response);
-  }
-
-  /**
-   * Helper method to check if two categories are the same (case-insensitive).
-   *
-   * @param first first category {@code String}
-   * @param second second category {@code String}
-   * @return {@code true} if categories are the same, {@code false} otherwise
-   */
-  private boolean sameCategory(String first, String second) {
-    if (first == null && second == null) {
-      return true;
-    }
-    if (first == null || second == null) {
-      return false;
-    }
-    return first.equalsIgnoreCase(second);
   }
 
   /**
    * Calculate the total calorie count for a recipe.
    *
    * @param recipeId identifier of the recipe.
-   * @return {@code Optional} containing the total calorie count as an {@code Integer}, 
+   * @return {@code Optional} containing the total calorie count as an {@code Integer},
    *         or empty if recipe not found
    */
   public Optional<Integer> getTotalCalories(int recipeId) {
@@ -529,7 +456,7 @@ public class MockApiService {
    * Produce a calorie breakdown for each ingredient within a recipe.
    *
    * @param recipeId identifier of the recipe.
-   * @return {@code Optional} containing an ordered {@code Map} of ingredient 
+   * @return {@code Optional} containing an ordered {@code Map} of ingredient
    *         names to calorie counts, or empty if recipe not found
    */
   public Optional<Map<String, Integer>> getCalorieBreakdown(int recipeId) {
@@ -554,19 +481,17 @@ public class MockApiService {
     if (recipe == null) {
       return false;
     }
-    
-    Recipe existingRecipe = findRecipeById(recipe.getRecipeId());
-    if (existingRecipe != null) {
-      return false;
-    }
-    
+
     if (recipe.getIngredients() == null) {
       recipe.setIngredients(new ArrayList<>());
     }
-    
-    recipes.add(recipe);
-    saveData("data/mockdata/recipe.json", recipes);
-    return true;
+
+    try {
+      return firestoreService.addRecipe(recipe);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error adding recipe: " + e.getMessage());
+      return false;
+    }
   }
 
   /**
@@ -576,13 +501,17 @@ public class MockApiService {
    * @return true when the recipe exists and the view is recorded.
    */
   public boolean incrementViews(int recipeId) {
-    Recipe recipe = findRecipeById(recipeId);
-    if (recipe == null) {
+    try {
+      Recipe recipe = findRecipeById(recipeId);
+      if (recipe == null) {
+        return false;
+      }
+      recipe.incrementViews();
+      return firestoreService.updateRecipe(recipe);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error incrementing views: " + e.getMessage());
       return false;
     }
-    recipe.incrementViews();
-    saveData("data/mockdata/recipe.json", recipes);
-    return true;
   }
 
   /**
@@ -592,12 +521,16 @@ public class MockApiService {
    * @return true when the recipe exists and the like is recorded.
    */
   public boolean incrementLikes(int recipeId) {
-    Recipe recipe = findRecipeById(recipeId);
-    if (recipe == null) {
+    try {
+      Recipe recipe = findRecipeById(recipeId);
+      if (recipe == null) {
+        return false;
+      }
+      recipe.incrementLikes();
+      return firestoreService.updateRecipe(recipe);
+    } catch (ExecutionException | InterruptedException e) {
+      System.err.println("Error incrementing likes: " + e.getMessage());
       return false;
     }
-    recipe.incrementLikes();
-    saveData("data/mockdata/recipe.json", recipes);
-    return true;
   }
 }

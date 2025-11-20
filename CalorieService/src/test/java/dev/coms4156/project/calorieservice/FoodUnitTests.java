@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * This class contains the unit tests for the Food class.
  */
-@SpringBootTest
 public class FoodUnitTests {
 
   public static Food food;
