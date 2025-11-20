@@ -1,0 +1,34 @@
+substitutions:
+  _REGION: "us-east1"
+  _REPO: "docker-repo"
+  _IMAGE: "calorie-service"
+
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "us-east1-docker.pkg.dev/$PROJECT_ID/$_REPO/$_IMAGE:latest"
+      - "."
+
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "us-east1-docker.pkg.dev/$PROJECT_ID/$_REPO/$_IMAGE:latest"
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "calorie-service"
+      - "--image"
+      - "us-east1-docker.pkg.dev/$PROJECT_ID/$_REPO/$_IMAGE:latest"
+      - "--region"
+      - "$_REGION"
+      - "--platform"
+      - "managed"
+      - "--allow-unauthenticated"
+
+images:
+  - "us-east1-docker.pkg.dev/$PROJECT_ID/$_REPO/$_IMAGE:latest"
