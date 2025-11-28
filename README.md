@@ -181,13 +181,38 @@ This section includes notes on tools and technologies used in building this proj
     * I use Checkstyle for code reporting. Note that Checkstyle does get run as part of the CI pipeline.
 * PMD
     * I am using PMD to do static analysis of our Java code.
-* JUnit
-    * JUnit tests get run automatically as part of the CI pipeline.
+* JUnit (JUnit 5)
+    * We use JUnit 5 (Jupiter) as the main test framework. End‑to‑end tests use JUnit 5 assertions. JUnit tests run automatically as part of the CI pipeline.
 * MockMvc (API Testing)
-    * I use MockMvc as our API testing framework for integration testing of REST endpoints. MockMvc is included with Spring Boot Test dependencies and requires no additional installation. MockMvc tests are located in RouteControllerTests.java and execute automatically when running `mvn clean test`. Test results are included in the JaCoCo coverage reports generated in /CalorieService/target/site/jacoco/index.html.
+    * Spring Boot Test + MockMvc is used for integration testing of REST endpoints. MockMvc is included with Spring Boot Test dependencies and requires no additional installation. For `jsonPath(...).value(...)` and `content().string(...)` expectations, Hamcrest matchers are used (only for these assertions) as required by the MockMvc API. MockMvc tests are located in RouteControllerTests.java and execute automatically when running `mvn clean test`. Test results are included in the JaCoCo coverage reports generated in /CalorieService/target/site/jacoco/index.html.
 * JaCoCo
     * I use JaCoCo for generating code coverage reports.
 * Mockito
     * We used Mockito to mock our MockAPIService to do isolated testing of RouteController.
 * Postman
     * We used postman to test that out API works.
+
+## Running Tests Locally
+
+External integration and end‑to‑end tests use the Firestore Emulator. Start the emulator and export the environment variables in the same shell before running Maven.
+
+Start emulator:
+
+```
+gcloud beta emulators firestore start --host-port=localhost:8081 --project=demo-project
+```
+
+Export env vars:
+
+```
+export FIRESTORE_EMULATOR_HOST=localhost:8081
+export GOOGLE_CLOUD_PROJECT=demo-project
+unset GOOGLE_APPLICATION_CREDENTIALS
+```
+
+Run all tests:
+
+```
+mvn clean test
+mvn jacoco:report
+```

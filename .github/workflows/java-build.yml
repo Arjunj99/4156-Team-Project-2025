@@ -10,6 +10,23 @@ jobs:
   build:
     name: Java Build
     runs-on: ubuntu-latest
+    env:
+      FIRESTORE_EMULATOR_HOST: localhost:8081
+      GOOGLE_CLOUD_PROJECT: demo-project
+    services:
+      firestore:
+        image: gcr.io/google.com/cloudsdktool/cloud-sdk:emulators
+        ports:
+          - 8081:8081
+        options: >-
+          --entrypoint gcloud
+        command:
+          - beta
+          - emulators
+          - firestore
+          - start
+          - --host-port=0.0.0.0:8081
+          - --project=demo-project
 
     steps:
       - uses: actions/checkout@v4
@@ -33,4 +50,3 @@ jobs:
       - name: Run Static Analysis
         working-directory: CalorieService
         run: mvn pmd:check
-
