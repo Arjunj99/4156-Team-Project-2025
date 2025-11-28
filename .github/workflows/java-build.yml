@@ -50,3 +50,4 @@ jobs:
       - name: Run Static Analysis
         working-directory: CalorieService
         run: mvn pmd:check
+
