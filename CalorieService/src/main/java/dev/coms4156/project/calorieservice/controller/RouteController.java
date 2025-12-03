@@ -113,32 +113,32 @@ public class RouteController {
   }
 
   /**
-   * Returns a list of recommended recipes based on user's liked recipes 
+   * Returns a list of recommended recipes based on client's liked recipes 
    * under calorieMax.
    *
-   * @param userId The ID of the user
+   * @param clientId The ID of the client
    * @param calorieMax Maximum calorie count for recommendations
    * @return A {@code ResponseEntity} containing a list of up to 10 
    *         recommended {@code Recipe} objects with HTTP 200 if successful, 
-   *         or an error message with HTTP 404 if user not found, or HTTP 500 
+   *         or an error message with HTTP 404 if client not found, or HTTP 500 
    *         for server errors
    */
-  @GetMapping("/user/recommendHealthy")
-  public ResponseEntity<?> recommendHealthy(@RequestParam int userId, 
+  @GetMapping("/client/recommendHealthy")
+  public ResponseEntity<?> recommendHealthy(@RequestParam int clientId, 
       @RequestParam int calorieMax) {
-    logger.info("endpoint called: GET /user/recommendHealthy with userId={}, calorieMax={}",
-        userId, calorieMax);
+    logger.info("endpoint called: GET /client/recommendHealthy with clientId={}, calorieMax={}",
+        clientId, calorieMax);
     try {
-      List<Recipe> recommendations = mockApiService.recommendHealthy(userId, calorieMax);
+      List<Recipe> recommendations = mockApiService.recommendHealthy(clientId, calorieMax);
       
       if (recommendations == null) {
-        return new ResponseEntity<>("User with ID " + userId + " not found.", 
+        return new ResponseEntity<>("Client with ID " + clientId + " not found.", 
             HttpStatus.NOT_FOUND);
       }
       
       if (recommendations.isEmpty()) {
         return new ResponseEntity<>("No healthy recipes found under " + calorieMax 
-            + " calories for user " + userId + ".", HttpStatus.OK);
+            + " calories for client " + clientId + ".", HttpStatus.OK);
       }
       
       return new ResponseEntity<>(recommendations, HttpStatus.OK);
@@ -150,27 +150,27 @@ public class RouteController {
   }
 
   /**
-   * Returns a list of recommended recipes based on user's liked recipes.
+   * Returns a list of recommended recipes based on client's liked recipes.
    *
-   * @param userId The ID of the user
+   * @param clientId The ID of the client
    * @return A {@code ResponseEntity} containing a list of up to 10 
    *         recommended {@code Recipe} objects with HTTP 200 if successful, 
-   *         or an error message with HTTP 404 if user not found, or HTTP 500 
+   *         or an error message with HTTP 404 if client not found, or HTTP 500 
    *         for server errors
    */
-  @GetMapping("/user/recommend")
-  public ResponseEntity<?> recommend(@RequestParam int userId) {
-    logger.info("endpoint called: GET /user/recommend with userId={}", userId);
+  @GetMapping("/client/recommend")
+  public ResponseEntity<?> recommend(@RequestParam int clientId) {
+    logger.info("endpoint called: GET /client/recommend with clientId={}", clientId);
     try {
-      List<Recipe> recommendations = mockApiService.recommend(userId);
+      List<Recipe> recommendations = mockApiService.recommend(clientId);
       
       if (recommendations == null) {
-        return new ResponseEntity<>("User with ID " + userId + " not found.", 
+        return new ResponseEntity<>("Client with ID " + clientId + " not found.", 
             HttpStatus.NOT_FOUND);
       }
       
       if (recommendations.isEmpty()) {
-        return new ResponseEntity<>("No recommendations found for user " + userId + ".", 
+        return new ResponseEntity<>("No recommendations found for client " + clientId + ".", 
             HttpStatus.OK);
       }
       
@@ -351,26 +351,26 @@ public class RouteController {
   }
 
   /**
-   * Adds a recipe to a user's liked recipes.
+   * Adds a recipe to a client's liked recipes.
    *
-   * @param userId The ID of the user
+   * @param clientId The ID of the client
    * @param recipeId The ID of the recipe to like
    * @return A {@code ResponseEntity} containing a success message with 
    *         HTTP 200 if successful, or an error message with HTTP 400 if 
-   *         user/recipe not found or already liked, or HTTP 500 for server 
+   *         client/recipe not found or already liked, or HTTP 500 for server 
    *         errors
    */
-  @PostMapping("/user/likeRecipe")
-  public ResponseEntity<?> likeRecipe(@RequestParam int userId, @RequestParam int recipeId) {
-    logger.info("endpoint called: POST /user/likeRecipe with userId={}, recipeId={}",
-        userId, recipeId);
+  @PostMapping("/client/likeRecipe")
+  public ResponseEntity<?> likeRecipe(@RequestParam int clientId, @RequestParam int recipeId) {
+    logger.info("endpoint called: POST /client/likeRecipe with clientId={}, recipeId={}",
+        clientId, recipeId);
     try {
-      boolean success = mockApiService.likeRecipe(userId, recipeId);
+      boolean success = mockApiService.likeRecipe(clientId, recipeId);
       
       if (success) {
         return new ResponseEntity<>("Recipe liked successfully.", HttpStatus.OK);
       } else {
-        return new ResponseEntity<>("User with ID " + userId + " or recipe with ID " 
+        return new ResponseEntity<>("Client with ID " + clientId + " or recipe with ID " 
             + recipeId + " not found, or recipe already liked.", HttpStatus.BAD_REQUEST);
       }
     } catch (Exception e) {

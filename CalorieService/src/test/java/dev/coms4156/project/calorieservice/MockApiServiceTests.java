@@ -10,9 +10,9 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import dev.coms4156.project.calorieservice.models.Client;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
-import dev.coms4156.project.calorieservice.models.User;
 import dev.coms4156.project.calorieservice.service.FirestoreService;
 import dev.coms4156.project.calorieservice.service.MockApiService;
 import java.util.ArrayList;
@@ -32,11 +32,11 @@ public class MockApiServiceTests {
 
   private static List<Food> foods;
   private static List<Recipe> recipes;
-  private static List<User> users;
+  private static List<Client> clients;
   public static MockApiService service;
   public static Food food1;
   public static Recipe recipe1;
-  public static User user1;
+  public static Client client1;
   private static FirestoreService firestoreService;
 
   /**
@@ -69,15 +69,15 @@ public class MockApiServiceTests {
         recipe2Ingredients, 5, 2, 100);
     testRecipes.add(testRecipe2);
     
-    ArrayList<User> testUsers = new ArrayList<>();
-    User testUser = new User("Test User", 1);
-    testUser.getLikedRecipes().add(testRecipe);
-    testUsers.add(testUser);
+    ArrayList<Client> testClients = new ArrayList<>();
+    Client testClient = new Client("Test Client", 1);
+    testClient.getLikedRecipes().add(testRecipe);
+    testClients.add(testClient);
     
     // Mock FirestoreService to return test data - use thenAnswer to return current state
     when(firestoreService.getAllFoods()).thenAnswer(invocation -> new ArrayList<>(testFoods));
     when(firestoreService.getAllRecipes()).thenAnswer(invocation -> new ArrayList<>(testRecipes));
-    when(firestoreService.getAllUsers()).thenAnswer(invocation -> new ArrayList<>(testUsers));
+    when(firestoreService.getAllClients()).thenAnswer(invocation -> new ArrayList<>(testClients));
     
     // Use thenAnswer to handle specific IDs and general case - check the lists dynamically
     when(firestoreService.getFoodById(anyInt())).thenAnswer(invocation -> {
@@ -94,10 +94,10 @@ public class MockApiServiceTests {
           .findFirst()
           .orElse(null);
     });
-    when(firestoreService.getUserById(anyInt())).thenAnswer(invocation -> {
+    when(firestoreService.getClientById(anyInt())).thenAnswer(invocation -> {
       int id = invocation.getArgument(0);
-      return testUsers.stream()
-          .filter(u -> u.getUserId() == id)
+      return testClients.stream()
+          .filter(u -> u.getClientId() == id)
           .findFirst()
           .orElse(null);
     });
@@ -146,29 +146,29 @@ public class MockApiServiceTests {
       testRecipes.add(recipe);
       return true;
     });
-    when(firestoreService.addUser(any(User.class))).thenAnswer(invocation -> {
-      User user = invocation.getArgument(0);
-      boolean exists = testUsers.stream().anyMatch(u -> u.getUserId() == user.getUserId());
+    when(firestoreService.addClient(any(Client.class))).thenAnswer(invocation -> {
+      Client client = invocation.getArgument(0);
+      boolean exists = testClients.stream().anyMatch(u -> u.getClientId() == client.getClientId());
       if (exists) {
         return false;
       }
-      testUsers.add(user);
+      testClients.add(client);
       return true;
     });
     
     // Mock update methods - objects are updated in-place, just return true
     when(firestoreService.updateRecipe(any(Recipe.class))).thenReturn(true);
-    when(firestoreService.updateUser(any(User.class))).thenReturn(true);
+    when(firestoreService.updateClient(any(Client.class))).thenReturn(true);
 
     service = new MockApiService(firestoreService);
     service.setTestMode(true);
     foods = service.getFoods();
     recipes = service.getRecipes();
-    users = service.getUsers();
+    clients = service.getClients();
     // Use very high IDs that are unlikely to exist in mock data
     food1 = new Food("Test Food", 99999, 100, "Test Category");
     recipe1 = new Recipe("Test Recipe", 99999, "Test Category", new ArrayList<>(), 50, 5, 0);
-    user1 = new User("Test User", 99999);
+    client1 = new Client("Test Client", 99999);
   }
 
   @Test
@@ -178,33 +178,33 @@ public class MockApiServiceTests {
     FirestoreService mockFirestore = org.mockito.Mockito.mock(FirestoreService.class);
     when(mockFirestore.getAllFoods()).thenReturn(new ArrayList<>());
     when(mockFirestore.getAllRecipes()).thenReturn(new ArrayList<>());
-    when(mockFirestore.getAllUsers()).thenReturn(new ArrayList<>());
+    when(mockFirestore.getAllClients()).thenReturn(new ArrayList<>());
     
     MockApiService emptyService = new MockApiService(mockFirestore);
     assertNotNull(emptyService);
     assertNotNull(emptyService.getFoods());
     assertNotNull(emptyService.getRecipes());
-    assertNotNull(emptyService.getUsers());
+    assertNotNull(emptyService.getClients());
     assertTrue(emptyService.getFoods().size() >= 0);
     assertTrue(emptyService.getRecipes().size() >= 0);
-    assertTrue(emptyService.getUsers().size() >= 0);
+    assertTrue(emptyService.getClients().size() >= 0);
   }
 
   @Test
-  public void loadUsersWithRecipeIdsValidTest() {
-    assertNotNull(users);
-    assertTrue(users.size() > 0);
+  public void loadClientsWithRecipeIdsValidTest() {
+    assertNotNull(clients);
+    assertTrue(clients.size() > 0);
 
-    User userWithLikedRecipes = users.stream()
+    Client clientWithLikedRecipes = clients.stream()
         .filter(u -> u.getLikedRecipes().size() > 0)
         .findFirst()
         .orElse(null);
 
-    if (userWithLikedRecipes != null) {
-      assertNotNull(userWithLikedRecipes.getLikedRecipes());
-      assertTrue(userWithLikedRecipes.getLikedRecipes().size() > 0);
+    if (clientWithLikedRecipes != null) {
+      assertNotNull(clientWithLikedRecipes.getLikedRecipes());
+      assertTrue(clientWithLikedRecipes.getLikedRecipes().size() > 0);
 
-      for (Recipe likedRecipe : userWithLikedRecipes.getLikedRecipes()) {
+      for (Recipe likedRecipe : clientWithLikedRecipes.getLikedRecipes()) {
         assertNotNull(likedRecipe);
         assertNotNull(service.findRecipeById(likedRecipe.getRecipeId()));
       }
@@ -212,16 +212,17 @@ public class MockApiServiceTests {
   }
 
   @Test
-  public void loadUsersWithRecipeIdsInvalidTest() throws ExecutionException, InterruptedException {
+  public void loadClientsWithRecipeIdsInvalidTest() throws ExecutionException,
+      InterruptedException {
     // Create a new mock for this test
     FirestoreService mockFirestore = org.mockito.Mockito.mock(FirestoreService.class);
-    when(mockFirestore.getAllUsers()).thenReturn(new ArrayList<>());
+    when(mockFirestore.getAllClients()).thenReturn(new ArrayList<>());
     when(mockFirestore.getRecipeById(anyInt())).thenReturn(null);
     
     MockApiService serviceWithMissingFile = new MockApiService(mockFirestore);
 
-    assertNotNull(serviceWithMissingFile.getUsers());
-    assertTrue(serviceWithMissingFile.getUsers().size() >= 0);
+    assertNotNull(serviceWithMissingFile.getClients());
+    assertTrue(serviceWithMissingFile.getClients().size() >= 0);
   }
 
   @Test
@@ -271,26 +272,26 @@ public class MockApiServiceTests {
   }
 
   @Test
-  public void findUserByIdValidTest() {
-    if (!users.isEmpty()) {
-      User expectedUser = users.get(0);
-      User foundUser = service.findUserById(expectedUser.getUserId());
-      assertNotNull(foundUser);
-      assertEquals(expectedUser.getUserId(), foundUser.getUserId());
-      assertEquals(expectedUser.getUsername(), foundUser.getUsername());
+  public void findClientByIdValidTest() {
+    if (!clients.isEmpty()) {
+      Client expectedClient = clients.get(0);
+      Client foundClient = service.findClientById(expectedClient.getClientId());
+      assertNotNull(foundClient);
+      assertEquals(expectedClient.getClientId(), foundClient.getClientId());
+      assertEquals(expectedClient.getClientname(), foundClient.getClientname());
     }
   }
 
   @Test
-  public void findUserByIdInvalidTest() {
-    User foundUser = service.findUserById(999999);
-    assertNull(foundUser);
+  public void findClientByIdInvalidTest() {
+    Client foundClient = service.findClientById(999999);
+    assertNull(foundClient);
   }
 
   @Test
-  public void findUserByIdAtypicalTest() {
-    User foundUser = service.findUserById(0);
-    assertNull(foundUser);
+  public void findClientByIdAtypicalTest() {
+    Client foundClient = service.findClientById(0);
+    assertNull(foundClient);
   }
 
   @Test
@@ -331,10 +332,10 @@ public class MockApiServiceTests {
   }
 
   @Test
-  public void getUsersValidTest() {
-    List<User> serviceUsers = service.getUsers();
-    assertNotNull(serviceUsers);
-    assertTrue(serviceUsers.size() > 0);
+  public void getClientsValidTest() {
+    List<Client> serviceClients = service.getClients();
+    assertNotNull(serviceClients);
+    assertTrue(serviceClients.size() > 0);
   }
 
   @Test
@@ -416,19 +417,19 @@ public class MockApiServiceTests {
 
   @Test
   public void likeRecipeValidTest() {
-    if (!users.isEmpty() && !recipes.isEmpty()) {
-      User user = users.get(0);
+    if (!clients.isEmpty() && !recipes.isEmpty()) {
+      Client client = clients.get(0);
 
-      // Find a recipe the user hasn't liked yet
+      // Find a recipe the client hasn't liked yet
       Recipe recipe = null;
       for (Recipe r : recipes) {
-        if (!user.getLikedRecipes().contains(r)) {
+        if (!client.getLikedRecipes().contains(r)) {
           recipe = r;
           break;
         }
       }
 
-      // If user has liked all recipes, create a new one
+      // If client has liked all recipes, create a new one
       if (recipe == null) {
         int recipeId = findUnusedRecipeId();
         recipe = buildTestRecipe(recipeId, "Test Recipe for Like");
@@ -436,14 +437,14 @@ public class MockApiServiceTests {
       }
 
       int initialLikes = recipe.getLikes();
-      final int initialUserLikedCount = user.getLikedRecipes().size();
+      final int initialClientLikedCount = client.getLikedRecipes().size();
 
-      boolean result = service.likeRecipe(user.getUserId(), recipe.getRecipeId());
+      boolean result = service.likeRecipe(client.getClientId(), recipe.getRecipeId());
       assertTrue(result);
 
       assertEquals(initialLikes + 1, recipe.getLikes());
-      assertTrue(user.getLikedRecipes().contains(recipe));
-      assertEquals(initialUserLikedCount + 1, user.getLikedRecipes().size());
+      assertTrue(client.getLikedRecipes().contains(recipe));
+      assertEquals(initialClientLikedCount + 1, client.getLikedRecipes().size());
     }
   }
 
@@ -455,8 +456,8 @@ public class MockApiServiceTests {
 
   @Test
   public void likeRecipeAtypicalTest() {
-    if (!users.isEmpty()) {
-      User user = users.get(0);
+    if (!clients.isEmpty()) {
+      Client client = clients.get(0);
 
       // Create a new recipe specifically for this test
       int recipeId = findUnusedRecipeId();
@@ -464,24 +465,24 @@ public class MockApiServiceTests {
       service.addRecipe(recipe);
 
       // First like should succeed
-      service.likeRecipe(user.getUserId(), recipe.getRecipeId());
+      service.likeRecipe(client.getClientId(), recipe.getRecipeId());
       int likesAfterFirst = recipe.getLikes();
-      int likedCountAfterFirst = user.getLikedRecipes().size();
+      int likedCountAfterFirst = client.getLikedRecipes().size();
 
       // Second like of same recipe should fail
-      boolean result = service.likeRecipe(user.getUserId(), recipe.getRecipeId());
+      boolean result = service.likeRecipe(client.getClientId(), recipe.getRecipeId());
       assertFalse(result);
 
       assertEquals(likesAfterFirst, recipe.getLikes());
-      assertEquals(likedCountAfterFirst, user.getLikedRecipes().size());
+      assertEquals(likedCountAfterFirst, client.getLikedRecipes().size());
     }
   }
 
   @Test
   public void recommendHealthyValidTest() {
-    if (!users.isEmpty()) {
-      User user = users.get(0);
-      List<Recipe> recommendations = service.recommendHealthy(user.getUserId(), 500);
+    if (!clients.isEmpty()) {
+      Client client = clients.get(0);
+      List<Recipe> recommendations = service.recommendHealthy(client.getClientId(), 500);
       assertNotNull(recommendations);
       assertTrue(recommendations.size() <= 10);
       for (Recipe recipe : recommendations) {
@@ -498,9 +499,9 @@ public class MockApiServiceTests {
 
   @Test
   public void recommendHealthyAtypicalTest() {
-    if (!users.isEmpty()) {
-      User user = users.get(0);
-      List<Recipe> recommendations = service.recommendHealthy(user.getUserId(), -100);
+    if (!clients.isEmpty()) {
+      Client client = clients.get(0);
+      List<Recipe> recommendations = service.recommendHealthy(client.getClientId(), -100);
       assertNotNull(recommendations);
       assertTrue(recommendations.isEmpty());
     }
@@ -508,9 +509,9 @@ public class MockApiServiceTests {
 
   @Test
   public void recommendValidTest() {
-    if (!users.isEmpty()) {
-      User user = users.get(0);
-      List<Recipe> recommendations = service.recommend(user.getUserId());
+    if (!clients.isEmpty()) {
+      Client client = clients.get(0);
+      List<Recipe> recommendations = service.recommend(client.getClientId());
       assertNotNull(recommendations);
       assertTrue(recommendations.size() <= 10);
     }
@@ -524,10 +525,10 @@ public class MockApiServiceTests {
 
   @Test
   public void recommendAtypicalTest() {
-    if (!users.isEmpty()) {
-      User userWithNoLikes = new User("No Likes User", findUnusedUserId());
-      users.add(userWithNoLikes);
-      List<Recipe> recommendations = service.recommend(userWithNoLikes.getUserId());
+    if (!clients.isEmpty()) {
+      Client clientWithNoLikes = new Client("No Likes Client", findUnusedClientId());
+      clients.add(clientWithNoLikes);
+      List<Recipe> recommendations = service.recommend(clientWithNoLikes.getClientId());
       assertNull(recommendations);
     }
   }
@@ -704,9 +705,9 @@ public class MockApiServiceTests {
     }
   }
 
-  private int findUnusedUserId() {
+  private int findUnusedClientId() {
     int candidate = 9000;
-    while (service.findUserById(candidate) != null) {
+    while (service.findClientById(candidate) != null) {
       candidate++;
     }
     return candidate;
@@ -739,12 +740,12 @@ public class MockApiServiceTests {
   }
 
   /**
-   * This method checks if a user is in the users arraylist.
+   * This method checks if a client is in the clients arraylist.
    */
-  public boolean checkUsers(User temp) {
-    users = service.getUsers();
-    for (User user : users) {
-      if (user.equals(temp)) {
+  public boolean checkClients(Client temp) {
+    clients = service.getClients();
+    for (Client client : clients) {
+      if (client.equals(temp)) {
         return true;
       }
     }
@@ -785,10 +786,10 @@ public class MockApiServiceTests {
   public static void tearDownServiceAfterTesting() {
     foods = null;
     recipes = null;
-    users = null;
+    clients = null;
     service = null;
     food1 = null;
     recipe1 = null;
-    user1 = null;
+    client1 = null;
   }
 }
