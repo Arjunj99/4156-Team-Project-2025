@@ -24,7 +24,7 @@ import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
-import dev.coms4156.project.calorieservice.models.User;
+import dev.coms4156.project.calorieservice.models.Client;
 import dev.coms4156.project.calorieservice.service.FirestoreService;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class FirestoreServiceTests {
   private Firestore mockFirestore;
   private CollectionReference mockFoodCollection;
   private CollectionReference mockRecipeCollection;
-  private CollectionReference mockUserCollection;
+  private CollectionReference mockClientCollection;
   private DocumentReference mockDocumentRef;
   private Query mockQuery;
 
@@ -68,7 +68,7 @@ public class FirestoreServiceTests {
     mockFirestore = mock(Firestore.class);
     mockFoodCollection = mock(CollectionReference.class);
     mockRecipeCollection = mock(CollectionReference.class);
-    mockUserCollection = mock(CollectionReference.class);
+    mockClientCollection = mock(CollectionReference.class);
     mockDocumentRef = mock(DocumentReference.class);
     mockQuery = mock(Query.class);
     
@@ -78,10 +78,10 @@ public class FirestoreServiceTests {
     
     when(mockFirestore.collection("food")).thenReturn(mockFoodCollection);
     when(mockFirestore.collection("recipes")).thenReturn(mockRecipeCollection);
-    when(mockFirestore.collection("users")).thenReturn(mockUserCollection);
+    when(mockFirestore.collection("clients")).thenReturn(mockClientCollection);
     when(mockFoodCollection.document(anyString())).thenReturn(mockDocumentRef);
     when(mockRecipeCollection.document(anyString())).thenReturn(mockDocumentRef);
-    when(mockUserCollection.document(anyString())).thenReturn(mockDocumentRef);
+    when(mockClientCollection.document(anyString())).thenReturn(mockDocumentRef);
   }
 
  
@@ -445,18 +445,18 @@ public class FirestoreServiceTests {
   // ==================== USER OPERATIONS ====================
 
   @Test
-  public void getAllUsersReturnsAllUsersTest() 
+  public void getAllClientsReturnsAllClientsTest() 
       throws ExecutionException, InterruptedException {
     List<QueryDocumentSnapshot> docs = new ArrayList<>();
     QueryDocumentSnapshot doc = mock(QueryDocumentSnapshot.class);
-    when(doc.getData()).thenReturn(createUserMap(501, "Test User"));
+    when(doc.getData()).thenReturn(createClientMap(501, "Test Client"));
     docs.add(doc);
     
     QuerySnapshot snapshot = mock(QuerySnapshot.class);
     when(snapshot.getDocuments()).thenReturn(docs);
     ApiFuture<QuerySnapshot> future = mock(ApiFuture.class);
     when(future.get()).thenReturn(snapshot);
-    when(mockUserCollection.get()).thenReturn(future);
+    when(mockClientCollection.get()).thenReturn(future);
     
     // Mock getRecipeById for loading liked recipes
     DocumentReference mockRecipeDocRef = mock(DocumentReference.class);
@@ -467,21 +467,21 @@ public class FirestoreServiceTests {
     when(mockRecipeFuture.get()).thenReturn(mockRecipeDoc);
     when(mockRecipeDocRef.get()).thenReturn(mockRecipeFuture);
     
-    ArrayList<User> result = firestoreService.getAllUsers();
+    ArrayList<Client> result = firestoreService.getAllClients();
     assertEquals(1, result.size());
   }
 
   @Test
-  public void getUserByIdReturnsExistingUserTest() 
+  public void getClientByIdReturnsExistingClientTest() 
       throws ExecutionException, InterruptedException {
     List<Integer> likedRecipeIds = new ArrayList<>();
     likedRecipeIds.add(1001);
-    Map<String, Object> userData = createUserMap(501, "Test User");
-    userData.put("likedRecipeIds", likedRecipeIds);
+    Map<String, Object> clientData = createClientMap(501, "Test Client");
+    clientData.put("likedRecipeIds", likedRecipeIds);
     
     DocumentSnapshot doc = mock(DocumentSnapshot.class);
     when(doc.exists()).thenReturn(true);
-    when(doc.getData()).thenReturn(userData);
+    when(doc.getData()).thenReturn(clientData);
     ApiFuture<DocumentSnapshot> future = mock(ApiFuture.class);
     when(future.get()).thenReturn(doc);
     when(mockDocumentRef.get()).thenReturn(future);
@@ -496,13 +496,13 @@ public class FirestoreServiceTests {
     when(mockRecipeFuture.get()).thenReturn(mockRecipeDoc);
     when(mockRecipeDocRef.get()).thenReturn(mockRecipeFuture);
     
-    User result = firestoreService.getUserById(501);
+    Client result = firestoreService.getClientById(501);
     assertNotNull(result);
     assertEquals(1, result.getLikedRecipes().size());
   }
 
   @Test
-  public void getUserByIdReturnsNullForNonExistentTest() 
+  public void getClientByIdReturnsNullForNonExistentTest() 
       throws ExecutionException, InterruptedException {
     DocumentSnapshot doc = mock(DocumentSnapshot.class);
     when(doc.exists()).thenReturn(false);
@@ -510,20 +510,20 @@ public class FirestoreServiceTests {
     when(future.get()).thenReturn(doc);
     when(mockDocumentRef.get()).thenReturn(future);
     
-    assertNull(firestoreService.getUserById(9999));
+    assertNull(firestoreService.getClientById(9999));
   }
 
   @Test
-  public void getUserByIdHandlesMissingRecipesTest() 
+  public void getClientByIdHandlesMissingRecipesTest() 
       throws ExecutionException, InterruptedException {
     List<Integer> likedRecipeIds = new ArrayList<>();
     likedRecipeIds.add(9999); // Non-existent recipe
-    Map<String, Object> userData = createUserMap(503, "User");
-    userData.put("likedRecipeIds", likedRecipeIds);
+    Map<String, Object> clientData = createClientMap(503, "Client");
+    clientData.put("likedRecipeIds", likedRecipeIds);
     
     DocumentSnapshot doc = mock(DocumentSnapshot.class);
     when(doc.exists()).thenReturn(true);
-    when(doc.getData()).thenReturn(userData);
+    when(doc.getData()).thenReturn(clientData);
     ApiFuture<DocumentSnapshot> future = mock(ApiFuture.class);
     when(future.get()).thenReturn(doc);
     when(mockDocumentRef.get()).thenReturn(future);
@@ -537,12 +537,12 @@ public class FirestoreServiceTests {
     when(mockRecipeFuture.get()).thenReturn(mockRecipeDoc);
     when(mockRecipeDocRef.get()).thenReturn(mockRecipeFuture);
     
-    User result = firestoreService.getUserById(503);
+    Client result = firestoreService.getClientById(503);
     assertTrue(result.getLikedRecipes().isEmpty());
   }
 
   @Test
-  public void addUserSuccessTest() 
+  public void addClientSuccessTest() 
       throws ExecutionException, InterruptedException {
     DocumentSnapshot doc = mock(DocumentSnapshot.class);
     when(doc.exists()).thenReturn(false);
@@ -555,54 +555,54 @@ public class FirestoreServiceTests {
     when(setFuture.get()).thenReturn(writeResult);
     when(mockDocumentRef.set(any(Map.class))).thenReturn(setFuture);
     
-    assertTrue(firestoreService.addUser(new User("Test User", 501)));
+    assertTrue(firestoreService.addClient(new Client("Test Client", 501)));
   }
 
   @Test
-  public void addUserReturnsFalseForNullTest() 
+  public void addClientReturnsFalseForNullTest() 
       throws ExecutionException, InterruptedException {
-    assertFalse(firestoreService.addUser(null));
+    assertFalse(firestoreService.addClient(null));
   }
 
   @Test
-  public void addUserReturnsFalseForDuplicateTest() 
+  public void addClientReturnsFalseForDuplicateTest() 
       throws ExecutionException, InterruptedException {
     DocumentSnapshot doc = mock(DocumentSnapshot.class);
     when(doc.exists()).thenReturn(true);
-    when(doc.getData()).thenReturn(createUserMap(501, "Existing"));
+    when(doc.getData()).thenReturn(createClientMap(501, "Existing"));
     ApiFuture<DocumentSnapshot> future = mock(ApiFuture.class);
     when(future.get()).thenReturn(doc);
     when(mockDocumentRef.get()).thenReturn(future);
     
-    assertFalse(firestoreService.addUser(new User("Test", 501)));
+    assertFalse(firestoreService.addClient(new Client("Test", 501)));
   }
 
   @Test
-  public void updateUserSuccessTest() 
+  public void updateClientSuccessTest() 
       throws ExecutionException, InterruptedException {
     WriteResult writeResult = mock(WriteResult.class);
     ApiFuture<WriteResult> future = mock(ApiFuture.class);
     when(future.get()).thenReturn(writeResult);
     when(mockDocumentRef.set(any(Map.class))).thenReturn(future);
     
-    assertTrue(firestoreService.updateUser(new User("Updated", 501)));
+    assertTrue(firestoreService.updateClient(new Client("Updated", 501)));
   }
 
   @Test
-  public void updateUserReturnsFalseForNullTest() 
+  public void updateClientReturnsFalseForNullTest() 
       throws ExecutionException, InterruptedException {
-    assertFalse(firestoreService.updateUser(null));
+    assertFalse(firestoreService.updateClient(null));
   }
 
   @Test
-  public void deleteUserSuccessTest() 
+  public void deleteClientSuccessTest() 
       throws ExecutionException, InterruptedException {
     WriteResult writeResult = mock(WriteResult.class);
     ApiFuture<WriteResult> future = mock(ApiFuture.class);
     when(future.get()).thenReturn(writeResult);
     when(mockDocumentRef.delete()).thenReturn(future);
     
-    assertTrue(firestoreService.deleteUser(501));
+    assertTrue(firestoreService.deleteClient(501));
   }
 
 
@@ -628,10 +628,10 @@ public class FirestoreServiceTests {
     return map;
   }
 
-  private Map<String, Object> createUserMap(int id, String username) {
+  private Map<String, Object> createClientMap(int id, String clientname) {
     Map<String, Object> map = new HashMap<>();
-    map.put("userId", id);
-    map.put("username", username);
+    map.put("clientId", id);
+    map.put("clientname", clientname);
     map.put("likedRecipeIds", new ArrayList<>());
     return map;
   }

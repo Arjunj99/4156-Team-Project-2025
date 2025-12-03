@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
-import dev.coms4156.project.calorieservice.models.User;
+import dev.coms4156.project.calorieservice.models.Client;
 import dev.coms4156.project.calorieservice.service.FirestoreService;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -55,7 +55,7 @@ public class FirestoreDataPersistenceTests {
    */
   private void cleanupTestData() throws ExecutionException, InterruptedException {
     try {
-      firestoreService.deleteUser(TEST_USER_ID);
+      firestoreService.deleteClient(TEST_USER_ID);
     } catch (Exception e) {
       // Ignore if doesn't exist
     }
@@ -118,18 +118,18 @@ public class FirestoreDataPersistenceTests {
     assertEquals(250, retrievedRecipe.getTotalCalories());
     assertEquals(2, retrievedRecipe.getIngredients().size());
 
-    // Add a user
-    User testUser = new User("Persistence Test User", TEST_USER_ID);
-    assertTrue(firestoreService.addUser(testUser), "User should be added successfully");
+    // Add a client
+    Client testClient = new Client("Persistence Test Client", TEST_USER_ID);
+    assertTrue(firestoreService.addClient(testClient), "Client should be added successfully");
 
-    // Verify user exists
-    User retrievedUser = firestoreService.getUserById(TEST_USER_ID);
-    assertNotNull(retrievedUser, "User should exist after adding");
-    assertEquals("Persistence Test User", retrievedUser.getUsername());
-    assertEquals(TEST_USER_ID, retrievedUser.getUserId());
+    // Verify client exists
+    Client retrievedClient = firestoreService.getClientById(TEST_USER_ID);
+    assertNotNull(retrievedClient, "Client should exist after adding");
+    assertEquals("Persistence Test Client", retrievedClient.getClientname());
+    assertEquals(TEST_USER_ID, retrievedClient.getClientId());
 
     // Delete all objects
-    assertTrue(firestoreService.deleteUser(TEST_USER_ID), "User should be deleted");
+    assertTrue(firestoreService.deleteClient(TEST_USER_ID), "Client should be deleted");
     assertTrue(firestoreService.deleteRecipe(TEST_RECIPE_ID), "Recipe should be deleted");
     assertTrue(
         firestoreService.deleteFood(TEST_INGREDIENT_FOOD_ID_2),
@@ -141,7 +141,7 @@ public class FirestoreDataPersistenceTests {
 
     // Verify all objects are deleted
     assertNull(
-        firestoreService.getUserById(TEST_USER_ID), "User should not exist after deletion");
+        firestoreService.getClientById(TEST_USER_ID), "Client should not exist after deletion");
     assertNull(
         firestoreService.getRecipeById(TEST_RECIPE_ID),
         "Recipe should not exist after deletion");
