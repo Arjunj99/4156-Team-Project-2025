@@ -3,6 +3,10 @@ import { API_BASE_URL } from "./config";
 
 const SERVICE_CLIENT_ID = 502;
 
+if (typeof window !== "undefined") {
+  window.__react_state_setRecipes = (recipes) => setRecipes(recipes);
+}
+
 function getRecipeId(recipe) {
   return (
     recipe?.id ??
@@ -235,8 +239,6 @@ function App() {
       setDetailLoading(false);
     }
   }
-
-  // --- Like recipe (CLOUD) + log (LOCAL) --------------------------------
 
   async function likeRecipe(recipe) {
     if (!signedIn) {
