@@ -1,5 +1,8 @@
-package dev.coms4156.project.calorieservice;
+package dev.coms4156.project.calorieservice.client;
 
+/**
+ * Represents a client event for logging purposes.
+ */
 public class ClientEvent {
 
   private String instanceId;

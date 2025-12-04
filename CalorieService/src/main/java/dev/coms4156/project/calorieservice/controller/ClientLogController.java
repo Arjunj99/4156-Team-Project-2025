@@ -1,16 +1,20 @@
 package dev.coms4156.project.calorieservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.coms4156.project.calorieservice.ClientEvent;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import dev.coms4156.project.calorieservice.client.ClientEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for handling client event logging.
+ */
 @RestController
 public class ClientLogController {
 
@@ -21,6 +25,12 @@ public class ClientLogController {
     this.objectMapper = objectMapper;
   }
 
+  /**
+   * Logs a client event to a file.
+   *
+   * @param event the client event to log
+   * @return ResponseEntity with status and message
+   */
   @PostMapping("/client/log")
   public ResponseEntity<String> logClientEvent(@RequestBody ClientEvent event) {
     try {
