@@ -14,9 +14,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.coms4156.project.calorieservice.models.Client;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
-import dev.coms4156.project.calorieservice.models.User;
 import dev.coms4156.project.calorieservice.service.FirestoreService;
 import dev.coms4156.project.calorieservice.service.MockApiService;
 import java.util.ArrayDeque;
@@ -167,7 +167,7 @@ public class InternalIntegrationTests {
   @DisplayName("Like then recommendHealthy honors calorie cap and excludes liked")
   void likeThenRecommendHealthy() throws Exception {
     final int uid = 7030;
-    store.addUser(new User("ctx", uid));
+    store.addClient(new Client("ctx", uid));
 
     Recipe liked = buildRecipe(7031, "Edge", new int[] {10}, 0);
     Recipe equalCap = buildRecipe(7032, "Edge", new int[] {230}, 0);
@@ -176,13 +176,13 @@ public class InternalIntegrationTests {
     store.addRecipe(equalCap);
     store.addRecipe(overCap);
 
-    mockMvc.perform(post("/user/likeRecipe")
-            .param("userId", String.valueOf(uid))
+    mockMvc.perform(post("/client/likeRecipe")
+            .param("clientId", String.valueOf(uid))
             .param("recipeId", "7031"))
         .andExpect(status().isOk());
 
-    mockMvc.perform(get("/user/recommendHealthy")
-            .param("userId", String.valueOf(uid))
+    mockMvc.perform(get("/client/recommendHealthy")
+            .param("clientId", String.valueOf(uid))
             .param("calorieMax", "230"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[*].recipeId").value(hasItem(7032)))
@@ -201,19 +201,19 @@ public class InternalIntegrationTests {
     store.addRecipe(snack1);
 
     final int uid = 7200;
-    store.addUser(new User("alice", uid));
-    mockMvc.perform(post("/user/likeRecipe")
-            .param("userId", String.valueOf(uid))
+    store.addClient(new Client("alice", uid));
+    mockMvc.perform(post("/client/likeRecipe")
+            .param("clientId", String.valueOf(uid))
             .param("recipeId", String.valueOf(dinner1.getRecipeId())))
         .andExpect(status().isOk());
 
-    mockMvc.perform(get("/user/recommend").param("userId", String.valueOf(uid)))
+    mockMvc.perform(get("/client/recommend").param("clientId", String.valueOf(uid)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[*].recipeId")
             .value(not(hasItem(dinner1.getRecipeId()))));
 
-    mockMvc.perform(get("/user/recommendHealthy")
-            .param("userId", String.valueOf(uid))
+    mockMvc.perform(get("/client/recommendHealthy")
+            .param("clientId", String.valueOf(uid))
             .param("calorieMax", "230"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[*].totalCalories")
@@ -492,19 +492,19 @@ public class InternalIntegrationTests {
 
   @Test
   @DisplayName(
-      "User with no likes: recommend 404, recommendHealthy returns under-cap list")
-  void userNoLikesPaths() throws Exception {
+      "Client with no likes: recommend 404, recommendHealthy returns under-cap list")
+  void clientNoLikesPaths() throws Exception {
     final int uid = 7950;
-    store.addUser(new User("nolikes", uid));
+    store.addClient(new Client("nolikes", uid));
     store.addRecipe(buildRecipe(7951, "Any", new int[] {90}, 0));
 
-    mockMvc.perform(get("/user/recommend").param("userId", String.valueOf(uid)))
+    mockMvc.perform(get("/client/recommend").param("clientId", String.valueOf(uid)))
         .andExpect(status().isNotFound())
         .andExpect(content().string(
-            String.format("User with ID %d not found.", uid)));
+            String.format("Client with ID %d not found.", uid)));
 
-    mockMvc.perform(get("/user/recommendHealthy")
-            .param("userId", String.valueOf(uid))
+    mockMvc.perform(get("/client/recommendHealthy")
+            .param("clientId", String.valueOf(uid))
             .param("calorieMax", "120"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
@@ -626,20 +626,20 @@ public class InternalIntegrationTests {
   }
 
   @Test
-  @DisplayName("Recommend endpoints return 404 when user missing")
-  void recommendMissingUserReturns404() throws Exception {
+  @DisplayName("Recommend endpoints return 404 when client missing")
+  void recommendMissingClientReturns404() throws Exception {
     final int uid = 999999;
-    mockMvc.perform(get("/user/recommend").param("userId", String.valueOf(uid)))
+    mockMvc.perform(get("/client/recommend").param("clientId", String.valueOf(uid)))
         .andExpect(status().isNotFound())
         .andExpect(content().string(
-            String.format("User with ID %d not found.", uid)));
+            String.format("Client with ID %d not found.", uid)));
 
-    mockMvc.perform(get("/user/recommendHealthy")
-            .param("userId", String.valueOf(uid))
+    mockMvc.perform(get("/client/recommendHealthy")
+            .param("clientId", String.valueOf(uid))
             .param("calorieMax", "230"))
         .andExpect(status().isNotFound())
         .andExpect(content().string(
-            String.format("User with ID %d not found.", uid)));
+            String.format("Client with ID %d not found.", uid)));
   }
 
   @Test
@@ -696,12 +696,12 @@ public class InternalIntegrationTests {
   static class InMemoryFirestoreService extends FirestoreService {
     private final Map<Integer, Food> foods = new ConcurrentHashMap<>();
     private final Map<Integer, Recipe> recipes = new ConcurrentHashMap<>();
-    private final Map<Integer, User> users = new ConcurrentHashMap<>();
+    private final Map<Integer, Client> clients = new ConcurrentHashMap<>();
 
     void reset() {
       foods.clear();
       recipes.clear();
-      users.clear();
+      clients.clear();
     }
 
     @Override
@@ -786,30 +786,30 @@ public class InternalIntegrationTests {
     }
 
     @Override
-    public ArrayList<User> getAllUsers() {
-      return new ArrayList<>(users.values());
+    public ArrayList<Client> getAllClients() {
+      return new ArrayList<>(clients.values());
     }
 
     @Override
-    public User getUserById(int userId) {
-      return users.get(userId);
+    public Client getClientById(int clientId) {
+      return clients.get(clientId);
     }
 
     @Override
-    public boolean addUser(User user) {
-      if (user == null) {
+    public boolean addClient(Client client) {
+      if (client == null) {
         return false;
       }
-      user.setLikedRecipes(user.getLikedRecipes());
-      return users.putIfAbsent(user.getUserId(), user) == null;
+      client.setLikedRecipes(client.getLikedRecipes());
+      return clients.putIfAbsent(client.getClientId(), client) == null;
     }
 
     @Override
-    public boolean updateUser(User user) {
-      if (user == null) {
+    public boolean updateClient(Client client) {
+      if (client == null) {
         return false;
       }
-      users.put(user.getUserId(), user);
+      clients.put(client.getClientId(), client);
       return true;
     }
 
@@ -826,8 +826,8 @@ public class InternalIntegrationTests {
     }
 
     @Override
-    public boolean deleteUser(int userId) {
-      users.remove(userId);
+    public boolean deleteClient(int clientId) {
+      clients.remove(clientId);
       return true;
     }
   }

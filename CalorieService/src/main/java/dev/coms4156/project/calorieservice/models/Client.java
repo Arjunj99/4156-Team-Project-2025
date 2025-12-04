@@ -4,49 +4,49 @@ package dev.coms4156.project.calorieservice.models;
 import java.util.ArrayList;
 
 /**
- * Represents a user in the calorie service system.
+ * Represents a client in the calorie service system.
  */
-public class User implements Comparable<User> {
-  private String username;
-  private int userId;
+public class Client implements Comparable<Client> {
+  private String clientname;
+  private int clientId;
   private ArrayList<Recipe> likedRecipes;
 
   /**
-   * Complete User constructor.
+   * Complete Client constructor.
    *
-   * @param username username of the user.
-   * @param userId unique id of the user.
-   * @param likedRecipes list of recipes the user has liked.
+   * @param clientname clientname of the client.
+   * @param clientId unique id of the client.
+   * @param likedRecipes list of recipes the client has liked.
    */
-  public User(String username, int userId, ArrayList<Recipe> likedRecipes) {
-    this.username = username;
-    this.userId = userId;
+  public Client(String clientname, int clientId, ArrayList<Recipe> likedRecipes) {
+    this.clientname = clientname;
+    this.clientId = clientId;
     this.likedRecipes = likedRecipes != null ? likedRecipes : new ArrayList<>();
   }
 
   /**
-   * Basic User constructor without liked recipes.
+   * Basic Client constructor without liked recipes.
    *
-   * @param username username of the user.
-   * @param userId unique id of the user.
+   * @param clientname clientname of the client.
+   * @param clientId unique id of the client.
    */
-  public User(String username, int userId) {
-    this.username = username;
-    this.userId = userId;
+  public Client(String clientname, int clientId) {
+    this.clientname = clientname;
+    this.clientId = clientId;
     this.likedRecipes = new ArrayList<>();
   }
 
   /**
    * No args constructor.
    */
-  public User() {
-    this.username = "";
-    this.userId = 0;
+  public Client() {
+    this.clientname = "";
+    this.clientId = 0;
     this.likedRecipes = new ArrayList<>();
   }
 
   /**
-   * Adds a recipe to the user's liked recipes if not already liked.
+   * Adds a recipe to the client's liked recipes if not already liked.
    *
    * @param recipe the Recipe to add to liked recipes.
    * @return {@code true} if the recipe was added; {@code false} if already liked.
@@ -61,7 +61,7 @@ public class User implements Comparable<User> {
   }
 
   /**
-   * Removes a recipe from the user's liked recipes if it exists.
+   * Removes a recipe from the client's liked recipes if it exists.
    *
    * @param recipe the Recipe to remove from liked recipes.
    * @return {@code true} if the recipe was removed; {@code false} if not found.
@@ -77,20 +77,20 @@ public class User implements Comparable<User> {
     return false;
   }
 
-  public String getUsername() {
-    return username;
+  public String getClientname() {
+    return clientname;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setClientname(String clientname) {
+    this.clientname = clientname;
   }
 
-  public int getUserId() {
-    return userId;
+  public int getClientId() {
+    return clientId;
   }
 
-  public void setUserId(int userId) {
-    this.userId = userId;
+  public void setClientId(int clientId) {
+    this.clientId = clientId;
   }
 
   public ArrayList<Recipe> getLikedRecipes() {
@@ -102,8 +102,8 @@ public class User implements Comparable<User> {
   }
 
   @Override
-  public int compareTo(User other) {
-    return Integer.compare(this.userId, other.userId);
+  public int compareTo(Client other) {
+    return Integer.compare(this.clientId, other.clientId);
   }
 
   @Override
@@ -116,13 +116,13 @@ public class User implements Comparable<User> {
       return false;
     }
 
-    User cmpUser = (User) obj;
-    return cmpUser.userId == this.userId;
+    Client cmpClient = (Client) obj;
+    return cmpClient.clientId == this.clientId;
   }
 
   @Override
   public String toString() {
     return String.format("(%d)\t%s - %d liked recipes",
-        this.userId, this.username, this.likedRecipes.size());
+        this.clientId, this.clientname, this.likedRecipes.size());
   }
 }

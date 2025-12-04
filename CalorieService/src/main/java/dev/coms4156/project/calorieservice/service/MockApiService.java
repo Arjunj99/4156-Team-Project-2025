@@ -1,8 +1,8 @@
 package dev.coms4156.project.calorieservice.service;
 
+import dev.coms4156.project.calorieservice.models.Client;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
-import dev.coms4156.project.calorieservice.models.User;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * This class defines the API Service that uses Firestore for data persistence.
- * It provides methods for accessing or modifying foods, recipes, and users.
+ * It provides methods for accessing or modifying foods, recipes, and clients.
  */
 @Service
 public class MockApiService {
@@ -83,16 +83,16 @@ public class MockApiService {
   }
 
   /**
-   * Helper method to find a user by their ID.
+   * Helper method to find a client by their ID.
    *
-   * @param userId The ID of the user to find
-   * @return The {@code User} with the specified ID, or {@code null} if not found
+   * @param clientId The ID of the client to find
+   * @return The {@code Client} with the specified ID, or {@code null} if not found
    */
-  public User findUserById(int userId) {
+  public Client findClientById(int clientId) {
     try {
-      return firestoreService.getUserById(userId);
+      return firestoreService.getClientById(clientId);
     } catch (ExecutionException | InterruptedException e) {
-      System.err.println("Error finding user: " + e.getMessage());
+      System.err.println("Error finding client: " + e.getMessage());
       return null;
     }
   }
@@ -113,19 +113,19 @@ public class MockApiService {
   }
 
   /**
-   * Adds a new user to the service.
+   * Adds a new client to the service.
    *
-   * @param user the user to add
-   * @return true if the user was added successfully, false if user is null or already exists
+   * @param client the client to add
+   * @return true if the client was added successfully, false if client is null or already exists
    */
-  public boolean addUser(User user) {
-    if (user == null) {
+  public boolean addClient(Client client) {
+    if (client == null) {
       return false;
     }
     try {
-      return firestoreService.addUser(user);
+      return firestoreService.addClient(client);
     } catch (ExecutionException | InterruptedException e) {
-      System.err.println("Error adding user: " + e.getMessage());
+      System.err.println("Error adding client: " + e.getMessage());
       return false;
     }
   }
@@ -159,15 +159,15 @@ public class MockApiService {
   }
 
   /**
-   * Gets the list of all users.
+   * Gets the list of all clients.
    *
-   * @return {@code ArrayList} of all {@code User} objects
+   * @return {@code ArrayList} of all {@code Client} objects
    */
-  public ArrayList<User> getUsers() {
+  public ArrayList<Client> getClients() {
     try {
-      return firestoreService.getAllUsers();
+      return firestoreService.getAllClients();
     } catch (ExecutionException | InterruptedException e) {
-      System.err.println("Error getting users: " + e.getMessage());
+      System.err.println("Error getting clients: " + e.getMessage());
       return new ArrayList<>();
     }
   }
@@ -230,17 +230,17 @@ public class MockApiService {
   }
 
   /**
-   * Adds a recipe to a user's liked recipes.
+   * Adds a recipe to a client's liked recipes.
    *
-   * @param userId The ID of the user
+   * @param clientId The ID of the client
    * @param recipeId The ID of the recipe to like
-   * @return true if the recipe was added successfully, false if user or recipe not found
+   * @return true if the recipe was added successfully, false if client or recipe not found
    */
-  public boolean likeRecipe(int userId, int recipeId) {
+  public boolean likeRecipe(int clientId, int recipeId) {
     try {
-      User user = findUserById(userId);
+      Client client = findClientById(clientId);
 
-      if (user == null) {
+      if (client == null) {
         return false;
       }
 
@@ -250,12 +250,12 @@ public class MockApiService {
         return false;
       }
 
-      boolean result = user.likeRecipe(recipe);
+      boolean result = client.likeRecipe(recipe);
       if (result) {
 
         firestoreService.updateRecipe(recipe);
-        // Update user with new liked recipe
-        firestoreService.updateUser(user);
+        // Update client with new liked recipe
+        firestoreService.updateClient(client);
       }
       return result;
     } catch (ExecutionException | InterruptedException e) {
@@ -265,25 +265,25 @@ public class MockApiService {
   }
 
   /**
-   * Returns a list of recommended recipes based on user's liked recipes
+   * Returns a list of recommended recipes based on client's liked recipes
    * under calorieMax.
    *
-   * @param userId The ID of the user
+   * @param clientId The ID of the client
    * @param calorieMax Maximum calorie count for recommendations
    * @return A {@code List} of up to 10 recommended {@code Recipe} objects,
-   *         or null if user not found
+   *         or null if client not found
    */
-  public List<Recipe> recommendHealthy(int userId, int calorieMax) {
+  public List<Recipe> recommendHealthy(int clientId, int calorieMax) {
     try {
-      User user = findUserById(userId);
+      Client client = findClientById(clientId);
 
-      if (user == null) {
+      if (client == null) {
         return null;
       }
 
-      final User finalUser = user;
+      final Client finalClient = client;
 
-      List<String> likedCategories = finalUser.getLikedRecipes().stream()
+      List<String> likedCategories = finalClient.getLikedRecipes().stream()
           .map(Recipe::getCategory)
           .distinct()
           .collect(Collectors.toList());
@@ -305,14 +305,14 @@ public class MockApiService {
 
       // Filter out already liked recipes
       List<Recipe> recommendations = categoryRecipes.stream()
-          .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
+          .filter(recipe -> !finalClient.getLikedRecipes().contains(recipe))
           .collect(Collectors.toList());
 
       if (recommendations.size() < 10) {
         // Fill with other recipes under calorieMax
         List<Recipe> additionalRecipes = firestoreService.getRecipesByCalories(calorieMax);
         List<Recipe> filteredAdditional = additionalRecipes.stream()
-            .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
+            .filter(recipe -> !finalClient.getLikedRecipes().contains(recipe))
             .filter(recipe -> !recommendations.contains(recipe))
             .collect(Collectors.toList());
 
@@ -328,23 +328,23 @@ public class MockApiService {
   }
 
   /**
-   * Returns a list of recommended recipes based on user's liked recipes.
+   * Returns a list of recommended recipes based on client's liked recipes.
    *
-   * @param userId The ID of the user
+   * @param clientId The ID of the client
    * @return A {@code List} of up to 10 recommended {@code Recipe} objects,
-   *         or null if user not found or no liked recipes
+   *         or null if client not found or no liked recipes
    */
-  public List<Recipe> recommend(int userId) {
+  public List<Recipe> recommend(int clientId) {
     try {
-      User user = findUserById(userId);
+      Client client = findClientById(clientId);
 
-      if (user == null) {
+      if (client == null) {
         return null;
       }
 
-      final User finalUser = user;
+      final Client finalClient = client;
 
-      List<String> likedCategories = finalUser.getLikedRecipes().stream()
+      List<String> likedCategories = finalClient.getLikedRecipes().stream()
           .map(Recipe::getCategory)
           .distinct()
           .collect(Collectors.toList());
@@ -364,14 +364,14 @@ public class MockApiService {
 
       // Filter out already liked recipes
       List<Recipe> recommendations = categoryRecipes.stream()
-          .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
+          .filter(recipe -> !finalClient.getLikedRecipes().contains(recipe))
           .collect(Collectors.toList());
 
       if (recommendations.size() < 10) {
         // Get additional recipes from all categories, excluding already liked ones
         List<Recipe> additionalRecipes = firestoreService.getRecipesByCalories(Integer.MAX_VALUE);
         List<Recipe> filteredAdditional = additionalRecipes.stream()
-            .filter(recipe -> !finalUser.getLikedRecipes().contains(recipe))
+            .filter(recipe -> !finalClient.getLikedRecipes().contains(recipe))
             .filter(recipe -> !recommendations.contains(recipe))
             .collect(Collectors.toList());
 

@@ -181,7 +181,7 @@ public class MockRouteControllerTests {
   }
 
   /**
-   * Ensures {@code POST /user/recommend}
+   * Ensures {@code POST /client/recommend}
    * returns HTTP 500 when service fails.
    */
   @Test
@@ -189,14 +189,14 @@ public class MockRouteControllerTests {
     when(mockApiService.recommend(anyInt()))
         .thenThrow(new RuntimeException("DB is down"));
 
-    mockMvc.perform(get("/user/recommend").param("userId", "1"))
+    mockMvc.perform(get("/client/recommend").param("clientId", "1"))
         .andExpect(status().isInternalServerError());
 
     verify(mockApiService, times(1)).recommend(1);
   }
 
   /**
-   * Ensures {@code GET /user/recommendHealthy}
+   * Ensures {@code GET /client/recommendHealthy}
    * returns HTTP 500 when service fails.
    */
   @Test
@@ -204,8 +204,8 @@ public class MockRouteControllerTests {
     when(mockApiService.recommendHealthy(anyInt(), anyInt()))
         .thenThrow(new RuntimeException("DB is down"));
 
-    mockMvc.perform(get("/user/recommendHealthy")
-        .param("userId", "1")
+    mockMvc.perform(get("/client/recommendHealthy")
+        .param("clientId", "1")
         .param("calorieMax", "0"))
         .andExpect(status().isInternalServerError());
 
@@ -229,16 +229,16 @@ public class MockRouteControllerTests {
   }
 
   /**
-   * Ensures {@code POST /user/likeRecipe}
+   * Ensures {@code POST /client/likeRecipe}
    * returns HTTP 500 when service fails.
    */
   @Test
-  public void userLikeRecipeReturns500() throws Exception {
+  public void clientLikeRecipeReturns500() throws Exception {
     when(mockApiService.likeRecipe(anyInt(), anyInt()))
         .thenThrow(new RuntimeException("DB down"));
 
-    mockMvc.perform(post("/user/likeRecipe")
-        .param("userId", "1")
+    mockMvc.perform(post("/client/likeRecipe")
+        .param("clientId", "1")
         .param("recipeId", "2"))
         .andExpect(status().isInternalServerError());
 
@@ -375,7 +375,7 @@ public class MockRouteControllerTests {
   }
 
   /**
-   * Ensures {@code GET /user/recommend}
+   * Ensures {@code GET /client/recommend}
    * returns HTTP 200 when service succeeds.
    */
   @Test
@@ -383,7 +383,7 @@ public class MockRouteControllerTests {
     var recs = java.util.List.of(new Recipe(), new Recipe());
     when(mockApiService.recommend(1)).thenReturn(recs);
 
-    mockMvc.perform(get("/user/recommend").param("userId", "1"))
+    mockMvc.perform(get("/client/recommend").param("clientId", "1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(2));
@@ -392,7 +392,7 @@ public class MockRouteControllerTests {
   }
 
   /**
-   * Ensures {@code GET /user/recommendHealthy}
+   * Ensures {@code GET /client/recommendHealthy}
    * returns HTTP 200 when service succeeds.
    */
   @Test
@@ -400,8 +400,8 @@ public class MockRouteControllerTests {
     var recs = java.util.List.of(new Recipe());
     when(mockApiService.recommendHealthy(1, 500)).thenReturn(recs);
 
-    mockMvc.perform(get("/user/recommendHealthy")
-        .param("userId", "1")
+    mockMvc.perform(get("/client/recommendHealthy")
+        .param("clientId", "1")
         .param("calorieMax", "500"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
@@ -427,15 +427,15 @@ public class MockRouteControllerTests {
   }
 
   /**
-   * Ensures {@code POST /user/likeRecipe}
+   * Ensures {@code POST /client/likeRecipe}
    * returns HTTP 200 when service succeeds.
    */
   @Test
-  void userLikeRecipeReturns200() throws Exception {
+  void clientLikeRecipeReturns200() throws Exception {
     when(mockApiService.likeRecipe(1, 2)).thenReturn(true);
 
-    mockMvc.perform(post("/user/likeRecipe")
-        .param("userId", "1")
+    mockMvc.perform(post("/client/likeRecipe")
+        .param("clientId", "1")
         .param("recipeId", "2"))
         .andExpect(status().isOk())
         .andExpect(content().string("Recipe liked successfully."));
@@ -576,57 +576,57 @@ public class MockRouteControllerTests {
   }
 
   /**
-   * Ensures {@code GET /user/recommend}
+   * Ensures {@code GET /client/recommend}
    * returns HTTP 404 when service gracefully fails.
    */
   @Test
   void recommendReturns404() throws Exception {
     when(mockApiService.recommend(999)).thenReturn(null);
 
-    mockMvc.perform(get("/user/recommend").param("userId", "999"))
+    mockMvc.perform(get("/client/recommend").param("clientId", "999"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("User with ID 999 not found."));
+        .andExpect(content().string("Client with ID 999 not found."));
 
     verify(mockApiService, times(1)).recommend(999);
   }
 
   /**
-   * Ensures {@code GET /user/recommend}
+   * Ensures {@code GET /client/recommend}
    * returns HTTP 400 when service gracefully fails.
    */
   @Test
   void recommendReturns400() throws Exception {
-    mockMvc.perform(get("/user/recommend").param("userId", "garbage"))
+    mockMvc.perform(get("/client/recommend").param("clientId", "garbage"))
         .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);
   }
 
   /**
-   * Ensures {@code GET /user/recommendHealthy}
+   * Ensures {@code GET /client/recommendHealthy}
    * returns HTTP 404 when service gracefully fails.
    */
   @Test
   void recommendHealthyReturns404() throws Exception {
     when(mockApiService.recommendHealthy(42, 500)).thenReturn(null);
 
-    mockMvc.perform(get("/user/recommendHealthy")
-        .param("userId", "42")
+    mockMvc.perform(get("/client/recommendHealthy")
+        .param("clientId", "42")
         .param("calorieMax", "500"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("User with ID 42 not found."));
+        .andExpect(content().string("Client with ID 42 not found."));
 
     verify(mockApiService, times(1)).recommendHealthy(42, 500);
   }
 
   /**
-   * Ensures {@code GET /user/recommendHealthy}
+   * Ensures {@code GET /client/recommendHealthy}
    * returns HTTP 400 when service gracefully fails.
    */
   @Test
   void recommendHealthyReturns400() throws Exception {
-    mockMvc.perform(get("/user/recommendHealthy")
-        .param("userId", "zero")
+    mockMvc.perform(get("/client/recommendHealthy")
+        .param("clientId", "zero")
         .param("calorieMax", "NaN"))
         .andExpect(status().isBadRequest());
 
@@ -634,30 +634,30 @@ public class MockRouteControllerTests {
   }
 
   /**
-   * Ensures {@code GET /user/likeRecipe}
+   * Ensures {@code GET /client/likeRecipe}
    * returns HTTP 400 when service gracefully fails.
    */
   @Test
-  void userLikeRecipe400_1() throws Exception {
+  void clientLikeRecipe400_1() throws Exception {
     when(mockApiService.likeRecipe(1, 2)).thenReturn(false);
 
-    mockMvc.perform(post("/user/likeRecipe")
-        .param("userId", "1")
+    mockMvc.perform(post("/client/likeRecipe")
+        .param("clientId", "1")
         .param("recipeId", "2"))
         .andExpect(status().isBadRequest())
         .andExpect(content().string(
-        "User with ID 1 or recipe with ID 2 not found, or recipe already liked."));
+        "Client with ID 1 or recipe with ID 2 not found, or recipe already liked."));
 
     verify(mockApiService, times(1)).likeRecipe(1, 2);
   }
 
   /**
-   * Ensures {@code GET /user/likeRecipe}
+   * Ensures {@code GET /client/likeRecipe}
    * returns HTTP 400 when service gracefully fails.
    */
   @Test
-  void userLikeRecipe400_2() throws Exception {
-    mockMvc.perform(post("/user/likeRecipe").param("userId", "1"))
+  void clientLikeRecipe400_2() throws Exception {
+    mockMvc.perform(post("/client/likeRecipe").param("clientId", "1"))
         .andExpect(status().isBadRequest());
 
     verifyNoInteractions(mockApiService);

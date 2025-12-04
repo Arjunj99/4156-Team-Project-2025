@@ -14,9 +14,9 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import dev.coms4156.project.calorieservice.controller.RouteController;
+import dev.coms4156.project.calorieservice.models.Client;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
-import dev.coms4156.project.calorieservice.models.User;
 import dev.coms4156.project.calorieservice.service.FirestoreService;
 import dev.coms4156.project.calorieservice.service.MockApiService;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class RouteControllerTests {
   // Instance variables to hold mock data that persists across method calls within a test
   private ArrayList<Food> mockFoods;
   private ArrayList<Recipe> mockRecipes;
-  private ArrayList<User> mockUsers;
+  private ArrayList<Client> mockClients;
 
   /**
    * Sets up the mock FirestoreService with test data before each test.
@@ -101,21 +101,21 @@ public class RouteControllerTests {
         new ArrayList<>(), 3, 1, 400);
     mockRecipes.add(recipe3);
     
-    mockUsers = new ArrayList<>();
-    User mockUser = new User("Test User", 501);
-    mockUser.getLikedRecipes().add(mockRecipe);
-    mockUsers.add(mockUser);
+    mockClients = new ArrayList<>();
+    Client mockClient = new Client("Test Client", 501);
+    mockClient.getLikedRecipes().add(mockRecipe);
+    mockClients.add(mockClient);
     
-    // Add users 508 and 509 for tests that need them
-    User user508 = new User("User 508", 508);
-    mockUsers.add(user508);
-    User user509 = new User("User 509", 509);
-    mockUsers.add(user509);
+    // Add clients 508 and 509 for tests that need them
+    Client client508 = new Client("Client 508", 508);
+    mockClients.add(client508);
+    Client client509 = new Client("Client 509", 509);
+    mockClients.add(client509);
     
     // Mock FirestoreService methods - return the lists so they can be modified
     when(firestoreService.getAllFoods()).thenAnswer(invocation -> new ArrayList<>(mockFoods));
     when(firestoreService.getAllRecipes()).thenAnswer(invocation -> new ArrayList<>(mockRecipes));
-    when(firestoreService.getAllUsers()).thenAnswer(invocation -> new ArrayList<>(mockUsers));
+    when(firestoreService.getAllClients()).thenAnswer(invocation -> new ArrayList<>(mockClients));
     
     // Mock getById methods
     when(firestoreService.getFoodById(anyInt())).thenAnswer(invocation -> {
@@ -134,10 +134,10 @@ public class RouteControllerTests {
           .orElse(null);
     });
     
-    when(firestoreService.getUserById(anyInt())).thenAnswer(invocation -> {
+    when(firestoreService.getClientById(anyInt())).thenAnswer(invocation -> {
       int id = invocation.getArgument(0);
-      return mockUsers.stream()
-          .filter(u -> u.getUserId() == id)
+      return mockClients.stream()
+          .filter(u -> u.getClientId() == id)
           .findFirst()
           .orElse(null);
     });
@@ -188,25 +188,25 @@ public class RouteControllerTests {
       return true;
     });
     
-    when(firestoreService.addUser(any(User.class))).thenAnswer(invocation -> {
-      User user = invocation.getArgument(0);
-      boolean exists = mockUsers.stream().anyMatch(u -> u.getUserId() == user.getUserId());
+    when(firestoreService.addClient(any(Client.class))).thenAnswer(invocation -> {
+      Client client = invocation.getArgument(0);
+      boolean exists = mockClients.stream().anyMatch(u -> u.getClientId() == client.getClientId());
       if (exists) {
         return false;
       }
-      mockUsers.add(user);
+      mockClients.add(client);
       return true;
     });
     
     // Mock update methods - the objects are already updated in-place, just return true
     when(firestoreService.updateRecipe(any(Recipe.class))).thenReturn(true);
     
-    when(firestoreService.updateUser(any(User.class))).thenAnswer(invocation -> {
-      User updatedUser = invocation.getArgument(0);
-      // Update the user in the list to reflect changes to likedRecipes
-      for (int i = 0; i < mockUsers.size(); i++) {
-        if (mockUsers.get(i).getUserId() == updatedUser.getUserId()) {
-          mockUsers.set(i, updatedUser);
+    when(firestoreService.updateClient(any(Client.class))).thenAnswer(invocation -> {
+      Client updatedClient = invocation.getArgument(0);
+      // Update the client in the list to reflect changes to likedRecipes
+      for (int i = 0; i < mockClients.size(); i++) {
+        if (mockClients.get(i).getClientId() == updatedClient.getClientId()) {
+          mockClients.set(i, updatedClient);
           break;
         }
       }
@@ -601,26 +601,26 @@ public class RouteControllerTests {
 
   @Test
   public void recommendHealthyEndpointReturnsRecommendations() throws Exception {
-    mockMvc.perform(get("/user/recommendHealthy")
-            .param("userId", "501")
+    mockMvc.perform(get("/client/recommendHealthy")
+            .param("clientId", "501")
             .param("calorieMax", "600"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray());
   }
 
   @Test
-  public void recommendHealthyEndpointReturns404ForMissingUser() throws Exception {
-    mockMvc.perform(get("/user/recommendHealthy")
-            .param("userId", "99999")
+  public void recommendHealthyEndpointReturns404ForMissingClient() throws Exception {
+    mockMvc.perform(get("/client/recommendHealthy")
+            .param("clientId", "99999")
             .param("calorieMax", "600"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("User with ID 99999 not found."));
+        .andExpect(content().string("Client with ID 99999 not found."));
   }
 
   @Test
-  public void recommendHealthyEndpointHandlesUsersWithNoPreferences() throws Exception {
-    mockMvc.perform(get("/user/recommendHealthy")
-            .param("userId", "509")
+  public void recommendHealthyEndpointHandlesClientsWithNoPreferences() throws Exception {
+    mockMvc.perform(get("/client/recommendHealthy")
+            .param("clientId", "509")
             .param("calorieMax", "400"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray());
@@ -628,17 +628,17 @@ public class RouteControllerTests {
 
   @Test
   public void recommendEndpointReturnsRecommendations() throws Exception {
-    mockMvc.perform(get("/user/recommend").param("userId", "501"))
+    mockMvc.perform(get("/client/recommend").param("clientId", "501"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$[0].recipeId").exists());
   }
 
   @Test
-  public void recommendEndpointReturns404ForMissingUser() throws Exception {
-    mockMvc.perform(get("/user/recommend").param("userId", "99999"))
+  public void recommendEndpointReturns404ForMissingClient() throws Exception {
+    mockMvc.perform(get("/client/recommend").param("clientId", "99999"))
         .andExpect(status().isNotFound())
-        .andExpect(content().string("User with ID 99999 not found."));
+        .andExpect(content().string("Client with ID 99999 not found."));
   }
 
   @Test
@@ -651,42 +651,42 @@ public class RouteControllerTests {
           .andExpect(status().isCreated());
     }
 
-    mockMvc.perform(get("/user/recommend").param("userId", "501"))
+    mockMvc.perform(get("/client/recommend").param("clientId", "501"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(10));
   }
 
   @Test
-  public void userLikeRecipeEndpointLikesNewRecipe() throws Exception {
+  public void clientLikeRecipeEndpointLikesNewRecipe() throws Exception {
     int recipeId = findUnusedRecipeId();
     mockMvc.perform(post("/recipe/addRecipe")
             .contentType(MediaType.APPLICATION_JSON)
             .content(recipePayload(recipeId, "Breakfast")))
         .andExpect(status().isCreated());
 
-    mockMvc.perform(post("/user/likeRecipe")
-            .param("userId", "509")
+    mockMvc.perform(post("/client/likeRecipe")
+            .param("clientId", "509")
             .param("recipeId", String.valueOf(recipeId)))
         .andExpect(status().isOk())
         .andExpect(content().string("Recipe liked successfully."));
 
-    User user = mockApiService.findUserById(509);
-    Assertions.assertTrue(user.getLikedRecipes().stream()
+    Client client = mockApiService.findClientById(509);
+    Assertions.assertTrue(client.getLikedRecipes().stream()
         .anyMatch(recipe -> recipe.getRecipeId() == recipeId));
   }
 
   @Test
-  public void userLikeRecipeEndpointReturns400ForMissingEntities() throws Exception {
-    mockMvc.perform(post("/user/likeRecipe")
-            .param("userId", "99999")
+  public void clientLikeRecipeEndpointReturns400ForMissingEntities() throws Exception {
+    mockMvc.perform(post("/client/likeRecipe")
+            .param("clientId", "99999")
             .param("recipeId", "1001"))
         .andExpect(status().isBadRequest())
         .andExpect(content().string(
-            "User with ID 99999 or recipe with ID 1001 not found, or recipe already liked."));
+            "Client with ID 99999 or recipe with ID 1001 not found, or recipe already liked."));
   }
 
   @Test
-  public void userLikeRecipeEndpointAllowsIngredientlessRecipes() throws Exception {
+  public void clientLikeRecipeEndpointAllowsIngredientlessRecipes() throws Exception {
     int recipeId = findUnusedRecipeId();
     String payload = String.format("""
         {
@@ -704,8 +704,8 @@ public class RouteControllerTests {
             .content(payload))
         .andExpect(status().isCreated());
 
-    mockMvc.perform(post("/user/likeRecipe")
-            .param("userId", "508")
+    mockMvc.perform(post("/client/likeRecipe")
+            .param("clientId", "508")
             .param("recipeId", String.valueOf(recipeId)))
         .andExpect(status().isOk())
         .andExpect(content().string("Recipe liked successfully."));
@@ -793,23 +793,23 @@ public class RouteControllerTests {
   }
 
   @Test
-  public void loggingVerificationForUserEndpoints() throws Exception {
+  public void loggingVerificationForClientEndpoints() throws Exception {
     Logger logger = (Logger) LoggerFactory.getLogger(RouteController.class);
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
     listAppender.start();
     logger.addAppender(listAppender);
 
-    mockMvc.perform(get("/user/recommend").param("userId", "501"))
+    mockMvc.perform(get("/client/recommend").param("clientId", "501"))
         .andExpect(status().isOk());
 
     List<ILoggingEvent> logsList = listAppender.list;
     boolean logFound = logsList.stream()
         .anyMatch(event -> event.getFormattedMessage()
-            .contains("endpoint called: GET /user/recommend with userId=501"));
+            .contains("endpoint called: GET /client/recommend with clientId=501"));
 
     logger.detachAppender(listAppender);
     Assertions.assertTrue(logFound,
-        "Expected log message for GET /user/recommend not found");
+        "Expected log message for GET /client/recommend not found");
   }
 
   @Test
@@ -819,21 +819,21 @@ public class RouteControllerTests {
     listAppender.start();
     logger.addAppender(listAppender);
 
-    mockMvc.perform(get("/user/recommendHealthy")
-            .param("userId", "501")
+    mockMvc.perform(get("/client/recommendHealthy")
+            .param("clientId", "501")
             .param("calorieMax", "600"))
         .andExpect(status().isOk());
 
     List<ILoggingEvent> logsList = listAppender.list;
     boolean logFound = logsList.stream()
         .anyMatch(event -> event.getFormattedMessage()
-            .contains("endpoint called: GET /user/recommendHealthy")
-            && event.getFormattedMessage().contains("userId=501")
+            .contains("endpoint called: GET /client/recommendHealthy")
+            && event.getFormattedMessage().contains("clientId=501")
             && event.getFormattedMessage().contains("calorieMax=600"));
 
     logger.detachAppender(listAppender);
     Assertions.assertTrue(logFound,
-        "Expected log message for GET /user/recommendHealthy with parameters not found");
+        "Expected log message for GET /client/recommendHealthy with parameters not found");
   }
 
   private String recipePayload(int recipeId, String category) {
