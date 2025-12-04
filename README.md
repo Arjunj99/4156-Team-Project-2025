@@ -134,6 +134,117 @@ highest views, as well as 3 random recipes of the same category with lower calor
   * 404 NOT FOUND: Recipe with specified ID not found
   * 500 INTERNAL SERVER ERROR: Server error occurred
 
+## Client Application (Demo Client)
+Our project includes a full React-based demo client located inside this repository at CalorieService/recipe-client/, as well as helper java files located in CalorieService/src/main/java/dev/coms4156/project/calorieservice/client, CalorieService/src/main/java/dev/coms4156/project/calorieservice/config and CalorieService/src/main/java/dev/coms4156/project/calorieservice/controller.
+
+This client provides a graphical interface for interacting with many of the major API endpoint of the Calorie Service. It is used during local development, end-to-end testing, and during our final demo. It should be noted that this demo client serves as an example of what can be made using this service. While this client acts as a recipe recommendation site, another client could easily be made with another purpose, such as a restaurant menu calorie estimator.
+
+### What the Client Does
+The demo client allows a user to:
+- Sign in with a local user ID
+- Get recommended recipe recommendations based on calorie restrictions from the service
+- View recipe details and ingredient calorie breakdowns
+- Like recipes (which records likes both within the client data-store and in the service's DB)
+
+The client communicates directly with the backend service deployed at: https://calorie-service-295107751003.us-east1.run.app/. All network calls are made using a lightweight proxy layer defined in CalorieService/recipe-client/src/App.jsx.
+
+### How to Build and Run the Client
+From the repository root, run:
+1. cd CalorieService/recipe-client
+2. npm install     (first time only)
+3. npm run dev
+
+Then open a browser to:
+http://localhost:5173.
+
+Your client is now connected to the backend service and ready for E2E testing.
+
+### How Multiple Client Instances Are Distinguished
+The service was explicitly designed to handle multiple simultaneous clients.
+The demo client identifies itself to the server using three independent identifiers:
+
+1. X-Client-Id: A static ID for the entire client application (example: 502).
+This distinguishes different client types.
+2. X-Instance-Id: A random UUID generated per browser installation and stored in localStorage.
+This distinguishes multiple clients.
+3. userId: A human-readable user identity meaningful to the UI (ex: "alice01").
+It identifies which local person is currently interacting with the client.
+
+Due to this, multiple instances can interact with the service simultaneously without interfering with each other, and logs clearly indicate which instance and user produced each call. You may use the test files as proof of this behavior: MultiClientLogTests.java and MultiClientRouteControllerTest.java.
+
+### How to Test the Client
+Our demo-client has a features to assist developers when it comes testing their code. Below is a list of the test files and how to run them.
+
+#### CalorieService/recipe-client/src/App.test.jsx
+CalorieService/recipe-client/src/App.test.jsx contains a thorough test file with tests for App.jsx. These tests are used to check as many plausible equivalence partitions for the Client front-end behavior. It is built using Jest.
+
+You can run this test, alongside app.e2e.spec.js when you run <code>npm test</code> from the recipe-client directory. Reports are generated in /CalorieService/recipe-client/coverage/lcov-report/index.html.
+
+#### CalorieService/recipe-client/tests/app.e2e.spec.jsx
+CalorieService/recipe-client/tests/app.e2e.spec.jsx contains a test file with end-to-end tests for App.jsx. It is built using Playwright.
+
+You can run the following steps to test the e2e test files from the recipe-client directory:
+1. npx playwright install (first time only)
+2. npx playwright test
+
+Reports are generated in /CalorieService/recipe-client/test-results/.last-run.json.
+
+These tests cover the following flows:
+1. User can sign in end-to-end: Validates UI changes + /client/log.
+2. Fetching healthy recipe recommendations: covers the /client/recommendHealthy endpoint.
+3. Viewing recipe details: covers /recipe/viewRecipe and /recipe/calorieBreakdown.
+4. Liking a recipe: Covers /client/likeRecipe functionality via LIKE button.
+5. Multiple browser instances: Ensures different windows generate different instanceIds.
+6. Backend error handling: Validates client error bar display on invalid inputs.
+
+All tests communicate with the real client-backend and require both the service and the client to be running.
+
+#### CalorieService/src/test/java/dev/coms4156/project/calorieservice
+This directory contains many test files that test supporting features and capabilities found in ClientEvent.java, CoreConfig.java and ClientLogController.java (see start of this subsection). Corresponding test files are found in CalorieService/src/test/java/dev/coms4156/project/calorieservice and are automatically ran as part of the CI (see <code>mvn clean test</code>).
+
+1. ClientEventTests.java: Tests the ClientEvent.java file.
+2. ClientLogTests.java: Tests the backend component of the client which handles client-based logging. Note that /CalorieService/logs/client-events.log serves as a local persistent data store for the client.
+3. MultiClientLogTests.java: Tests the behavior of a user querying the client (eg. using the client to log into their account the recipe site) and tests for multi-client behavior.
+4. MultiClientRouteController.java: Tests the behavior of a client querying the service (eg. using the service to get recipes that meet the health criteria) and tests for multi-client behavior. Contains many equivalence partitions for Client -> Service Inputs.
+
+## Third-Party Client Developer Guide
+Any third-party developer can build their own client by following these guidelines.
+
+### 1. API Base URL
+All service endpoints are exposed at: https://calorie-service-295107751003.us-east1.run.app/
+
+A third-party client can use any language or environment that supports HTTP calls.
+
+### 2. Required Headers
+Every request must include:
+- X-Client-Id: <integer identifying the client application>
+- X-Instance-Id: <unique ID per installation>
+
+Clients may generate instance IDs however they choose (UUID recommended).
+
+### 3. Authentication / User Context
+Your service uses lightweight, client-managed identifiers:
+- userId (query param)
+- recipeId (query param)
+
+There is no OAuth or authentication requirement.
+
+### 4. Supported API Endpoints
+Full endpoint documentation appears earlier in the README.
+Third-party clients may implement any subset they require.
+
+All responses use JSON.
+
+### 5. Logging Requirement
+All clients must POST to POST /client/log with a JSON body describing:
+- instanceId
+- serviceClientId
+- userId
+- timestamp
+- action event (sign in, view, like, etc.)
+
+This ensures observability across multiple client instances.
+
 ## Project Management Tools
 We used a combination of Jira and a spreadsheet to keep track of tasks. These are the links to them.
 - https://arjunsomekawa.atlassian.net/jira/software/projects/OPS/boards/1?atlOrigin=eyJpIjoiNWY5ZmRkNjQxMWEyNGI0Y2FmZjRjMzBiZWMwNmY0NWYiLCJwIjoiaiJ9
@@ -141,7 +252,7 @@ We used a combination of Jira and a spreadsheet to keep track of tasks. These ar
 
 ## Style Checking Report
 I used the tool "checkstyle" to check the style of our code and generate style checking reports. Here is the report
-as of the day of Oct 23, 2025. (These can be found in the reports folder):
+as of the day of Dec 04, 2025. (These can be found in the reports folder):
 
 ![Screenshot of a checkstyle with no errors](reports/checkstyle_report.png)
 
@@ -158,7 +269,21 @@ I used PMD to perform static analysis on our codebase, see below for the most re
 
 ![Screenshot of PMD analysis report](reports/mvd_report.png)
 
-This image was captured on Oct 23, 2025.
+This image was captured on Dec 04, 2025.
+
+## Jest Testing
+I used Jest to perform end-to-end testing for our client's backend, see below for the most recent output.
+
+![Screenshot of Jest analysis report](reports/npm_report.png)
+
+This image was captured on Dec 04, 2025.
+
+## Playwright Testing
+I used Jest to perform end-to-end testing for our service, see below for the most recent output.
+
+![Screenshot of Playwright analysis report](reports/npx_report.png)
+
+This image was captured on Dec 04, 2025.
 
 ## Continuous Integration Report
 This repository using GitHub Actions to perform continuous integration, to view the latest results go to the following link: https://github.com/Arjunj99/4156-Miniproject-2025-Students-part-3/actions
@@ -167,7 +292,6 @@ This repository using GitHub Actions to perform continuous integration, to view 
 As a group, we discussed and decided that for our project, Endpoint Ordering does not matter.
 
 ## Postman Test Documentation
-
 We used Postman to document and store our API endpoints/results. here is a link to access our API endpoints with sample responses (https://app.getpostman.com/join-team?invite_code=bc1fd36ae7da43f92c0d6aa188720c38c33af18b17aeaa68d339fffbe5decb95&target_code=5bd0b449f27ac1df88f67582412ba439).
 
 ## Tools used 
@@ -191,3 +315,9 @@ This section includes notes on tools and technologies used in building this proj
     * We used Mockito to mock our MockAPIService to do isolated testing of RouteController.
 * Postman
     * We used postman to test that out API works.
+* Playwright 
+    * We used Playwright for automated end-to-end testing of the client against the deployed cloud backend. 
+* Jest + React Testing Library 
+    * Jest is used for unit testing the React client. 
+* Vite 
+    * We use Vite as the development server and bundler for the demo client.
