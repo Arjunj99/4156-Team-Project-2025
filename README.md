@@ -183,8 +183,8 @@ This section includes notes on tools and technologies used in building this proj
     * I am using PMD to do static analysis of our Java code.
 * JUnit
     * JUnit tests get run automatically as part of the CI pipeline.
-* MockMvc (API Testing)
-    * I use MockMvc as our API testing framework for integration testing of REST endpoints. MockMvc is included with Spring Boot Test dependencies and requires no additional installation. MockMvc tests are located in RouteControllerTests.java and execute automatically when running `mvn clean test`. Test results are included in the JaCoCo coverage reports generated in /CalorieService/target/site/jacoco/index.html.
+* Spring Boot Test + MockMvc + Hamcrest
+    * I use Spring Boot Test with MockMvc to exercise the HTTP endpoints end-to-end (RouteControllerTests, InternalIntegrationTests, ExternalIntegrationTests). My JSON assertions rely on Hamcrest matchers such as `hasItem`, `not`, and `containsString`. EndToEndTests run with `SpringBootTest(webEnvironment = RANDOM_PORT)` and `TestRestTemplate`, using Firestore credentials so they send real HTTP traffic through the stack.
 * JaCoCo
     * I use JaCoCo for generating code coverage reports.
 * Mockito
