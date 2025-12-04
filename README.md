@@ -63,34 +63,34 @@ highest views, as well as 3 random recipes of the same category with lower calor
   * 404 NOT FOUND: Recipe with specified ID not found
   * 500 INTERNAL SERVER ERROR: Server error occurred
 
-#### /user/recommend
+#### /client/recommend
 * HTTP Method: GET
-* Expected Input Parameters: userId (int)
+* Expected Input Parameters: clientId (int)
 * Expected Output: recipes (ResponseEntity<?>)
-* Returns a list of 10 recommended recipes based on user's liked recipes.
+* Returns a list of 10 recommended recipes based on client's liked recipes.
 * Status Codes:
   * 200 OK: Successfully retrieved recommendations or no recommendations found
-  * 404 NOT FOUND: User with specified ID not found
+  * 404 NOT FOUND: Client with specified ID not found
   * 500 INTERNAL SERVER ERROR: Server error occurred
 
-#### /user/recommendHealthy
+#### /client/recommendHealthy
 * HTTP Method: GET
-* Expected Input Parameters: userId (int), calorieMax (int)
+* Expected Input Parameters: clientId (int), calorieMax (int)
 * Expected Output: recipes (ResponseEntity<?>)
-* Returns a list of 10 recommended recipes based on user's liked recipes under the calorieMax value.
+* Returns a list of 10 recommended recipes based on client's liked recipes under the calorieMax value.
 * Status Codes:
   * 200 OK: Successfully retrieved healthy recommendations or no recommendations found
-  * 404 NOT FOUND: User with specified ID not found
+  * 404 NOT FOUND: Client with specified ID not found
   * 500 INTERNAL SERVER ERROR: Server error occurred
 
-#### /user/likeRecipe
+#### /client/likeRecipe
 * HTTP Method: POST
-* Expected Input Parameters: userId (int), recipeId (int)
+* Expected Input Parameters: clientId (int), recipeId (int)
 * Expected Output: status (ResponseEntity<?>)
-* Adds a recipe to user's likedRecipes.
+* Adds a recipe to client's likedRecipes.
 * Status Codes:
-  * 200 OK: Recipe successfully added to user's liked recipes
-  * 400 BAD REQUEST: User/recipe not found or recipe already liked
+  * 200 OK: Recipe successfully added to client's liked recipes
+  * 400 BAD REQUEST: Client/recipe not found or recipe already liked
   * 500 INTERNAL SERVER ERROR: Server error occurred
 
 #### /recipe/addRecipe
