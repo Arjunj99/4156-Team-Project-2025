@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import dev.coms4156.project.calorieservice.models.Client;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
-import dev.coms4156.project.calorieservice.models.Client;
 import dev.coms4156.project.calorieservice.service.FirestoreService;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;

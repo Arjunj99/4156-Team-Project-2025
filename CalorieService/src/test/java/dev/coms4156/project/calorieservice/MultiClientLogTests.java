@@ -8,15 +8,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.coms4156.project.calorieservice.ClientEvent;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+/**
+ * Multi-client log tests for /client/log endpoint.
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class MultiClientLogTests {
@@ -29,10 +35,14 @@ public class MultiClientLogTests {
   @Autowired
   private ObjectMapper objectMapper;
 
+  /**
+   * Cleans the log file before and after each test.
+   *
+   * @throws IOException if file operations fail
+   */
   @BeforeEach
   @AfterEach
   public void cleanLogFile() throws IOException {
-    // Remove any previous logs so each test starts fresh
     if (Files.exists(LOG_FILE)) {
       Files.delete(LOG_FILE);
     }
@@ -75,16 +85,16 @@ public class MultiClientLogTests {
 
     // Send first event
     mockMvc.perform(
-            post("/client/log")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(event1)))
+        post("/client/log")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(event1)))
         .andExpect(status().isCreated());
 
     // Send second event
     mockMvc.perform(
-            post("/client/log")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(event2)))
+        post("/client/log")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(event2)))
         .andExpect(status().isCreated());
 
     // Both events should now be in the log file as separate JSON lines
