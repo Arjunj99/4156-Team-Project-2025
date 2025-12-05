@@ -6,6 +6,10 @@ Our group, **Hello World**, consists of the following members
 - Songhee Beck (sb4446)
 - Valentino Vitale (vv2343)
 
+## Cloud URL
+
+https://calorie-service-295107751003.us-east1.run.app
+
 ## Building and Running a Local Instance
 In order to build and use our service you must install the following (This guide assumes MacOS but the Maven README has instructions for both Windows and Mac):
 
