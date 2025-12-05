@@ -157,7 +157,11 @@ From the repository root, run:
 Then open a browser to:
 http://localhost:5173.
 
+You must also run <code>mvn spring-boot:run</code> which will start the client's backend. This is used for our demo-client specific log calls.
+
 Your client is now connected to the backend service and ready for E2E testing.
+
+Your client currently uses client id 516 found in line 4 of App.jsx. You will need to change this to your own client id if you are making your own client.
 
 ### How Multiple Client Instances Are Distinguished
 The service was explicitly designed to handle multiple simultaneous clients.
