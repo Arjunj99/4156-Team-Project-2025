@@ -1,7 +1,11 @@
 package dev.coms4156.project.calorieservice.client;
 
 /**
+<<<<<<< HEAD
  * Represents a client event for logging purposes.
+=======
+ * Represents a log event sent from the demo client.
+>>>>>>> main
  */
 public class ClientEvent {
 
