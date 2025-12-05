@@ -1,5 +1,8 @@
 package dev.coms4156.project.calorieservice;
 
+/**
+ * Represents a log event sent from the demo client.
+ */
 public class ClientEvent {
 
   private String instanceId;

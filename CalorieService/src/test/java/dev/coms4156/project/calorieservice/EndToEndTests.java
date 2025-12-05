@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.coms4156.project.calorieservice.models.Client;
 import dev.coms4156.project.calorieservice.models.Food;
 import dev.coms4156.project.calorieservice.models.Recipe;
-import dev.coms4156.project.calorieservice.models.User;
 import dev.coms4156.project.calorieservice.service.FirestoreService;
 import java.net.URI;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class EndToEndTests {
 
   private final Set<Integer> seededFoods = new HashSet<>();
   private final Set<Integer> seededRecipes = new HashSet<>();
-  private final Set<Integer> seededUsers = new HashSet<>();
+  private final Set<Integer> seededClients = new HashSet<>();
 
   private String url(String path) {
     return "http://localhost:" + port + path;
@@ -76,12 +76,12 @@ public class EndToEndTests {
     for (Integer id : seededRecipes) {
       safe(() -> firestoreService.deleteRecipe(id));
     }
-    for (Integer id : seededUsers) {
-      safe(() -> firestoreService.deleteUser(id));
+    for (Integer id : seededClients) {
+      safe(() -> firestoreService.deleteClient(id));
     }
     seededFoods.clear();
     seededRecipes.clear();
-    seededUsers.clear();
+    seededClients.clear();
   }
 
   @Test
@@ -266,11 +266,11 @@ public class EndToEndTests {
   }
 
   @Test
-  @DisplayName("User like + recommend flows; no-likes and missing user errors")
-  void userLikeAndRecommendFlows() throws Exception {
+  @DisplayName("Client like + recommend flows; no-likes and missing client errors")
+  void clientLikeAndRecommendFlows() throws Exception {
     int uid = 8000;
-    firestoreService.addUser(new User("u", uid));
-    recordUser(uid);
+    firestoreService.addClient(new Client("u", uid));
+    recordClient(uid);
     firestoreService.addRecipe(buildRecipe(8001, "C", new int[] {10}, 0));
     firestoreService.addRecipe(buildRecipe(8002, "C", new int[] {230}, 0));
     firestoreService.addRecipe(buildRecipe(8003, "C", new int[] {231}, 0));
@@ -278,20 +278,20 @@ public class EndToEndTests {
     recordRecipe(8002);
     recordRecipe(8003);
 
-    URI like = UriComponentsBuilder.fromUriString(url("/user/likeRecipe"))
-        .queryParam("userId", uid).queryParam("recipeId", 8001).build().toUri();
+    URI like = UriComponentsBuilder.fromUriString(url("/client/likeRecipe"))
+        .queryParam("clientId", uid).queryParam("recipeId", 8001).build().toUri();
     ResponseEntity<String> ok = rest.postForEntity(like, null, String.class);
     org.junit.jupiter.api.Assertions.assertEquals(200, ok.getStatusCode().value());
 
-    URI rec = UriComponentsBuilder.fromUriString(url("/user/recommend"))
-        .queryParam("userId", uid).build().toUri();
+    URI rec = UriComponentsBuilder.fromUriString(url("/client/recommend"))
+        .queryParam("clientId", uid).build().toUri();
     ResponseEntity<String> rrec = rest.getForEntity(rec, String.class);
     List<Integer> ids = ids(new ObjectMapper().readValue(
         rrec.getBody(), new TypeReference<List<Map<String, Object>>>() {}));
     org.junit.jupiter.api.Assertions.assertFalse(ids.contains(8001));
 
-    URI healthy = UriComponentsBuilder.fromUriString(url("/user/recommendHealthy"))
-        .queryParam("userId", uid).queryParam("calorieMax", 230).build().toUri();
+    URI healthy = UriComponentsBuilder.fromUriString(url("/client/recommendHealthy"))
+        .queryParam("clientId", uid).queryParam("calorieMax", 230).build().toUri();
     ResponseEntity<String> rhe = rest.getForEntity(healthy, String.class);
     List<Integer> idsH = ids(new ObjectMapper().readValue(
         rhe.getBody(), new TypeReference<List<Map<String, Object>>>() {}));
@@ -300,41 +300,41 @@ public class EndToEndTests {
     org.junit.jupiter.api.Assertions.assertFalse(idsH.contains(8001));
 
     int uid2 = 8005;
-    firestoreService.addUser(new User("nolikes", uid2));
-    recordUser(uid2);
-    URI rec404 = UriComponentsBuilder.fromUriString(url("/user/recommend"))
-        .queryParam("userId", uid2).build().toUri();
+    firestoreService.addClient(new Client("nolikes", uid2));
+    recordClient(uid2);
+    URI rec404 = UriComponentsBuilder.fromUriString(url("/client/recommend"))
+        .queryParam("clientId", uid2).build().toUri();
     ResponseEntity<String> notFound = rest.getForEntity(rec404, String.class);
     org.junit.jupiter.api.Assertions.assertEquals(404, notFound.getStatusCode().value());
 
     int uid3 = 8010;
-    firestoreService.addUser(new User("missinguser", uid3));
+    firestoreService.addClient(new Client("missingclient", uid3));
     firestoreService.addRecipe(buildRecipe(8011, "Any", new int[] {90}, 0));
-    recordUser(uid3);
+    recordClient(uid3);
     recordRecipe(8011);
-    URI he = UriComponentsBuilder.fromUriString(url("/user/recommendHealthy"))
-        .queryParam("userId", uid3).queryParam("calorieMax", 100).build().toUri();
+    URI he = UriComponentsBuilder.fromUriString(url("/client/recommendHealthy"))
+        .queryParam("clientId", uid3).queryParam("calorieMax", 100).build().toUri();
     ResponseEntity<String> okHe = rest.getForEntity(he, String.class);
     org.junit.jupiter.api.Assertions.assertEquals(200, okHe.getStatusCode().value());
 
-    URI missUser = UriComponentsBuilder.fromUriString(url("/user/recommend"))
-        .queryParam("userId", 999999).build().toUri();
-    ResponseEntity<String> rmu = rest.getForEntity(missUser, String.class);
+    URI missClient = UriComponentsBuilder.fromUriString(url("/client/recommend"))
+        .queryParam("clientId", 999999).build().toUri();
+    ResponseEntity<String> rmu = rest.getForEntity(missClient, String.class);
     org.junit.jupiter.api.Assertions.assertEquals(404, rmu.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("User likeRecipe duplicate returns 400 (already liked)")
-  void userLikeRecipeDuplicateReturns400() throws Exception {
+  @DisplayName("Client likeRecipe duplicate returns 400 (already liked)")
+  void clientLikeRecipeDuplicateReturns400() throws Exception {
     int uid = 9100;
     int rid = 9101;
-    firestoreService.addUser(new User("dup", uid));
+    firestoreService.addClient(new Client("dup", uid));
     firestoreService.addRecipe(buildRecipe(rid, "C", new int[] {10}, 0));
-    recordUser(uid);
+    recordClient(uid);
     recordRecipe(rid);
 
-    URI like = UriComponentsBuilder.fromUriString(url("/user/likeRecipe"))
-        .queryParam("userId", uid).queryParam("recipeId", rid).build().toUri();
+    URI like = UriComponentsBuilder.fromUriString(url("/client/likeRecipe"))
+        .queryParam("clientId", uid).queryParam("recipeId", rid).build().toUri();
     ResponseEntity<String> ok = rest.postForEntity(like, null, String.class);
     org.junit.jupiter.api.Assertions.assertEquals(200, ok.getStatusCode().value());
 
@@ -343,10 +343,10 @@ public class EndToEndTests {
   }
 
   @Test
-  @DisplayName("User likeRecipe returns 400 for missing user/recipe ids")
-  void userLikeRecipeMissingReturns400() {
-    URI like = UriComponentsBuilder.fromUriString(url("/user/likeRecipe"))
-        .queryParam("userId", 999999).queryParam("recipeId", 999999).build().toUri();
+  @DisplayName("Client likeRecipe returns 400 for missing client/recipe ids")
+  void clientLikeRecipeMissingReturns400() {
+    URI like = UriComponentsBuilder.fromUriString(url("/client/likeRecipe"))
+        .queryParam("clientId", 999999).queryParam("recipeId", 999999).build().toUri();
     ResponseEntity<String> bad = rest.postForEntity(like, null, String.class);
     org.junit.jupiter.api.Assertions.assertEquals(400, bad.getStatusCode().value());
   }
@@ -447,8 +447,8 @@ public class EndToEndTests {
     seededRecipes.add(id);
   }
 
-  private void recordUser(int id) {
-    seededUsers.add(id);
+  private void recordClient(int id) {
+    seededClients.add(id);
   }
 
   private Recipe buildRecipe(int id, String category, int[] ingredientCalories, int views)
