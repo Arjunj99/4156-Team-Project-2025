@@ -43,7 +43,7 @@ public class ExternalIntegrationTests {
   private boolean credentialsReady;
   private final Set<Integer> seededRecipes = new HashSet<>();
   private final Set<Integer> seededFoods = new HashSet<>();
-  private final Set<Integer> seededUsers = new HashSet<>();
+  private final Set<Integer> seededClients = new HashSet<>();
 
   @BeforeEach
   void setup() {
@@ -60,12 +60,12 @@ public class ExternalIntegrationTests {
     for (Integer id : seededFoods) {
       safe(() -> firestoreService.deleteFood(id));
     }
-    for (Integer id : seededUsers) {
+    for (Integer id : seededClients) {
       safe(() -> firestoreService.deleteClient(id));
     }
     seededRecipes.clear();
     seededFoods.clear();
-    seededUsers.clear();
+    seededClients.clear();
   }
 
   private void safe(ThrowingRunnable action) {
@@ -158,11 +158,11 @@ public class ExternalIntegrationTests {
   }
 
   @Test
-  @DisplayName("External: user like + recommend and healthy")
-  void externalUserLikeAndRecommendFlows() throws Exception {
+  @DisplayName("External: client like + recommend and healthy")
+  void externalClientLikeAndRecommendFlows() throws Exception {
     final int uid = 99600;
     firestoreService.addClient(new Client("u", uid));
-    recordUser(uid);
+    recordClient(uid);
     firestoreService.addRecipe(new Recipe("L", 99601, "ExtC", new ArrayList<>(), 0, 0, 10));
     firestoreService.addRecipe(new Recipe("E", 99602, "ExtC", new ArrayList<>(), 0, 0, 230));
     firestoreService.addRecipe(new Recipe("O", 99603, "ExtC", new ArrayList<>(), 0, 0, 231));
@@ -336,17 +336,17 @@ public class ExternalIntegrationTests {
   }
 
   @Test
-  @DisplayName("External: user add/get/delete persists")
-  void externalUserCrudPersists() throws Exception {
+  @DisplayName("External: client add/get/delete persists")
+  void externalClientCrudPersists() throws Exception {
     final int uid = 99301;
-    Client client = new Client("ext-user", uid);
+    Client client = new Client("ext-client", uid);
     boolean added = firestoreService.addClient(client);
     org.junit.jupiter.api.Assertions.assertTrue(added);
-    recordUser(uid);
+    recordClient(uid);
 
     Client fetched = firestoreService.getClientById(uid);
     org.junit.jupiter.api.Assertions.assertNotNull(fetched);
-    org.junit.jupiter.api.Assertions.assertEquals("ext-user", fetched.getClientname());
+    org.junit.jupiter.api.Assertions.assertEquals("ext-client", fetched.getClientname());
 
     boolean deleted = firestoreService.deleteClient(uid);
     org.junit.jupiter.api.Assertions.assertTrue(deleted);
@@ -359,7 +359,7 @@ public class ExternalIntegrationTests {
     final int uid = 99100;
     Client client = new Client("ext", uid);
     firestoreService.addClient(client);
-    recordUser(uid);
+    recordClient(uid);
 
     Recipe liked = new Recipe("L", 99101, "Edge", new ArrayList<>(), 0, 0, 10);
     Recipe equalCap = new Recipe("E", 99102, "Edge", new ArrayList<>(), 0, 0, 230);
@@ -393,7 +393,7 @@ public class ExternalIntegrationTests {
     seededFoods.add(id);
   }
 
-  private void recordUser(int id) {
-    seededUsers.add(id);
+  private void recordClient(int id) {
+    seededClients.add(id);
   }
 }
