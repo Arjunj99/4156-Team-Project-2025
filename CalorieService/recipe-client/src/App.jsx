@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { API_BASE_URL } from "./config";
 
-const SERVICE_CLIENT_ID = 502;
+const SERVICE_CLIENT_ID = 516;
 
 if (typeof window !== "undefined") {
   window.__react_state_setRecipes = (recipes) => setRecipes(recipes);
@@ -37,8 +37,8 @@ function getRecipeTitle(recipe) {
 // Component
 
 function App() {
-  // client user details
-  const [userId, setUserId] = useState("");
+  // client client details
+  const [clientId, setUserId] = useState("");
   const [signedIn, setSignedIn] = useState(false);
 
   const [calorieMax, setCalorieMax] = useState(600);
@@ -118,7 +118,7 @@ function App() {
         body: JSON.stringify({
           instanceId,
           serviceClientId: SERVICE_CLIENT_ID,
-          userId: userId || null,
+          clientId: clientId || null,
           timestamp: new Date().toISOString(),
           ...event,
         }),
@@ -132,24 +132,24 @@ function App() {
 
   function handleSignIn(e) {
     e.preventDefault();
-    const trimmed = String(userId).trim();
+    const trimmed = String(clientId).trim();
     if (!trimmed) {
-      setError("Please enter a user id.");
+      setError("Please enter a client id.");
       return;
     }
 
-    const usersRaw = localStorage.getItem("demoUsers") || "{}";
-    let users;
+    const clientsRaw = localStorage.getItem("demoUsers") || "{}";
+    let clients;
     try {
-      users = JSON.parse(usersRaw);
+      clients = JSON.parse(clientsRaw);
     } catch {
-      users = {};
+      clients = {};
     }
-    users[trimmed] = {
-      ...(users[trimmed] || {}),
+    clients[trimmed] = {
+      ...(clients[trimmed] || {}),
       lastSeen: Date.now(),
     };
-    localStorage.setItem("demoUsers", JSON.stringify(users));
+    localStorage.setItem("demoUsers", JSON.stringify(clients));
 
     setUserId(trimmed);
     setSignedIn(true);
@@ -158,14 +158,14 @@ function App() {
 
     logEvent({
       type: "signin",
-      event: "user_signed_in",
+      event: "client_signed_in",
     });
   }
 
   // Load healthy recommendations
   async function loadHealthyRecipes() {
     if (!signedIn) {
-      setError("Please enter a user id and press Sign In first.");
+      setError("Please enter a client id and press Sign In first.");
       return;
     }
     setLoading(true);
@@ -175,7 +175,7 @@ function App() {
 
     try {
       const data = await callApi(
-        `/user/recommendHealthy?userId=${encodeURIComponent(
+        `/client/recommendHealthy?clientId=${encodeURIComponent(
           SERVICE_CLIENT_ID
         )}&calorieMax=${encodeURIComponent(calorieMax)}`
       );
@@ -242,7 +242,7 @@ function App() {
 
   async function likeRecipe(recipe) {
     if (!signedIn) {
-      setError("Sign in with a user id before liking recipes.");
+      setError("Sign in with a client id before liking recipes.");
       return;
     }
     if (!recipe) return;
@@ -251,7 +251,7 @@ function App() {
 
     try {
       await callApi(
-        `/user/likeRecipe?userId=${encodeURIComponent(
+        `/client/likeRecipe?clientId=${encodeURIComponent(
           SERVICE_CLIENT_ID
         )}&recipeId=${encodeURIComponent(recipeId)}`,
         { method: "POST" }
@@ -261,22 +261,22 @@ function App() {
         prev.includes(recipeId) ? prev : [...prev, recipeId]
       );
 
-      const likesRaw = localStorage.getItem("userLikes") || "{}";
+      const likesRaw = localStorage.getItem("clientLikes") || "{}";
       let likesStore;
       try {
         likesStore = JSON.parse(likesRaw);
       } catch {
         likesStore = {};
       }
-      const keyUser = userId || "anonymous";
-      const userLikesSet = new Set(likesStore[keyUser] || []);
-      userLikesSet.add(recipeId);
-      likesStore[keyUser] = Array.from(userLikesSet);
-      localStorage.setItem("userLikes", JSON.stringify(likesStore));
+      const keyUser = clientId || "anonymous";
+      const clientLikesSet = new Set(likesStore[keyUser] || []);
+      clientLikesSet.add(recipeId);
+      likesStore[keyUser] = Array.from(clientLikesSet);
+      localStorage.setItem("clientLikes", JSON.stringify(likesStore));
 
       logEvent({
         type: "like",
-        event: "user_liked_recipe",
+        event: "client_liked_recipe",
         recipeId,
         recipeTitle: getRecipeTitle(recipe),
       });
@@ -308,7 +308,7 @@ function App() {
       </header>
 
       <main className="app-main">
-        {/* Left panel: local user + filters + recipe list */}
+        {/* Left panel: local client + filters + recipe list */}
         <section className="left-panel">
           <div className="card">
             <h2>Local User</h2>
@@ -317,7 +317,7 @@ function App() {
                 User ID
                 <input
                   type="text"
-                  value={userId}
+                  value={clientId}
                   onChange={(e) => setUserId(e.target.value)}
                   placeholder="e.g. alice01"
                 />
@@ -326,7 +326,7 @@ function App() {
             </form>
             {signedIn && (
               <p className="info">
-                Signed in as <strong>{userId}</strong>
+                Signed in as <strong>{clientId}</strong>
               </p>
             )}
           </div>
@@ -348,7 +348,7 @@ function App() {
               </button>
             </div>
             <p className="hint">
-              Uses <code>/user/recommendHealthy</code> with client ID{" "}
+              Uses <code>/client/recommendHealthy</code> with client ID{" "}
               <code>{SERVICE_CLIENT_ID}</code> to fetch up to six recipes under this
               calorie limit.
             </p>
