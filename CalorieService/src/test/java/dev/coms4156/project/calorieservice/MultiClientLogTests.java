@@ -1,4 +1,4 @@
-package dev.coms4156.project.calorieservice.controller;
+package dev.coms4156.project.calorieservice;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.coms4156.project.calorieservice.ClientEvent;
+import dev.coms4156.project.calorieservice.client.ClientEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

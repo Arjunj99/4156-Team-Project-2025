@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.coms4156.project.calorieservice.ClientEvent;
+import dev.coms4156.project.calorieservice.client.ClientEvent;
 import dev.coms4156.project.calorieservice.controller.ClientLogController;
 import java.io.IOException;
 import java.nio.file.Files;

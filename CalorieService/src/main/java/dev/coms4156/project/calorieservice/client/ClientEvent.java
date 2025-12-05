@@ -1,4 +1,4 @@
-package dev.coms4156.project.calorieservice;
+package dev.coms4156.project.calorieservice.client;
 
 /**
  * Represents a log event sent from the demo client.

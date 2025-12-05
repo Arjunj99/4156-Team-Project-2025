@@ -1,7 +1,7 @@
 package dev.coms4156.project.calorieservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.coms4156.project.calorieservice.ClientEvent;
+import dev.coms4156.project.calorieservice.client.ClientEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
