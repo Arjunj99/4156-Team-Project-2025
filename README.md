@@ -12,6 +12,12 @@ In order to build and use our service you must install the following (This guide
 1. Maven 3.9.11: Run "mvn compile" and "mvn spring-boot:run". Running this command for the first time should install the necessary dependencies. If not use https://maven.apache.org/download.cgi to download and follow the installation instructions, be sure to set the bin as described in Maven's README according to instructions of your OS (see README).
 2. JDK 17: This project used JDK 17 for development so that is what I recommend you use: https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
 3. IntelliJ IDE: I recommend using IntelliJ but you are free to use any other IDE that you are comfortable with: https://www.jetbrains.com/idea/download/
+4. To Run the code, you will need to have Google Credentials set up to use the FireStore Database. For testing purposes, email (jt3481@columbia.edu) for the credentials, and he will send them to you. After receiving the credentials, export them using the code below. 
+
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/service-account.json"
+
+After this, the tests and service will work for you locally.
+
 4. When you open IntelliJ you have the option to clone from a GitHub repo, click the green code button and copy the http line that is provided there and give it to your IDE to clone.
 5. That should be it in order to build the project with maven you can run <code>mvn -B package --file pom.xml</code> and then you can either run the tests via the test files described below or the main application by running SweProjectApplication.java from your IDE.
 6. If you wish to run the style checker you can with <code>mvn checkstyle:check</code> or <code>mvn checkstyle:checkstyle</code> if you wish to generate the report.
