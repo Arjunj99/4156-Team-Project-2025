@@ -11,7 +11,7 @@ function getRecipeId(recipe) {
   return (
     recipe?.id ??
     recipe?.recipeId ??
-    recipe?.recipeID ?? // just in case
+    recipe?.recipeID ??
     recipe?.recipe_id ??
     null
   );
@@ -38,7 +38,7 @@ function getRecipeTitle(recipe) {
 
 function App() {
   // client client details
-  const [clientId, setUserId] = useState("");
+  const [userId, setUserId] = useState("");
   const [signedIn, setSignedIn] = useState(false);
 
   const [calorieMax, setCalorieMax] = useState(600);
@@ -118,7 +118,7 @@ function App() {
         body: JSON.stringify({
           instanceId,
           serviceClientId: SERVICE_CLIENT_ID,
-          clientId: clientId || null,
+          userId: userId || null,
           timestamp: new Date().toISOString(),
           ...event,
         }),
@@ -132,9 +132,9 @@ function App() {
 
   function handleSignIn(e) {
     e.preventDefault();
-    const trimmed = String(clientId).trim();
+    const trimmed = String(userId).trim();
     if (!trimmed) {
-      setError("Please enter a client id.");
+      setError("Please enter a user id.");
       return;
     }
 
@@ -159,6 +159,7 @@ function App() {
     logEvent({
       type: "signin",
       event: "client_signed_in",
+      userId: trimmed,
     });
   }
 
@@ -268,7 +269,7 @@ function App() {
       } catch {
         likesStore = {};
       }
-      const keyUser = clientId || "anonymous";
+      const keyUser = userId || "anonymous";
       const clientLikesSet = new Set(likesStore[keyUser] || []);
       clientLikesSet.add(recipeId);
       likesStore[keyUser] = Array.from(clientLikesSet);
@@ -317,7 +318,7 @@ function App() {
                 User ID
                 <input
                   type="text"
-                  value={clientId}
+                  value={userId}
                   onChange={(e) => setUserId(e.target.value)}
                   placeholder="e.g. alice01"
                 />
@@ -326,7 +327,7 @@ function App() {
             </form>
             {signedIn && (
               <p className="info">
-                Signed in as <strong>{clientId}</strong>
+                Signed in as <strong>{userId}</strong>
               </p>
             )}
           </div>
